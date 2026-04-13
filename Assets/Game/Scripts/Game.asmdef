@@ -1,0 +1,17 @@
+{
+    "name": "Game",
+    "rootNamespace": "ProjectDR",
+    "references": [
+        "KahaGameCore.GameEvent",
+        "KahaGameCore.Package.UserInterfaceSystem"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

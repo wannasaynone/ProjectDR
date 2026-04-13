@@ -1,0 +1,75 @@
+/* 村莊 UI 共用樣式 — IT 階段 Placeholder */
+
+.title-label {
+    font-size: 24px;
+    -unity-font-style: bold;
+    margin-bottom: 20px;
+    color: rgb(230, 220, 180);
+}
+
+.area-button {
+    margin: 8px 0;
+    padding: 12px;
+    font-size: 16px;
+    background-color: rgb(60, 50, 30);
+    color: rgb(230, 220, 180);
+    border-color: rgb(120, 100, 60);
+    border-width: 1px;
+    border-radius: 4px;
+}
+
+.area-button:hover {
+    background-color: rgb(90, 70, 40);
+}
+
+.return-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: rgb(40, 40, 40);
+    color: rgb(180, 180, 180);
+    border-radius: 4px;
+}
+
+.item-row {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-bottom-width: 1px;
+    border-color: rgb(60, 60, 60);
+}
+
+.item-name {
+    color: rgb(200, 200, 200);
+}
+
+.item-count {
+    color: rgb(180, 220, 120);
+}
+
+.empty-label {
+    color: rgb(120, 120, 120);
+    -unity-text-align: middle-center;
+    margin-top: 40px;
+}
+
+.status-label {
+    font-size: 18px;
+    color: rgb(180, 220, 120);
+    margin-bottom: 20px;
+}
+
+.action-button {
+    margin: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: rgb(60, 90, 60);
+    color: rgb(220, 255, 200);
+    border-radius: 4px;
+}
+
+.placeholder-label {
+    color: rgb(120, 120, 120);
+    -unity-text-align: middle-center;
+    margin: 20px;
+}

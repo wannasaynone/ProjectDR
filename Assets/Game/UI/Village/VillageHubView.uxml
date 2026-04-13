@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Game/UI/Village/VillageCommon.uss" />
+    <ui:VisualElement name="root" style="flex-grow: 1; align-items: center; justify-content: center; background-color: rgba(20, 20, 30, 0.9);">
+        <ui:Label name="title-label" text="村莊" class="title-label" />
+        <ui:VisualElement name="area-button-container" style="flex-direction: column; align-items: stretch; width: 400px;" />
+    </ui:VisualElement>
+</ui:UXML>

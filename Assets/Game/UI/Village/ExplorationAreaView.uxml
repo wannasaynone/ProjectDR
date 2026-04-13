@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Game/UI/Village/VillageCommon.uss" />
+    <ui:VisualElement name="root" style="flex-grow: 1; padding: 20px; align-items: center; background-color: rgba(20, 20, 30, 0.9);">
+        <ui:Label name="title-label" text="探索入口" class="title-label" />
+        <ui:Label name="status-label" text="準備出發" class="status-label" />
+        <ui:Button name="depart-button" text="出發探索" class="action-button" />
+        <ui:Button name="simulate-return-button" text="模擬返回（IT）" class="action-button" />
+        <ui:Button name="return-button" text="返回村莊" class="return-button" />
+    </ui:VisualElement>
+</ui:UXML>

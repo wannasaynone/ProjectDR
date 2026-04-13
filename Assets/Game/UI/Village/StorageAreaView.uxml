@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Game/UI/Village/VillageCommon.uss" />
+    <ui:VisualElement name="root" style="flex-grow: 1; padding: 20px; background-color: rgba(20, 20, 30, 0.9);">
+        <ui:Label name="title-label" text="倉庫" class="title-label" />
+        <ui:ScrollView name="item-scroll" style="flex-grow: 1;">
+            <ui:VisualElement name="item-list-container" class="item-list-container" />
+        </ui:ScrollView>
+        <ui:Button name="return-button" text="返回村莊" class="return-button" />
+    </ui:VisualElement>
+</ui:UXML>

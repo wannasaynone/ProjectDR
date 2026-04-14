@@ -58,7 +58,7 @@
 
 - **遊戲引擎**: Unity 6 (6000.3.8f1)
 - **開發語言**: C#
-- **UI 系統**: UI Toolkit (UXML/USS)
+- **UI 系統**: UGUI（Canvas + GameObject）
 - **版本控制**: Git
 - **預設解析度**: 3840 x 2160 (4K)
 - **主要框架**: KahaGameCore（GameData、GameEvent、ValueContainer、EffectProcessor、DialogueSystem、UserInterfaceSystem）、UniTask、DOTween、Addressables

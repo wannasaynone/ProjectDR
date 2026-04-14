@@ -8,7 +8,7 @@ namespace ProjectDR.Village.UI
 {
     /// <summary>
     /// 村莊主畫面（Hub）。
-    /// 顯示可導航區域的按鈕清單，玩家點擊後觸發導航。
+    /// 顯示角色按鈕清單，玩家點擊後觸發導航至該角色的互動畫面。
     /// </summary>
     public class VillageHubView : ViewBase
     {
@@ -16,16 +16,22 @@ namespace ProjectDR.Village.UI
         [SerializeField] private Button _areaButtonPrefab;
 
         private VillageNavigationManager _navigationManager;
+        private IReadOnlyList<CharacterMenuData> _characters;
 
-        public void Initialize(VillageNavigationManager navigationManager)
+        /// <summary>
+        /// 注入相依。
+        /// </summary>
+        /// <param name="navigationManager">導航管理器。</param>
+        /// <param name="characters">角色資料清單。</param>
+        public void Initialize(VillageNavigationManager navigationManager, IReadOnlyList<CharacterMenuData> characters)
         {
             _navigationManager = navigationManager;
-            EventBus.Subscribe<AreaUnlockedEvent>(OnAreaUnlocked);
+            _characters = characters;
         }
 
         protected override void OnShow()
         {
-            RefreshAreaButtons();
+            RefreshCharacterButtons();
         }
 
         protected override void OnHide()
@@ -33,20 +39,7 @@ namespace ProjectDR.Village.UI
             // 無需額外清理
         }
 
-        private void OnDestroy()
-        {
-            EventBus.Unsubscribe<AreaUnlockedEvent>(OnAreaUnlocked);
-        }
-
-        private void OnAreaUnlocked(AreaUnlockedEvent e)
-        {
-            if (gameObject.activeInHierarchy)
-            {
-                RefreshAreaButtons();
-            }
-        }
-
-        private void RefreshAreaButtons()
+        private void RefreshCharacterButtons()
         {
             if (_areaButtonContainer == null) return;
 
@@ -56,32 +49,21 @@ namespace ProjectDR.Village.UI
                 Destroy(_areaButtonContainer.GetChild(i).gameObject);
             }
 
-            IReadOnlyList<string> areas = _navigationManager.GetNavigableAreas();
-            foreach (string areaId in areas)
+            if (_characters == null) return;
+
+            foreach (CharacterMenuData character in _characters)
             {
-                string capturedAreaId = areaId;
+                string capturedCharacterId = character.CharacterId;
                 Button button = Instantiate(_areaButtonPrefab, _areaButtonContainer);
                 button.gameObject.SetActive(true);
 
                 TMP_Text label = button.GetComponentInChildren<TMP_Text>();
                 if (label != null)
                 {
-                    label.text = GetAreaDisplayName(capturedAreaId);
+                    label.text = character.DisplayName;
                 }
 
-                button.onClick.AddListener(() => _navigationManager.NavigateTo(capturedAreaId));
-            }
-        }
-
-        private string GetAreaDisplayName(string areaId)
-        {
-            switch (areaId)
-            {
-                case AreaIds.Storage: return "倉庫（村長夫人）";
-                case AreaIds.Exploration: return "探索（獵人）";
-                case AreaIds.Alchemy: return "煉藥坊（魔女）";
-                case AreaIds.Farm: return "農場（農女）";
-                default: return areaId;
+                button.onClick.AddListener(() => _navigationManager.NavigateTo(capturedCharacterId));
             }
         }
     }

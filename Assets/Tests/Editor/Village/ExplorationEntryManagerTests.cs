@@ -8,21 +8,25 @@ namespace ProjectDR.Tests.Village
 {
     /// <summary>
     /// ExplorationEntryManager 的單元測試。
-    /// 測試對象：出發可行性檢查、出發、模擬返回、事件發布。
+    /// 測試對象：出發可行性檢查、出發、模擬返回、背包快照、事件發布。
+    /// V2：戰利品進入背包而非直接進倉庫；出發時自動拍攝背包快照。
     /// 此測試不依賴 MonoBehaviour 或 Unity 場景，為純邏輯測試。
     /// </summary>
     [TestFixture]
     public class ExplorationEntryManagerTests
     {
-        private StorageManager _storageManager;
+        private const int TestMaxSlots = 10;
+        private const int TestMaxStack = 99;
+
+        private BackpackManager _backpackManager;
         private ExplorationEntryManager _sut;
 
         [SetUp]
         public void SetUp()
         {
             EventBus.ForceClearAll();
-            _storageManager = new StorageManager();
-            _sut = new ExplorationEntryManager(_storageManager);
+            _backpackManager = new BackpackManager(TestMaxSlots, TestMaxStack);
+            _sut = new ExplorationEntryManager(_backpackManager);
         }
 
         [TearDown]
@@ -101,9 +105,9 @@ namespace ProjectDR.Tests.Village
         // ===== SimulateReturn =====
 
         [Test]
-        public void SimulateReturn_WithLoot_AddLootToStorage()
+        public void SimulateReturn_WithLoot_AddLootToBackpack()
         {
-            // 模擬帶著戰利品返回，應將物品新增至 Storage
+            // 模擬帶著戰利品返回，應將物品新增至背包
             _sut.Depart();
 
             Dictionary<string, int> loot = new Dictionary<string, int>
@@ -114,20 +118,18 @@ namespace ProjectDR.Tests.Village
 
             _sut.SimulateReturn(loot);
 
-            Assert.AreEqual(5, _storageManager.GetItemCount("Wood"));
-            Assert.AreEqual(3, _storageManager.GetItemCount("Stone"));
+            Assert.AreEqual(5, _backpackManager.GetItemCount("Wood"));
+            Assert.AreEqual(3, _backpackManager.GetItemCount("Stone"));
         }
 
         [Test]
         public void SimulateReturn_WithEmptyLoot_DoesNotAddItems()
         {
-            // 空戰利品返回，Storage 不應有任何物品
+            // 空戰利品返回，背包不應有任何物品
             _sut.Depart();
             _sut.SimulateReturn(new Dictionary<string, int>());
 
-            IReadOnlyDictionary<string, int> allItems = _storageManager.GetAllItems();
-
-            Assert.AreEqual(0, allItems.Count);
+            Assert.IsTrue(_backpackManager.IsEmpty);
         }
 
         [Test]
@@ -141,7 +143,7 @@ namespace ProjectDR.Tests.Village
 
             _sut.SimulateReturn(loot);
 
-            Assert.AreEqual(0, _storageManager.GetItemCount("Wood"));
+            Assert.AreEqual(0, _backpackManager.GetItemCount("Wood"));
         }
 
         [Test]
@@ -152,6 +154,67 @@ namespace ProjectDR.Tests.Village
             _sut.SimulateReturn(new Dictionary<string, int>());
 
             Assert.IsTrue(_sut.CanDepart());
+        }
+
+        // ===== 背包快照 =====
+
+        [Test]
+        public void Depart_TakesBackpackSnapshot()
+        {
+            // 出發時應拍攝背包快照
+            _backpackManager.AddItem("Wood", 3);
+            _sut.Depart();
+
+            BackpackSnapshot snapshot = _sut.GetDepartureSnapshot();
+
+            Assert.IsNotNull(snapshot);
+            IReadOnlyList<BackpackSlot> slots = snapshot.GetSlots();
+            Assert.AreEqual("Wood", slots[0].ItemId);
+            Assert.AreEqual(3, slots[0].Quantity);
+        }
+
+        [Test]
+        public void GetDepartureSnapshot_BeforeDepart_ReturnsNull()
+        {
+            // 尚未出發時，快照應為 null
+            BackpackSnapshot snapshot = _sut.GetDepartureSnapshot();
+
+            Assert.IsNull(snapshot);
+        }
+
+        [Test]
+        public void DepartureSnapshot_IsIndependentOfLaterChanges()
+        {
+            // 出發後修改背包，快照不應受影響
+            _backpackManager.AddItem("Wood", 3);
+            _sut.Depart();
+
+            // 探索中獲得新物品（透過直接操作背包模擬）
+            _backpackManager.AddItem("Stone", 2);
+
+            BackpackSnapshot snapshot = _sut.GetDepartureSnapshot();
+            IReadOnlyList<BackpackSlot> slots = snapshot.GetSlots();
+            Assert.AreEqual(3, slots[0].Quantity); // Wood 仍是 3
+            Assert.IsTrue(slots[1].IsEmpty); // 快照中沒有 Stone
+        }
+
+        [Test]
+        public void DeathRecovery_RestoreSnapshot_RestoresBackpackToPreDepartState()
+        {
+            // 模擬死亡回溯：出發前背包有 Wood x3，探索中獲得 Stone x2，死亡後回溯
+            _backpackManager.AddItem("Wood", 3);
+            _sut.Depart();
+
+            // 模擬探索中獲得物品
+            Dictionary<string, int> loot = new Dictionary<string, int> { { "Stone", 2 } };
+            _sut.SimulateReturn(loot);
+
+            // 死亡回溯
+            BackpackSnapshot snapshot = _sut.GetDepartureSnapshot();
+            _backpackManager.RestoreSnapshot(snapshot);
+
+            Assert.AreEqual(3, _backpackManager.GetItemCount("Wood"));
+            Assert.AreEqual(0, _backpackManager.GetItemCount("Stone"));
         }
 
         // ===== ExplorationDepartedEvent 事件 =====

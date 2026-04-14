@@ -190,7 +190,7 @@
 | **開發語言** | C# |
 | **目標平台** | Steam (PC) |
 | **預設解析度** | 3840 × 2160 (4K) |
-| **UI 系統** | UI Toolkit (UXML/USS) |
+| **UI 系統** | UGUI（Canvas + GameObject） |
 | **版本控制** | Git |
 
 ### 主要框架與套件

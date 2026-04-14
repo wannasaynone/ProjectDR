@@ -296,11 +296,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Game::ProjectDR.Village.VillageEntryPoint
   _hubViewPrefab: {fileID: 2802951529756303370, guid: ff5bbb196e1a47144bd95158bd853cc1, type: 3}
-  _storageViewPrefab: {fileID: 4878342476125591114, guid: 108e2442bf134dd47aa31fb2a9009e33, type: 3}
+  _characterInteractionViewPrefab: {fileID: 2465622096312441239, guid: 74863dc76f781924da8492cd9adf7d20, type: 3}
+  _storageViewPrefab: {fileID: 5532695999252937001, guid: 108e2442bf134dd47aa31fb2a9009e33, type: 3}
   _explorationViewPrefab: {fileID: 5322625850352298469, guid: 3a6c8814ecb86dd4a89f31a49e77a328, type: 3}
   _alchemyViewPrefab: {fileID: 257997730517603992, guid: 37331c6049448ed428744907ebb00036, type: 3}
   _farmViewPrefab: {fileID: 7948227099758061155, guid: 5e731e623bd7e034f903dc9cdef1dbe0, type: 3}
   _uiContainer: {fileID: 1456230930}
+  _typewriterCharsPerSecond: 20
 --- !u!1 &1552563258
 GameObject:
   m_ObjectHideFlags: 0

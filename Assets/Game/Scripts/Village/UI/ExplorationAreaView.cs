@@ -1,7 +1,7 @@
 using KahaGameCore.GameEvent;
-using ProjectDR.Village;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
+using TMPro;
 
 namespace ProjectDR.Village.UI
 {
@@ -9,14 +9,15 @@ namespace ProjectDR.Village.UI
     /// 探索入口畫面（IT 階段 Placeholder）。
     /// 提供出發探索與模擬返回的按鈕。
     /// </summary>
-    public class ExplorationAreaView : UIToolkitViewBase
+    public class ExplorationAreaView : ViewBase
     {
+        [SerializeField] private Button _departButton;
+        [SerializeField] private Button _simulateReturnButton;
+        [SerializeField] private Button _returnButton;
+        [SerializeField] private TMP_Text _statusLabel;
+
         private ExplorationEntryManager _explorationManager;
         private VillageNavigationManager _navigationManager;
-        private Button _departButton;
-        private Button _simulateReturnButton;
-        private Button _returnButton;
-        private Label _statusLabel;
 
         public void Initialize(ExplorationEntryManager explorationManager, VillageNavigationManager navigationManager)
         {
@@ -28,23 +29,18 @@ namespace ProjectDR.Village.UI
 
         protected override void OnShow()
         {
-            _departButton = Root.Q<Button>("depart-button");
-            _simulateReturnButton = Root.Q<Button>("simulate-return-button");
-            _returnButton = Root.Q<Button>("return-button");
-            _statusLabel = Root.Q<Label>("status-label");
-
-            if (_departButton != null) _departButton.clicked += OnDepartClicked;
-            if (_simulateReturnButton != null) _simulateReturnButton.clicked += OnSimulateReturnClicked;
-            if (_returnButton != null) _returnButton.clicked += OnReturnClicked;
+            if (_departButton != null) _departButton.onClick.AddListener(OnDepartClicked);
+            if (_simulateReturnButton != null) _simulateReturnButton.onClick.AddListener(OnSimulateReturnClicked);
+            if (_returnButton != null) _returnButton.onClick.AddListener(OnReturnClicked);
 
             RefreshStatus();
         }
 
         protected override void OnHide()
         {
-            if (_departButton != null) _departButton.clicked -= OnDepartClicked;
-            if (_simulateReturnButton != null) _simulateReturnButton.clicked -= OnSimulateReturnClicked;
-            if (_returnButton != null) _returnButton.clicked -= OnReturnClicked;
+            if (_departButton != null) _departButton.onClick.RemoveListener(OnDepartClicked);
+            if (_simulateReturnButton != null) _simulateReturnButton.onClick.RemoveListener(OnSimulateReturnClicked);
+            if (_returnButton != null) _returnButton.onClick.RemoveListener(OnReturnClicked);
         }
 
         private void OnDestroy()
@@ -69,12 +65,12 @@ namespace ProjectDR.Village.UI
 
             if (_departButton != null)
             {
-                _departButton.SetEnabled(canDepart);
+                _departButton.interactable = canDepart;
             }
 
             if (_simulateReturnButton != null)
             {
-                _simulateReturnButton.SetEnabled(!canDepart);
+                _simulateReturnButton.interactable = !canDepart;
             }
 
             if (_statusLabel != null)

@@ -8,15 +8,15 @@ namespace ProjectDR.Village.UI
     /// 採用排他式顯示（同時只顯示一個 View），
     /// 由 VillageEntryPoint 初始化並注入所有 View 實例。
     /// </summary>
-    public class UIToolkitViewController
+    public class ViewController
     {
-        private readonly Dictionary<string, UIToolkitViewBase> _views
-            = new Dictionary<string, UIToolkitViewBase>();
+        private readonly Dictionary<string, ViewBase> _views
+            = new Dictionary<string, ViewBase>();
 
-        private UIToolkitViewBase _currentView;
+        private ViewBase _currentView;
 
         /// <summary>註冊一個 View 到控制器，以 viewId 為鍵。</summary>
-        public void RegisterView(string viewId, UIToolkitViewBase view)
+        public void RegisterView(string viewId, ViewBase view)
         {
             _views[viewId] = view;
             view.Hide();
@@ -25,9 +25,9 @@ namespace ProjectDR.Village.UI
         /// <summary>切換至指定 viewId 的畫面，隱藏當前畫面。</summary>
         public void ShowView(string viewId)
         {
-            if (!_views.TryGetValue(viewId, out UIToolkitViewBase targetView))
+            if (!_views.TryGetValue(viewId, out ViewBase targetView))
             {
-                Debug.LogWarning($"[UIToolkitViewController] View not found: {viewId}");
+                Debug.LogWarning($"[ViewController] View not found: {viewId}");
                 return;
             }
 
@@ -50,6 +50,6 @@ namespace ProjectDR.Village.UI
             }
         }
 
-        public UIToolkitViewBase CurrentView => _currentView;
+        public ViewBase CurrentView => _currentView;
     }
 }

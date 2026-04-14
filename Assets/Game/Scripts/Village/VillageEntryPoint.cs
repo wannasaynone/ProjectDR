@@ -27,7 +27,7 @@ namespace ProjectDR.Village
         private ExplorationEntryManager _explorationManager;
         private QuestManager _questManager;
 
-        private UIToolkitStackController _stackController;
+        private ViewStackController _stackController;
         private readonly System.Collections.Generic.HashSet<string> _initializedViews
             = new System.Collections.Generic.HashSet<string>();
 
@@ -61,7 +61,7 @@ namespace ProjectDR.Village
 
         private void InitializeUI()
         {
-            _stackController = new UIToolkitStackController(_uiContainer);
+            _stackController = new ViewStackController(_uiContainer);
 
             // 註冊 View Prefab（延遲 Instantiate）
             _stackController.RegisterPrefab(AreaIds.Hub, _hubViewPrefab);
@@ -86,7 +86,7 @@ namespace ProjectDR.Village
         {
             if (_initializedViews.Contains(areaId)) return;
 
-            UIToolkitViewBase view = _stackController.GetOrCreateInstance(areaId);
+            ViewBase view = _stackController.GetOrCreateInstance(areaId);
             if (view == null) return;
 
             _initializedViews.Add(areaId);

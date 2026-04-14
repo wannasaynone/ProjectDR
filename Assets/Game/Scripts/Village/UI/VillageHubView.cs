@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using KahaGameCore.GameEvent;
-using ProjectDR.Village;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
+using TMPro;
 
 namespace ProjectDR.Village.UI
 {
@@ -10,10 +10,12 @@ namespace ProjectDR.Village.UI
     /// 村莊主畫面（Hub）。
     /// 顯示可導航區域的按鈕清單，玩家點擊後觸發導航。
     /// </summary>
-    public class VillageHubView : UIToolkitViewBase
+    public class VillageHubView : ViewBase
     {
+        [SerializeField] private Transform _areaButtonContainer;
+        [SerializeField] private Button _areaButtonPrefab;
+
         private VillageNavigationManager _navigationManager;
-        private VisualElement _areaButtonContainer;
 
         public void Initialize(VillageNavigationManager navigationManager)
         {
@@ -23,7 +25,6 @@ namespace ProjectDR.Village.UI
 
         protected override void OnShow()
         {
-            _areaButtonContainer = Root.Q<VisualElement>("area-button-container");
             RefreshAreaButtons();
         }
 
@@ -49,19 +50,26 @@ namespace ProjectDR.Village.UI
         {
             if (_areaButtonContainer == null) return;
 
-            _areaButtonContainer.Clear();
+            // 清除現有按鈕
+            for (int i = _areaButtonContainer.childCount - 1; i >= 0; i--)
+            {
+                Destroy(_areaButtonContainer.GetChild(i).gameObject);
+            }
 
             IReadOnlyList<string> areas = _navigationManager.GetNavigableAreas();
             foreach (string areaId in areas)
             {
                 string capturedAreaId = areaId;
-                Button button = new Button(() => _navigationManager.NavigateTo(capturedAreaId))
+                Button button = Instantiate(_areaButtonPrefab, _areaButtonContainer);
+                button.gameObject.SetActive(true);
+
+                TMP_Text label = button.GetComponentInChildren<TMP_Text>();
+                if (label != null)
                 {
-                    text = GetAreaDisplayName(capturedAreaId),
-                    name = $"btn-{capturedAreaId.ToLower()}"
-                };
-                button.AddToClassList("area-button");
-                _areaButtonContainer.Add(button);
+                    label.text = GetAreaDisplayName(capturedAreaId);
+                }
+
+                button.onClick.AddListener(() => _navigationManager.NavigateTo(capturedAreaId));
             }
         }
 

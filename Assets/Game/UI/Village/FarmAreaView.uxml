@@ -1,8 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Game/UI/Village/VillageCommon.uss" />
-    <ui:VisualElement name="root" style="flex-grow: 1; padding: 20px; align-items: center; background-color: rgba(20, 20, 30, 0.9);">
-        <ui:Label name="title-label" text="農場（開發中）" class="title-label" />
-        <ui:Label text="農務功能將在後續版本開放" class="placeholder-label" />
-        <ui:Button name="return-button" text="返回村莊" class="return-button" />
-    </ui:VisualElement>
-</ui:UXML>

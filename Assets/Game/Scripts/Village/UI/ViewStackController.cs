@@ -4,17 +4,17 @@ using UnityEngine;
 namespace ProjectDR.Village.UI
 {
     /// <summary>
-    /// 支援返回操作與 Prefab Clone 加載的 UI Toolkit 畫面控制器。
+    /// 支援返回操作與 Prefab Clone 加載的 UGUI 畫面控制器。
     /// 以 Stack 管理導航歷史，PushView 推入新畫面、Back 返回上一層。
     /// View 以 Prefab 形式註冊，首次顯示時 Instantiate，之後快取重用。
     /// </summary>
-    public class UIToolkitStackController
+    public class ViewStackController
     {
-        private readonly Dictionary<string, UIToolkitViewBase> _prefabs
-            = new Dictionary<string, UIToolkitViewBase>();
+        private readonly Dictionary<string, ViewBase> _prefabs
+            = new Dictionary<string, ViewBase>();
 
-        private readonly Dictionary<string, UIToolkitViewBase> _instances
-            = new Dictionary<string, UIToolkitViewBase>();
+        private readonly Dictionary<string, ViewBase> _instances
+            = new Dictionary<string, ViewBase>();
 
         private readonly Stack<string> _history = new Stack<string>();
         private readonly Transform _container;
@@ -22,10 +22,10 @@ namespace ProjectDR.Village.UI
         private string _currentViewId;
 
         /// <summary>
-        /// 建立 StackController。
+        /// 建立 ViewStackController。
         /// </summary>
         /// <param name="container">Instantiate 出來的 View 會放在此 Transform 下。</param>
-        public UIToolkitStackController(Transform container)
+        public ViewStackController(Transform container)
         {
             _container = container;
         }
@@ -34,8 +34,8 @@ namespace ProjectDR.Village.UI
         public string CurrentViewId => _currentViewId;
 
         /// <summary>目前顯示的 View 實例，若無則為 null。</summary>
-        public UIToolkitViewBase CurrentView =>
-            _currentViewId != null && _instances.TryGetValue(_currentViewId, out UIToolkitViewBase view)
+        public ViewBase CurrentView =>
+            _currentViewId != null && _instances.TryGetValue(_currentViewId, out ViewBase view)
                 ? view
                 : null;
 
@@ -46,7 +46,7 @@ namespace ProjectDR.Village.UI
         /// 註冊一個 View Prefab，以 viewId 為鍵。
         /// 實際的 Instantiate 會延遲到第一次 PushView 時才執行。
         /// </summary>
-        public void RegisterPrefab(string viewId, UIToolkitViewBase prefab)
+        public void RegisterPrefab(string viewId, ViewBase prefab)
         {
             _prefabs[viewId] = prefab;
         }
@@ -62,7 +62,7 @@ namespace ProjectDR.Village.UI
 
             if (!_prefabs.ContainsKey(viewId) && !_instances.ContainsKey(viewId))
             {
-                Debug.LogWarning($"[UIToolkitStackController] View not registered: {viewId}");
+                Debug.LogWarning($"[ViewStackController] View not registered: {viewId}");
                 return;
             }
 
@@ -116,19 +116,19 @@ namespace ProjectDR.Village.UI
         /// 取得或建立指定 viewId 的 View 實例。
         /// 若已有快取實例則直接回傳；否則從 Prefab Clone。
         /// </summary>
-        public UIToolkitViewBase GetOrCreateInstance(string viewId)
+        public ViewBase GetOrCreateInstance(string viewId)
         {
-            if (_instances.TryGetValue(viewId, out UIToolkitViewBase existing))
+            if (_instances.TryGetValue(viewId, out ViewBase existing))
             {
                 return existing;
             }
 
-            if (!_prefabs.TryGetValue(viewId, out UIToolkitViewBase prefab))
+            if (!_prefabs.TryGetValue(viewId, out ViewBase prefab))
             {
                 return null;
             }
 
-            UIToolkitViewBase instance = Object.Instantiate(prefab, _container);
+            ViewBase instance = Object.Instantiate(prefab, _container);
             instance.gameObject.SetActive(false);
             _instances[viewId] = instance;
             return instance;
@@ -136,7 +136,7 @@ namespace ProjectDR.Village.UI
 
         private void ShowView(string viewId)
         {
-            UIToolkitViewBase view = GetOrCreateInstance(viewId);
+            ViewBase view = GetOrCreateInstance(viewId);
             if (view != null)
             {
                 view.Show();
@@ -145,7 +145,7 @@ namespace ProjectDR.Village.UI
 
         private void HideView(string viewId)
         {
-            if (_instances.TryGetValue(viewId, out UIToolkitViewBase view))
+            if (_instances.TryGetValue(viewId, out ViewBase view))
             {
                 view.Hide();
             }

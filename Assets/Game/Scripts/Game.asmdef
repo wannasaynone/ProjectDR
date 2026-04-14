@@ -3,7 +3,8 @@
     "rootNamespace": "ProjectDR",
     "references": [
         "KahaGameCore.GameEvent",
-        "KahaGameCore.Package.UserInterfaceSystem"
+        "KahaGameCore.Package.UserInterfaceSystem",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -41,25 +41,26 @@
 ### 村莊 UI（Assets/Game/Scripts/Village/UI）
 | 檔案 | 用途 |
 |------|------|
-| `Assets/Game/Scripts/Village/UI/UIToolkitViewBase.cs` | UI Toolkit View 抽象基類（替代 KahaGameCore AView） |
-| `Assets/Game/Scripts/Village/UI/UIToolkitViewController.cs` | 管理 View 顯示切換的控制器（排他式，無歷史紀錄） |
-| `Assets/Game/Scripts/Village/UI/UIToolkitStackController.cs` | 支援 Back 返回與 Prefab Clone 加載的 View 控制器 |
+| `Assets/Game/Scripts/Village/UI/ViewBase.cs` | UGUI View 抽象基類（Show/Hide 管理） |
+| `Assets/Game/Scripts/Village/UI/ViewController.cs` | 管理 View 顯示切換的控制器（排他式，無歷史紀錄） |
+| `Assets/Game/Scripts/Village/UI/ViewStackController.cs` | 支援 Back 返回與 Prefab Clone 加載的 View 控制器 |
 | `Assets/Game/Scripts/Village/UI/VillageHubView.cs` | 村莊主畫面（Hub），顯示可導航區域按鈕 |
 | `Assets/Game/Scripts/Village/UI/StorageAreaView.cs` | 倉庫畫面，顯示庫存物品清單 |
 | `Assets/Game/Scripts/Village/UI/ExplorationAreaView.cs` | 探索入口畫面，提供出發/返回控制 |
 | `Assets/Game/Scripts/Village/UI/AlchemyAreaView.cs` | 煉金工坊畫面（IT 階段 Placeholder） |
 | `Assets/Game/Scripts/Village/UI/FarmAreaView.cs` | 農場畫面（IT 階段 Placeholder） |
 
-## UI 資源（Assets/Game/UI）
+## UI Prefab（Assets/Game/Prefabs）
 
 | 檔案 | 用途 |
 |------|------|
-| `Assets/Game/UI/Village/VillageHubView.uxml` | 村莊主畫面 UXML 佈局 |
-| `Assets/Game/UI/Village/StorageAreaView.uxml` | 倉庫畫面 UXML 佈局 |
-| `Assets/Game/UI/Village/ExplorationAreaView.uxml` | 探索入口畫面 UXML 佈局 |
-| `Assets/Game/UI/Village/AlchemyAreaView.uxml` | 煉金工坊畫面 UXML 佈局（Placeholder） |
-| `Assets/Game/UI/Village/FarmAreaView.uxml` | 農場畫面 UXML 佈局（Placeholder） |
-| `Assets/Game/UI/Village/VillageCommon.uss` | 村莊 UI 共用樣式 |
+| `Assets/Game/Prefabs/VillageHubView.prefab` | 村莊主畫面 UGUI Prefab |
+| `Assets/Game/Prefabs/StorageAreaView.prefab` | 倉庫畫面 UGUI Prefab |
+| `Assets/Game/Prefabs/ExplorationAreaView.prefab` | 探索入口畫面 UGUI Prefab |
+| `Assets/Game/Prefabs/AlchemyAreaView.prefab` | 煉金工坊畫面 UGUI Prefab（Placeholder） |
+| `Assets/Game/Prefabs/FarmAreaView.prefab` | 農場畫面 UGUI Prefab（Placeholder） |
+| `Assets/Game/Prefabs/AreaButton.prefab` | 區域導航按鈕模板（VillageHubView 動態生成用） |
+| `Assets/Game/Prefabs/ItemRow.prefab` | 物品列模板（StorageAreaView 動態生成用） |
 
 ## 測試程式碼（Tests）
 

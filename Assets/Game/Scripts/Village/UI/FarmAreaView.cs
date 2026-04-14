@@ -1,6 +1,5 @@
 using UnityEngine;
-using UnityEngine.UIElements;
-using ProjectDR.Village;
+using UnityEngine.UI;
 
 namespace ProjectDR.Village.UI
 {
@@ -8,10 +7,11 @@ namespace ProjectDR.Village.UI
     /// 農場畫面（IT 階段 Placeholder）。
     /// 目前只提供返回 Hub 的功能，農務系統將在後續 Sprint 實作。
     /// </summary>
-    public class FarmAreaView : UIToolkitViewBase
+    public class FarmAreaView : ViewBase
     {
+        [SerializeField] private Button _returnButton;
+
         private VillageNavigationManager _navigationManager;
-        private Button _returnButton;
 
         public void Initialize(VillageNavigationManager navigationManager)
         {
@@ -20,10 +20,9 @@ namespace ProjectDR.Village.UI
 
         protected override void OnShow()
         {
-            _returnButton = Root.Q<Button>("return-button");
             if (_returnButton != null)
             {
-                _returnButton.clicked += OnReturnClicked;
+                _returnButton.onClick.AddListener(OnReturnClicked);
             }
         }
 
@@ -31,7 +30,7 @@ namespace ProjectDR.Village.UI
         {
             if (_returnButton != null)
             {
-                _returnButton.clicked -= OnReturnClicked;
+                _returnButton.onClick.RemoveListener(OnReturnClicked);
             }
         }
 

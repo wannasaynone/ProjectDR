@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Exploration;
 
 namespace ProjectDR.Tests.Village
 {
@@ -311,6 +312,91 @@ namespace ProjectDR.Tests.Village
             EventBus.Unsubscribe<ExplorationReturnedEvent>(handler);
 
             Assert.IsFalse(eventPublished);
+        }
+
+        // ===== CompleteExploration =====
+
+        [Test]
+        public void CompleteExploration_WhenExploring_SetsNotExploring()
+        {
+            // 探索中呼叫 CompleteExploration，應恢復為可出發狀態
+            _sut.Depart();
+
+            _sut.CompleteExploration();
+
+            Assert.IsTrue(_sut.CanDepart());
+        }
+
+        [Test]
+        public void CompleteExploration_WhenExploring_PublishesExplorationReturnedEvent()
+        {
+            // 探索中呼叫 CompleteExploration，應發布 ExplorationReturnedEvent
+            _sut.Depart();
+            EventBus.ForceClearAll();
+
+            bool eventPublished = false;
+            Action<ExplorationReturnedEvent> handler = (e) => { eventPublished = true; };
+            EventBus.Subscribe<ExplorationReturnedEvent>(handler);
+
+            _sut.CompleteExploration();
+
+            EventBus.Unsubscribe<ExplorationReturnedEvent>(handler);
+
+            Assert.IsTrue(eventPublished);
+        }
+
+        [Test]
+        public void CompleteExploration_WhenNotExploring_DoesNothing()
+        {
+            // 未在探索中呼叫 CompleteExploration，不應改變狀態也不發布事件
+            bool eventPublished = false;
+            Action<ExplorationReturnedEvent> handler = (e) => { eventPublished = true; };
+            EventBus.Subscribe<ExplorationReturnedEvent>(handler);
+
+            _sut.CompleteExploration();
+
+            EventBus.Unsubscribe<ExplorationReturnedEvent>(handler);
+
+            Assert.IsFalse(eventPublished);
+            Assert.IsTrue(_sut.CanDepart());
+        }
+
+        [Test]
+        public void CompleteExploration_OnExplorationCompletedEvent_TriggersAutomatically()
+        {
+            // 發布 ExplorationCompletedEvent 時，應自動觸發 CompleteExploration
+            _sut.Depart();
+
+            bool returnedEventPublished = false;
+            Action<ExplorationReturnedEvent> handler = (e) => { returnedEventPublished = true; };
+            EventBus.Subscribe<ExplorationReturnedEvent>(handler);
+
+            EventBus.Publish(new ProjectDR.Village.Exploration.ExplorationCompletedEvent());
+
+            EventBus.Unsubscribe<ExplorationReturnedEvent>(handler);
+
+            Assert.IsTrue(_sut.CanDepart());
+            Assert.IsTrue(returnedEventPublished);
+        }
+
+        [Test]
+        public void Dispose_UnsubscribesFromEvents()
+        {
+            // Dispose 後，ExplorationCompletedEvent 不應再觸發 CompleteExploration
+            _sut.Depart();
+            _sut.Dispose();
+
+            bool returnedEventPublished = false;
+            Action<ExplorationReturnedEvent> handler = (e) => { returnedEventPublished = true; };
+            EventBus.Subscribe<ExplorationReturnedEvent>(handler);
+
+            EventBus.Publish(new ProjectDR.Village.Exploration.ExplorationCompletedEvent());
+
+            EventBus.Unsubscribe<ExplorationReturnedEvent>(handler);
+
+            // Dispose 後事件不應觸發
+            Assert.IsFalse(_sut.CanDepart()); // 仍在探索中
+            Assert.IsFalse(returnedEventPublished);
         }
     }
 }

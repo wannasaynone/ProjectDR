@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using KahaGameCore.GameEvent;
+using ProjectDR.Village.Exploration;
 using ProjectDR.Village.UI;
 using UnityEngine;
 
@@ -19,6 +21,14 @@ namespace ProjectDR.Village
         [SerializeField] private ExplorationAreaView _explorationViewPrefab;
         [SerializeField] private AlchemyAreaView _alchemyViewPrefab;
         [SerializeField] private FarmAreaView _farmViewPrefab;
+
+        [Header("Village Canvas")]
+        [SerializeField] private Canvas _villageCanvas;
+
+        [Header("Exploration Config")]
+        [SerializeField] private TextAsset _mapJson;
+        [SerializeField] private TextAsset _combatConfigJson;
+        [SerializeField] private TextAsset _monsterConfigJson;
 
         [Header("UI Container")]
         [SerializeField] private Transform _uiContainer;
@@ -44,6 +54,9 @@ namespace ProjectDR.Village
         private ViewStackController _stackController;
         private readonly HashSet<string> _initializedViews = new HashSet<string>();
 
+        // 探索切換用
+        private GameObject _explorationRoot;
+
         // 角色資料（IT 階段在此定義 placeholder）
         private List<CharacterMenuData> _characters;
 
@@ -53,11 +66,18 @@ namespace ProjectDR.Village
             InitializeCharacterData();
             InitializeUI();
             SubscribeToNavigationEvents();
+            SubscribeToExplorationEvents();
         }
 
         private void OnDestroy()
         {
             UnsubscribeFromNavigationEvents();
+            UnsubscribeFromExplorationEvents();
+
+            if (_explorationManager != null)
+            {
+                _explorationManager.Dispose();
+            }
         }
 
         private void InitializeManagers()
@@ -111,7 +131,7 @@ namespace ProjectDR.Village
 
             // IT 階段：強制解鎖所有角色 ID 以便導航
             _progressionManager.ForceUnlock(CharacterIds.VillageChiefWife);
-            _progressionManager.ForceUnlock(CharacterIds.Hunter);
+            _progressionManager.ForceUnlock(CharacterIds.Guard);
             _progressionManager.ForceUnlock(CharacterIds.Witch);
             _progressionManager.ForceUnlock(CharacterIds.FarmGirl);
         }
@@ -135,8 +155,8 @@ namespace ProjectDR.Village
                     new string[] { AreaIds.Storage, FunctionIds.Dialogue }
                 ),
                 new CharacterMenuData(
-                    CharacterIds.Hunter,
-                    "獵人",
+                    CharacterIds.Guard,
+                    "守衛",
                     new DialogueData(new string[]
                     {
                         "又要出門嗎？小心點。",
@@ -327,6 +347,18 @@ namespace ProjectDR.Village
             EventBus.Unsubscribe<ReturnedToHubEvent>(OnReturnedToHub);
         }
 
+        private void SubscribeToExplorationEvents()
+        {
+            EventBus.Subscribe<ExplorationDepartedEvent>(OnExplorationDeparted);
+            EventBus.Subscribe<ExplorationCompletedEvent>(OnExplorationCompleted);
+        }
+
+        private void UnsubscribeFromExplorationEvents()
+        {
+            EventBus.Unsubscribe<ExplorationDepartedEvent>(OnExplorationDeparted);
+            EventBus.Unsubscribe<ExplorationCompletedEvent>(OnExplorationCompleted);
+        }
+
         private void OnNavigatedToArea(NavigatedToAreaEvent e)
         {
             // 判斷是角色 ID 還是舊的區域 ID
@@ -351,9 +383,57 @@ namespace ProjectDR.Village
         private bool IsCharacterId(string id)
         {
             return id == CharacterIds.VillageChiefWife
-                || id == CharacterIds.Hunter
+                || id == CharacterIds.Guard
                 || id == CharacterIds.Witch
                 || id == CharacterIds.FarmGirl;
+        }
+
+        // ===== 探索切換 =====
+
+        private void OnExplorationDeparted(ExplorationDepartedEvent e)
+        {
+            // 隱藏村莊 Canvas
+            if (_villageCanvas != null)
+            {
+                _villageCanvas.gameObject.SetActive(false);
+            }
+
+            // 動態建立探索根物件與 ExplorationEntryPoint
+            _explorationRoot = new GameObject("ExplorationRoot");
+            ExplorationEntryPoint explorationEntry = _explorationRoot.AddComponent<ExplorationEntryPoint>();
+
+            // 注入配置 TextAsset（透過反射設定 SerializeField，因為無法直接存取 private field）
+            // 改用 Initialize 注入村莊依賴，TextAsset 透過公開方法設定
+            explorationEntry.SetConfigAssets(_mapJson, _combatConfigJson, _monsterConfigJson);
+            explorationEntry.Initialize(_backpackManager, _explorationManager);
+        }
+
+        private void OnExplorationCompleted(ExplorationCompletedEvent e)
+        {
+            // 延遲一小段時間讓死亡動畫播放完畢
+            float returnDelay = 1.5f;
+            StartCoroutine(ReturnToVillageAfterDelay(returnDelay));
+        }
+
+        private IEnumerator ReturnToVillageAfterDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            // 銷毀探索根物件（連同所有子物件一起清理）
+            if (_explorationRoot != null)
+            {
+                Destroy(_explorationRoot);
+                _explorationRoot = null;
+            }
+
+            // 顯示村莊 Canvas
+            if (_villageCanvas != null)
+            {
+                _villageCanvas.gameObject.SetActive(true);
+            }
+
+            // 回到 Hub
+            _navigationManager.ReturnToHub();
         }
     }
 }

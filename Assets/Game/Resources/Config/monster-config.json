@@ -1,0 +1,32 @@
+{
+    "monsterTypes": [
+        {
+            "typeId": "Slime",
+            "maxHp": 6,
+            "atk": 3,
+            "def": 1,
+            "spd": 4,
+            "moveCooldownSeconds": 2.0,
+            "visionRange": 3,
+            "attackRange": 1,
+            "attackAngleDegreesHalf": 45,
+            "attackPrepareSeconds": 1.0,
+            "attackCooldownSeconds": 1.5,
+            "color": { "r": 0.2, "g": 0.8, "b": 0.2, "a": 1.0 }
+        },
+        {
+            "typeId": "Bat",
+            "maxHp": 4,
+            "atk": 4,
+            "def": 0,
+            "spd": 8,
+            "moveCooldownSeconds": 1.2,
+            "visionRange": 4,
+            "attackRange": 1,
+            "attackAngleDegreesHalf": 30,
+            "attackPrepareSeconds": 0.6,
+            "attackCooldownSeconds": 1.0,
+            "color": { "r": 0.5, "g": 0.1, "b": 0.6, "a": 1.0 }
+        }
+    ]
+}

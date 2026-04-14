@@ -1,0 +1,46 @@
+{
+    "width": 8,
+    "height": 8,
+    "cells": [
+        1, 1, 1, 0, 0, 1, 1, 1,
+        1, 0, 0, 0, 0, 0, 0, 1,
+        1, 0, 0, 0, 0, 0, 0, 1,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        1, 0, 0, 0, 0, 0, 0, 1,
+        1, 0, 0, 0, 0, 0, 0, 1,
+        1, 1, 0, 0, 0, 0, 1, 1
+    ],
+    "spawnPosition": { "x": 3, "y": 7 },
+    "evacuationGroups": [
+        {
+            "points": [
+                { "x": 3, "y": 0 },
+                { "x": 4, "y": 0 }
+            ]
+        }
+    ],
+    "collectiblePoints": [
+        {
+            "position": { "x": 3, "y": 3 },
+            "gatherDurationSeconds": 3.0,
+            "items": [
+                { "itemId": "Wood", "quantity": 2, "unlockDurationSeconds": 1.0 },
+                { "itemId": "Herb", "quantity": 1, "unlockDurationSeconds": 2.0 }
+            ]
+        },
+        {
+            "position": { "x": 5, "y": 2 },
+            "gatherDurationSeconds": 5.0,
+            "items": [
+                { "itemId": "Stone", "quantity": 3, "unlockDurationSeconds": 1.5 },
+                { "itemId": "Crystal", "quantity": 1, "unlockDurationSeconds": 4.0 }
+            ]
+        }
+    ],
+    "monsterSpawns": [
+        { "position": { "x": 2, "y": 3 }, "typeId": "Slime" },
+        { "position": { "x": 5, "y": 4 }, "typeId": "Slime" },
+        { "position": { "x": 4, "y": 2 }, "typeId": "Bat" }
+    ]
+}

@@ -7,7 +7,7 @@ namespace ProjectDR.Village
     public static class CharacterIds
     {
         public const string VillageChiefWife = "VillageChiefWife";
-        public const string Hunter = "Hunter";
+        public const string Guard = "Guard";
         public const string Witch = "Witch";
         public const string FarmGirl = "FarmGirl";
     }

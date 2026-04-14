@@ -301,6 +301,10 @@ MonoBehaviour:
   _explorationViewPrefab: {fileID: 5322625850352298469, guid: 3a6c8814ecb86dd4a89f31a49e77a328, type: 3}
   _alchemyViewPrefab: {fileID: 257997730517603992, guid: 37331c6049448ed428744907ebb00036, type: 3}
   _farmViewPrefab: {fileID: 7948227099758061155, guid: 5e731e623bd7e034f903dc9cdef1dbe0, type: 3}
+  _villageCanvas: {fileID: 1931186607}
+  _mapJson: {fileID: 4900000, guid: 7c6f77601131ac342be8125a229686cc, type: 3}
+  _combatConfigJson: {fileID: 4900000, guid: 0b886fe49a5996f49b490b2ddb5d4809, type: 3}
+  _monsterConfigJson: {fileID: 4900000, guid: 6cde131406476d548bd9d316a48ad7f3, type: 3}
   _uiContainer: {fileID: 1456230930}
   _typewriterCharsPerSecond: 20
 --- !u!1 &1552563258
@@ -389,7 +393,7 @@ Transform:
   m_GameObject: {fileID: 1552563258}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

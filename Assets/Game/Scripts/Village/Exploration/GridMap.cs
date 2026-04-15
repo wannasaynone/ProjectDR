@@ -197,6 +197,31 @@ namespace ProjectDR.Village.Exploration
         }
 
         /// <summary>
+        /// Returns true if any of the 8 adjacent cells is walkable and not yet explored.
+        /// Out-of-bounds cells and blocked cells are NOT considered unexplored.
+        /// Returns false for out-of-bounds coordinates.
+        /// </summary>
+        public bool HasAdjacentUnexploredCell(int x, int y)
+        {
+            if (!_mapData.IsInBounds(x, y))
+                return false;
+
+            for (int i = 0; i < NeighbourDx.Length; i++)
+            {
+                int nx = x + NeighbourDx[i];
+                int ny = y + NeighbourDy[i];
+
+                if (!_mapData.IsWalkable(nx, ny))
+                    continue;
+
+                if (!_explored[ny * Width + nx])
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Publishes a <see cref="MonsterCountsChangedEvent"/> to notify listeners that all
         /// adjacent monster counts should be recalculated.
         /// </summary>

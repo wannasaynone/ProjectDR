@@ -9,7 +9,8 @@ namespace ProjectDR.Tests.Village.Exploration
 {
     /// <summary>
     /// CollectiblePointState unit tests.
-    /// Covers: state machine transitions, two-layer timers, item pickup, edge cases, events.
+    /// Covers: state machine transitions, two-layer timers, item pickup, edge cases, events,
+    /// fixed 6-slot item box, store/remove player items, GetAllSlots.
     /// GDD rules: 8-11, 44, 46.
     /// </summary>
     [TestFixture]
@@ -47,22 +48,66 @@ namespace ProjectDR.Tests.Village.Exploration
         }
 
         [Test]
-        public void Constructor_ValidData_SlotCountMatchesItems()
+        public void Constructor_ValidData_SlotCountIsMaxSlots()
         {
-            Assert.AreEqual(2, _sut.SlotCount);
+            Assert.AreEqual(CollectiblePointState.MaxSlots, _sut.SlotCount);
         }
 
         [Test]
-        public void Constructor_ValidData_AllSlotsAreLocked()
+        public void Constructor_ValidData_MapItemCountMatchesItems()
+        {
+            Assert.AreEqual(2, _sut.MapItemCount);
+        }
+
+        [Test]
+        public void Constructor_ValidData_MapItemSlotsAreLocked()
         {
             Assert.AreEqual(CollectibleSlotState.Locked, _sut.GetSlotState(0));
             Assert.AreEqual(CollectibleSlotState.Locked, _sut.GetSlotState(1));
         }
 
         [Test]
+        public void Constructor_ValidData_RemainingSlotsAreEmpty()
+        {
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(2));
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(3));
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(4));
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(5));
+        }
+
+        [Test]
         public void Constructor_NullData_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new CollectiblePointState(null));
+        }
+
+        [Test]
+        public void Constructor_TooManyItems_ThrowsArgumentException()
+        {
+            List<CollectibleItemEntry> items = new List<CollectibleItemEntry>();
+            for (int i = 0; i < 7; i++)
+            {
+                items.Add(new CollectibleItemEntry($"Item{i}", 1, 0f));
+            }
+            CollectiblePointData data = new CollectiblePointData(0, 0, 0f, items);
+            Assert.Throws<ArgumentException>(() => new CollectiblePointState(data));
+        }
+
+        [Test]
+        public void Constructor_MaxItems_AllSlotsLocked()
+        {
+            List<CollectibleItemEntry> items = new List<CollectibleItemEntry>();
+            for (int i = 0; i < 6; i++)
+            {
+                items.Add(new CollectibleItemEntry($"Item{i}", 1, 1.0f));
+            }
+            CollectiblePointData data = new CollectiblePointData(0, 0, 1.0f, items);
+            CollectiblePointState sut = new CollectiblePointState(data);
+
+            for (int i = 0; i < 6; i++)
+            {
+                Assert.AreEqual(CollectibleSlotState.Locked, sut.GetSlotState(i));
+            }
         }
 
         [Test]
@@ -92,9 +137,8 @@ namespace ProjectDR.Tests.Village.Exploration
         [Test]
         public void StartGathering_FromUnlocking_ThrowsInvalidOperationException()
         {
-            // Get to Unlocking: start + complete gathering
             _sut.StartGathering();
-            _sut.Update(5.0f); // exceeds gatherDuration
+            _sut.Update(5.0f);
 
             Assert.Throws<InvalidOperationException>(() => _sut.StartGathering());
         }
@@ -120,7 +164,7 @@ namespace ProjectDR.Tests.Village.Exploration
         public void CancelGathering_FromGathering_TransitionsToIdle()
         {
             _sut.StartGathering();
-            _sut.Update(2.0f); // partial progress
+            _sut.Update(2.0f);
 
             _sut.CancelGathering();
 
@@ -131,11 +175,10 @@ namespace ProjectDR.Tests.Village.Exploration
         public void CancelGathering_ClearsAccumulatedTime()
         {
             _sut.StartGathering();
-            _sut.Update(2.0f); // partial progress
+            _sut.Update(2.0f);
 
             _sut.CancelGathering();
 
-            // Restart and check progress is 0
             _sut.StartGathering();
             Assert.AreEqual(0f, _sut.GatheringProgress, 0.001f);
         }
@@ -150,7 +193,7 @@ namespace ProjectDR.Tests.Village.Exploration
         public void CancelGathering_FromUnlocking_ThrowsInvalidOperationException()
         {
             _sut.StartGathering();
-            _sut.Update(5.0f); // complete gathering
+            _sut.Update(5.0f);
 
             Assert.Throws<InvalidOperationException>(() => _sut.CancelGathering());
         }
@@ -182,7 +225,7 @@ namespace ProjectDR.Tests.Village.Exploration
         {
             _sut.StartGathering();
 
-            _sut.Update(4.0f); // exactly the gather duration
+            _sut.Update(4.0f);
 
             Assert.AreEqual(GatheringPhase.Unlocking, _sut.Phase);
         }
@@ -206,13 +249,25 @@ namespace ProjectDR.Tests.Village.Exploration
         }
 
         [Test]
-        public void Update_GatheringCompletes_SlotsTransitionToUnlocking()
+        public void Update_GatheringCompletes_MapItemSlotsTransitionToUnlocking()
         {
             _sut.StartGathering();
             _sut.Update(5.0f);
 
             Assert.AreEqual(CollectibleSlotState.Unlocking, _sut.GetSlotState(0));
             Assert.AreEqual(CollectibleSlotState.Unlocking, _sut.GetSlotState(1));
+        }
+
+        [Test]
+        public void Update_GatheringCompletes_EmptySlotsRemainEmpty()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(2));
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(3));
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(4));
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(5));
         }
 
         [Test]
@@ -265,7 +320,7 @@ namespace ProjectDR.Tests.Village.Exploration
         public void Update_SlotUnlockCompletes_TransitionsToUnlocked()
         {
             _sut.StartGathering();
-            _sut.Update(5.0f); // complete first layer
+            _sut.Update(5.0f);
 
             _sut.Update(3.0f); // Wood (3s) completes, Stone (5s) still unlocking
 
@@ -277,13 +332,13 @@ namespace ProjectDR.Tests.Village.Exploration
         public void Update_SlotUnlockCompletes_PublishesItemSlotUnlockedEvent()
         {
             _sut.StartGathering();
-            _sut.Update(5.0f); // complete first layer
+            _sut.Update(5.0f);
 
             ItemSlotUnlockedEvent receivedEvent = null;
             Action<ItemSlotUnlockedEvent> handler = (e) => { receivedEvent = e; };
             EventBus.Subscribe<ItemSlotUnlockedEvent>(handler);
 
-            _sut.Update(3.0f); // Wood completes
+            _sut.Update(3.0f);
 
             EventBus.Unsubscribe<ItemSlotUnlockedEvent>(handler);
 
@@ -296,8 +351,8 @@ namespace ProjectDR.Tests.Village.Exploration
         public void Update_AllSlotsUnlock_AllBecomesUnlocked()
         {
             _sut.StartGathering();
-            _sut.Update(5.0f); // complete first layer
-            _sut.Update(5.0f); // complete all second layer slots
+            _sut.Update(5.0f);
+            _sut.Update(5.0f);
 
             Assert.AreEqual(CollectibleSlotState.Unlocked, _sut.GetSlotState(0));
             Assert.AreEqual(CollectibleSlotState.Unlocked, _sut.GetSlotState(1));
@@ -308,15 +363,14 @@ namespace ProjectDR.Tests.Village.Exploration
         {
             List<CollectibleItemEntry> items = new List<CollectibleItemEntry>
             {
-                new CollectibleItemEntry("Wood", 1, 0f) // zero unlock duration
+                new CollectibleItemEntry("Wood", 1, 0f)
             };
             CollectiblePointData data = new CollectiblePointData(0, 0, 1.0f, items);
             CollectiblePointState sut = new CollectiblePointState(data);
 
             sut.StartGathering();
-            sut.Update(1.0f); // complete first layer
+            sut.Update(1.0f);
 
-            // Slot should be immediately Unlocked (zero unlock duration)
             Assert.AreEqual(CollectibleSlotState.Unlocked, sut.GetSlotState(0));
         }
 
@@ -326,13 +380,13 @@ namespace ProjectDR.Tests.Village.Exploration
         public void TryPickItem_UnlockedSlot_ReturnsQuantity()
         {
             _sut.StartGathering();
-            _sut.Update(5.0f); // complete first layer
-            _sut.Update(3.0f); // Wood (slot 0) unlocked
+            _sut.Update(5.0f);
+            _sut.Update(3.0f);
 
             BackpackManager backpack = new BackpackManager(5, 10);
             int picked = _sut.TryPickItem(0, backpack);
 
-            Assert.AreEqual(2, picked); // Wood quantity = 2
+            Assert.AreEqual(2, picked);
         }
 
         [Test]
@@ -365,14 +419,11 @@ namespace ProjectDR.Tests.Village.Exploration
         public void TryPickItem_LockedSlot_ReturnsZero()
         {
             _sut.StartGathering();
-            _sut.Update(5.0f); // into unlocking, but slots still unlocking
+            _sut.Update(5.0f);
 
             BackpackManager backpack = new BackpackManager(5, 10);
             int picked = _sut.TryPickItem(0, backpack);
 
-            // Slot 0 is still Unlocking (not yet Unlocked), should return 0
-            // Wait, at 5s with 3s unlock duration, slot 0 should NOT be unlocked yet
-            // because we only entered Unlocking at that moment, no additional time passed
             Assert.AreEqual(0, picked);
         }
 
@@ -384,9 +435,9 @@ namespace ProjectDR.Tests.Village.Exploration
             _sut.Update(3.0f);
 
             BackpackManager backpack = new BackpackManager(5, 10);
-            _sut.TryPickItem(0, backpack); // first pick
+            _sut.TryPickItem(0, backpack);
 
-            int secondPick = _sut.TryPickItem(0, backpack); // already taken
+            int secondPick = _sut.TryPickItem(0, backpack);
             Assert.AreEqual(0, secondPick);
         }
 
@@ -398,7 +449,7 @@ namespace ProjectDR.Tests.Village.Exploration
             _sut.Update(3.0f);
 
             BackpackManager backpack = new BackpackManager(1, 1);
-            backpack.AddItem("Other", 1); // fill the backpack
+            backpack.AddItem("Other", 1);
 
             int picked = _sut.TryPickItem(0, backpack);
             Assert.AreEqual(0, picked);
@@ -457,7 +508,7 @@ namespace ProjectDR.Tests.Village.Exploration
             BackpackManager backpack = new BackpackManager(5, 10);
 
             Assert.Throws<ArgumentOutOfRangeException>(() => _sut.TryPickItem(-1, backpack));
-            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.TryPickItem(2, backpack));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.TryPickItem(6, backpack));
         }
 
         [Test]
@@ -467,6 +518,18 @@ namespace ProjectDR.Tests.Village.Exploration
             _sut.Update(5.0f);
 
             Assert.Throws<ArgumentNullException>(() => _sut.TryPickItem(0, null));
+        }
+
+        [Test]
+        public void TryPickItem_EmptySlot_ReturnsZero()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            BackpackManager backpack = new BackpackManager(5, 10);
+            int picked = _sut.TryPickItem(2, backpack); // empty slot
+
+            Assert.AreEqual(0, picked);
         }
 
         // ===== CloseItemPanel =====
@@ -483,17 +546,31 @@ namespace ProjectDR.Tests.Village.Exploration
         }
 
         [Test]
-        public void CloseItemPanel_ResetsSlotStates()
+        public void CloseItemPanel_ResetsMapItemSlotsToLocked()
         {
             _sut.StartGathering();
             _sut.Update(5.0f);
-            _sut.Update(3.0f); // some slots unlocked
+            _sut.Update(3.0f);
 
             _sut.CloseItemPanel();
 
-            // All slots should be back to Locked
             Assert.AreEqual(CollectibleSlotState.Locked, _sut.GetSlotState(0));
             Assert.AreEqual(CollectibleSlotState.Locked, _sut.GetSlotState(1));
+        }
+
+        [Test]
+        public void CloseItemPanel_ResetsRemainingSlotsToEmpty()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            // Store an item in empty slot
+            _sut.StoreItem(2, "Potion", 1);
+
+            _sut.CloseItemPanel();
+
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(2));
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(3));
         }
 
         [Test]
@@ -517,7 +594,7 @@ namespace ProjectDR.Tests.Village.Exploration
         {
             _sut.StartGathering();
             _sut.Update(5.0f);
-            _sut.Update(5.0f); // all unlocked
+            _sut.Update(5.0f);
 
             Assert.IsFalse(_sut.AllItemsTaken);
         }
@@ -536,7 +613,7 @@ namespace ProjectDR.Tests.Village.Exploration
         }
 
         [Test]
-        public void AllItemsTaken_AllItemsTaken_ReturnsTrue()
+        public void AllItemsTaken_AllMapItemsTaken_ReturnsTrue()
         {
             _sut.StartGathering();
             _sut.Update(5.0f);
@@ -549,13 +626,30 @@ namespace ProjectDR.Tests.Village.Exploration
             Assert.IsTrue(_sut.AllItemsTaken);
         }
 
+        [Test]
+        public void AllItemsTaken_IgnoresEmptyAndPlayerStoredSlots()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.Update(5.0f);
+
+            BackpackManager backpack = new BackpackManager(5, 10);
+            _sut.TryPickItem(0, backpack);
+            _sut.TryPickItem(1, backpack);
+
+            // Store item in empty slot - should not affect AllItemsTaken
+            _sut.StoreItem(2, "Potion", 1);
+
+            Assert.IsTrue(_sut.AllItemsTaken);
+        }
+
         // ===== GetSlotState / GetSlotUnlockProgress =====
 
         [Test]
         public void GetSlotState_InvalidIndex_ThrowsArgumentOutOfRangeException()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => _sut.GetSlotState(-1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.GetSlotState(2));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.GetSlotState(6));
         }
 
         [Test]
@@ -577,18 +671,33 @@ namespace ProjectDR.Tests.Village.Exploration
             Assert.AreEqual(1f, _sut.GetSlotUnlockProgress(0), 0.001f);
         }
 
+        [Test]
+        public void GetSlotUnlockProgress_Empty_ReturnsOne()
+        {
+            Assert.AreEqual(1f, _sut.GetSlotUnlockProgress(2), 0.001f); // empty slot
+        }
+
+        [Test]
+        public void GetSlotUnlockProgress_PlayerStored_ReturnsOne()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 1);
+
+            Assert.AreEqual(1f, _sut.GetSlotUnlockProgress(2), 0.001f);
+        }
+
         // ===== GDD rule 44: Cancel resets time =====
 
         [Test]
         public void CancelAndRestart_TimeResetsCompletely()
         {
             _sut.StartGathering();
-            _sut.Update(3.0f); // 3 of 4 seconds
+            _sut.Update(3.0f);
 
             _sut.CancelGathering();
             _sut.StartGathering();
 
-            // After cancel and restart, remaining time should be full again
             Assert.AreEqual(4.0f, _sut.GatheringRemainingTime, 0.01f);
         }
 
@@ -598,12 +707,423 @@ namespace ProjectDR.Tests.Village.Exploration
         public void CloseItemPanel_ThenRestart_WorksCorrectly()
         {
             _sut.StartGathering();
-            _sut.Update(5.0f); // gathering complete, unlocking
-            _sut.CloseItemPanel(); // close
+            _sut.Update(5.0f);
+            _sut.CloseItemPanel();
 
-            // Should be able to start again
             _sut.StartGathering();
             Assert.AreEqual(GatheringPhase.Gathering, _sut.Phase);
+        }
+
+        // ===== StoreItem =====
+
+        [Test]
+        public void StoreItem_EmptySlot_ReturnsTrue()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            bool result = _sut.StoreItem(2, "Potion", 3);
+
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void StoreItem_EmptySlot_TransitionsToPlayerStored()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            _sut.StoreItem(2, "Potion", 3);
+
+            Assert.AreEqual(CollectibleSlotState.PlayerStored, _sut.GetSlotState(2));
+        }
+
+        [Test]
+        public void StoreItem_NonEmptySlot_ReturnsFalse()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            // Slot 0 is a map item slot (Unlocking), not Empty
+            bool result = _sut.StoreItem(0, "Potion", 1);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void StoreItem_AlreadyStoredSlot_ReturnsFalse()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            _sut.StoreItem(2, "Potion", 1);
+
+            // Slot 2 is now PlayerStored, not Empty
+            bool result = _sut.StoreItem(2, "Herb", 1);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void StoreItem_NotInUnlockingPhase_ThrowsInvalidOperationException()
+        {
+            Assert.Throws<InvalidOperationException>(() => _sut.StoreItem(2, "Potion", 1));
+        }
+
+        [Test]
+        public void StoreItem_NullItemId_ThrowsArgumentException()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            Assert.Throws<ArgumentException>(() => _sut.StoreItem(2, null, 1));
+        }
+
+        [Test]
+        public void StoreItem_EmptyItemId_ThrowsArgumentException()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            Assert.Throws<ArgumentException>(() => _sut.StoreItem(2, "", 1));
+        }
+
+        [Test]
+        public void StoreItem_ZeroQuantity_ThrowsArgumentOutOfRangeException()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.StoreItem(2, "Potion", 0));
+        }
+
+        [Test]
+        public void StoreItem_NegativeQuantity_ThrowsArgumentOutOfRangeException()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.StoreItem(2, "Potion", -1));
+        }
+
+        [Test]
+        public void StoreItem_InvalidSlotIndex_ThrowsArgumentOutOfRangeException()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.StoreItem(-1, "Potion", 1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.StoreItem(6, "Potion", 1));
+        }
+
+        [Test]
+        public void StoreItem_PublishesItemStoredInBoxEvent()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            ItemStoredInBoxEvent receivedEvent = null;
+            Action<ItemStoredInBoxEvent> handler = (e) => { receivedEvent = e; };
+            EventBus.Subscribe<ItemStoredInBoxEvent>(handler);
+
+            _sut.StoreItem(2, "Potion", 3);
+
+            EventBus.Unsubscribe<ItemStoredInBoxEvent>(handler);
+
+            Assert.IsNotNull(receivedEvent);
+            Assert.AreEqual(2, receivedEvent.SlotIndex);
+            Assert.AreEqual("Potion", receivedEvent.ItemId);
+            Assert.AreEqual(3, receivedEvent.Quantity);
+        }
+
+        // ===== RemoveStoredItem =====
+
+        [Test]
+        public void RemoveStoredItem_PlayerStoredSlot_ReturnsTrue()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 3);
+
+            bool result = _sut.RemoveStoredItem(2);
+
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void RemoveStoredItem_PlayerStoredSlot_TransitionsToEmpty()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 3);
+
+            _sut.RemoveStoredItem(2);
+
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(2));
+        }
+
+        [Test]
+        public void RemoveStoredItem_EmptySlot_ReturnsFalse()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            bool result = _sut.RemoveStoredItem(2); // already empty
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void RemoveStoredItem_MapItemSlot_ReturnsFalse()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            bool result = _sut.RemoveStoredItem(0); // map item slot
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void RemoveStoredItem_NotInUnlockingPhase_ThrowsInvalidOperationException()
+        {
+            Assert.Throws<InvalidOperationException>(() => _sut.RemoveStoredItem(2));
+        }
+
+        [Test]
+        public void RemoveStoredItem_InvalidSlotIndex_ThrowsArgumentOutOfRangeException()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.RemoveStoredItem(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _sut.RemoveStoredItem(6));
+        }
+
+        [Test]
+        public void RemoveStoredItem_PublishesItemRemovedFromBoxEvent()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 3);
+
+            ItemRemovedFromBoxEvent receivedEvent = null;
+            Action<ItemRemovedFromBoxEvent> handler = (e) => { receivedEvent = e; };
+            EventBus.Subscribe<ItemRemovedFromBoxEvent>(handler);
+
+            _sut.RemoveStoredItem(2);
+
+            EventBus.Unsubscribe<ItemRemovedFromBoxEvent>(handler);
+
+            Assert.IsNotNull(receivedEvent);
+            Assert.AreEqual(2, receivedEvent.SlotIndex);
+            Assert.AreEqual("Potion", receivedEvent.ItemId);
+            Assert.AreEqual(3, receivedEvent.Quantity);
+        }
+
+        // ===== TryPickItem: PlayerStored items =====
+
+        [Test]
+        public void TryPickItem_PlayerStoredSlot_ReturnsQuantity()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 3);
+
+            BackpackManager backpack = new BackpackManager(5, 10);
+            int picked = _sut.TryPickItem(2, backpack);
+
+            Assert.AreEqual(3, picked);
+        }
+
+        [Test]
+        public void TryPickItem_PlayerStoredSlot_TransitionsToEmpty()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 3);
+
+            BackpackManager backpack = new BackpackManager(5, 10);
+            _sut.TryPickItem(2, backpack);
+
+            Assert.AreEqual(CollectibleSlotState.Empty, _sut.GetSlotState(2));
+        }
+
+        [Test]
+        public void TryPickItem_PlayerStoredSlot_AddsToBackpack()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 3);
+
+            BackpackManager backpack = new BackpackManager(5, 10);
+            _sut.TryPickItem(2, backpack);
+
+            Assert.AreEqual(3, backpack.GetItemCount("Potion"));
+        }
+
+        [Test]
+        public void TryPickItem_PlayerStoredSlot_PublishesItemRemovedFromBoxEvent()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 3);
+
+            BackpackManager backpack = new BackpackManager(5, 10);
+
+            ItemRemovedFromBoxEvent receivedEvent = null;
+            Action<ItemRemovedFromBoxEvent> handler = (e) => { receivedEvent = e; };
+            EventBus.Subscribe<ItemRemovedFromBoxEvent>(handler);
+
+            _sut.TryPickItem(2, backpack);
+
+            EventBus.Unsubscribe<ItemRemovedFromBoxEvent>(handler);
+
+            Assert.IsNotNull(receivedEvent);
+            Assert.AreEqual(2, receivedEvent.SlotIndex);
+            Assert.AreEqual("Potion", receivedEvent.ItemId);
+            Assert.AreEqual(3, receivedEvent.Quantity);
+        }
+
+        [Test]
+        public void TryPickItem_PlayerStoredSlot_BackpackFull_ReturnsZero()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 3);
+
+            BackpackManager backpack = new BackpackManager(1, 1);
+            backpack.AddItem("Other", 1);
+
+            int picked = _sut.TryPickItem(2, backpack);
+            Assert.AreEqual(0, picked);
+        }
+
+        [Test]
+        public void TryPickItem_PlayerStoredSlot_BackpackFull_SlotRemainsPlayerStored()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 3);
+
+            BackpackManager backpack = new BackpackManager(1, 1);
+            backpack.AddItem("Other", 1);
+
+            _sut.TryPickItem(2, backpack);
+            Assert.AreEqual(CollectibleSlotState.PlayerStored, _sut.GetSlotState(2));
+        }
+
+        // ===== GetAllSlots =====
+
+        [Test]
+        public void GetAllSlots_ReturnsMaxSlots()
+        {
+            BoxSlotInfo[] slots = _sut.GetAllSlots();
+
+            Assert.AreEqual(CollectiblePointState.MaxSlots, slots.Length);
+        }
+
+        [Test]
+        public void GetAllSlots_MapItemSlots_HaveCorrectData()
+        {
+            BoxSlotInfo[] slots = _sut.GetAllSlots();
+
+            Assert.AreEqual("Wood", slots[0].ItemId);
+            Assert.AreEqual(2, slots[0].Quantity);
+            Assert.AreEqual(CollectibleSlotState.Locked, slots[0].State);
+            Assert.IsFalse(slots[0].IsPlayerStored);
+
+            Assert.AreEqual("Stone", slots[1].ItemId);
+            Assert.AreEqual(1, slots[1].Quantity);
+        }
+
+        [Test]
+        public void GetAllSlots_EmptySlots_HaveNullItemId()
+        {
+            BoxSlotInfo[] slots = _sut.GetAllSlots();
+
+            for (int i = 2; i < 6; i++)
+            {
+                Assert.IsNull(slots[i].ItemId);
+                Assert.AreEqual(0, slots[i].Quantity);
+                Assert.AreEqual(CollectibleSlotState.Empty, slots[i].State);
+                Assert.IsFalse(slots[i].IsPlayerStored);
+            }
+        }
+
+        [Test]
+        public void GetAllSlots_PlayerStoredSlot_HasCorrectData()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(3, "Herb", 5);
+
+            BoxSlotInfo[] slots = _sut.GetAllSlots();
+
+            Assert.AreEqual("Herb", slots[3].ItemId);
+            Assert.AreEqual(5, slots[3].Quantity);
+            Assert.AreEqual(CollectibleSlotState.PlayerStored, slots[3].State);
+            Assert.IsTrue(slots[3].IsPlayerStored);
+        }
+
+        // ===== FindFirstEmptySlot =====
+
+        [Test]
+        public void FindFirstEmptySlot_HasEmptySlots_ReturnsFirstIndex()
+        {
+            int index = _sut.FindFirstEmptySlot();
+
+            Assert.AreEqual(2, index); // slots 0,1 are map items, 2 is first empty
+        }
+
+        [Test]
+        public void FindFirstEmptySlot_AllSlotsOccupied_ReturnsNegativeOne()
+        {
+            List<CollectibleItemEntry> items = new List<CollectibleItemEntry>();
+            for (int i = 0; i < 6; i++)
+            {
+                items.Add(new CollectibleItemEntry($"Item{i}", 1, 1.0f));
+            }
+            CollectiblePointData data = new CollectiblePointData(0, 0, 1.0f, items);
+            CollectiblePointState sut = new CollectiblePointState(data);
+
+            int index = sut.FindFirstEmptySlot();
+
+            Assert.AreEqual(-1, index);
+        }
+
+        [Test]
+        public void FindFirstEmptySlot_SomeStoredItems_SkipsThem()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+
+            _sut.StoreItem(2, "Potion", 1);
+
+            int index = _sut.FindFirstEmptySlot();
+
+            Assert.AreEqual(3, index); // slot 2 is PlayerStored, 3 is next empty
+        }
+
+        // ===== CloseItemPanel: clears stored items =====
+
+        [Test]
+        public void CloseItemPanel_ClearsStoredItems()
+        {
+            _sut.StartGathering();
+            _sut.Update(5.0f);
+            _sut.StoreItem(2, "Potion", 1);
+            _sut.StoreItem(3, "Herb", 2);
+
+            _sut.CloseItemPanel();
+
+            // After close, all non-map slots should be Empty
+            BoxSlotInfo[] slots = _sut.GetAllSlots();
+            for (int i = 2; i < 6; i++)
+            {
+                Assert.AreEqual(CollectibleSlotState.Empty, slots[i].State);
+                Assert.IsNull(slots[i].ItemId);
+            }
         }
     }
 }

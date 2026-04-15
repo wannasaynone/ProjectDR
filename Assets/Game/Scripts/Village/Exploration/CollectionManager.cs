@@ -110,6 +110,7 @@ namespace ProjectDR.Village.Exploration
 
         /// <summary>
         /// 拾取指定欄位的已解鎖物品到背包。對應 GDD 規則 46。
+        /// 也支援拾取玩家存放的物品。
         /// </summary>
         /// <returns>實際放入背包的數量。</returns>
         public int TryPickItem(int slotIndex)
@@ -118,6 +119,54 @@ namespace ProjectDR.Village.Exploration
             if (_activePointState.Phase != GatheringPhase.Unlocking) return 0;
 
             return _activePointState.TryPickItem(slotIndex, _backpack);
+        }
+
+        /// <summary>
+        /// 從背包取出物品放入物品箱空格。
+        /// 自動尋找第一個空格。
+        /// </summary>
+        /// <param name="itemId">物品 ID。</param>
+        /// <param name="quantity">數量。</param>
+        /// <returns>true 表示成功存入。</returns>
+        public bool TransferToBox(string itemId, int quantity)
+        {
+            if (_activePointState == null) return false;
+            if (_activePointState.Phase != GatheringPhase.Unlocking) return false;
+            if (string.IsNullOrEmpty(itemId)) return false;
+            if (quantity <= 0) return false;
+
+            int emptySlot = _activePointState.FindFirstEmptySlot();
+            if (emptySlot < 0) return false;
+
+            // 先確認背包有足夠物品
+            int available = _backpack.GetItemCount(itemId);
+            if (available < quantity) return false;
+
+            // 從背包移除
+            int removed = _backpack.RemoveItem(itemId, quantity);
+            if (removed <= 0) return false;
+
+            // 存入物品箱
+            bool stored = _activePointState.StoreItem(emptySlot, itemId, removed);
+            if (!stored)
+            {
+                // 回滾：物品放回背包
+                _backpack.AddItem(itemId, removed);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 從物品箱拾取物品到背包（統一入口）。
+        /// 支援地圖物品（Unlocked）和玩家存放物品（PlayerStored）。
+        /// </summary>
+        /// <param name="slotIndex">物品箱格子索引。</param>
+        /// <returns>實際放入背包的數量。</returns>
+        public int TransferToBackpack(int slotIndex)
+        {
+            return TryPickItem(slotIndex);
         }
 
         /// <summary>

@@ -4,7 +4,10 @@
     "references": [
         "KahaGameCore.GameEvent",
         "KahaGameCore.Package.UserInterfaceSystem",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "KahaGameCore.GameData",
+        "ProjectBSR.DialogueSystem",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

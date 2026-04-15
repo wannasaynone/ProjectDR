@@ -115,4 +115,53 @@ namespace ProjectDR.Village
         /// <summary>收穫的數量。</summary>
         public int Quantity;
     }
+
+    // ----- AffinityManager 相關事件 -----
+
+    /// <summary>好感度數值變更時發布的事件。</summary>
+    public class AffinityChangedEvent : GameEventBase
+    {
+        /// <summary>角色 ID。</summary>
+        public string CharacterId;
+
+        /// <summary>變更後的好感度數值。</summary>
+        public int NewValue;
+
+        /// <summary>此次變更的增加量。</summary>
+        public int Amount;
+    }
+
+    /// <summary>好感度達到門檻值時發布的事件。UI 層監聯此事件以處理解鎖表現。</summary>
+    public class AffinityThresholdReachedEvent : GameEventBase
+    {
+        /// <summary>角色 ID。</summary>
+        public string CharacterId;
+
+        /// <summary>達到的門檻值。</summary>
+        public int ThresholdValue;
+    }
+
+    // ----- GiftManager 相關事件 -----
+
+    /// <summary>送禮成功時發布的事件。</summary>
+    public class GiftSuccessEvent : GameEventBase
+    {
+        /// <summary>送禮目標角色 ID。</summary>
+        public string CharacterId;
+
+        /// <summary>送出的物品 ID。</summary>
+        public string ItemId;
+    }
+
+    // ----- CGUnlockManager 相關事件 -----
+
+    /// <summary>CG 場景解鎖時發布的事件。</summary>
+    public class CGUnlockedEvent : GameEventBase
+    {
+        /// <summary>解鎖的 CG 場景 ID。</summary>
+        public string CgSceneId;
+
+        /// <summary>所屬角色 ID。</summary>
+        public string CharacterId;
+    }
 }

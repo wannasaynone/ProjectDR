@@ -112,4 +112,28 @@ namespace ProjectDR.Village.Exploration
 
     /// <summary>Published when the player closes the collection item panel.</summary>
     public class CollectionPanelClosedEvent : GameEventBase { }
+
+    // ----- Item box transfer events -----
+
+    /// <summary>Published when the player stores an item from backpack into the item box.</summary>
+    public class ItemStoredInBoxEvent : GameEventBase
+    {
+        /// <summary>Slot index in the item box where the item was stored.</summary>
+        public int SlotIndex;
+        /// <summary>Item ID that was stored.</summary>
+        public string ItemId;
+        /// <summary>Quantity that was stored.</summary>
+        public int Quantity;
+    }
+
+    /// <summary>Published when the player removes an item from the item box back to backpack.</summary>
+    public class ItemRemovedFromBoxEvent : GameEventBase
+    {
+        /// <summary>Slot index in the item box from which the item was removed.</summary>
+        public int SlotIndex;
+        /// <summary>Item ID that was removed.</summary>
+        public string ItemId;
+        /// <summary>Quantity that was removed.</summary>
+        public int Quantity;
+    }
 }

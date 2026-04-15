@@ -609,5 +609,95 @@ namespace ProjectDR.Tests.Village.Exploration
             // Group 0 point should NOT be evacuation
             Assert.IsFalse(sut.IsEvacuationPoint(4, 0));
         }
+
+        // ===== X8: HasAdjacentUnexploredCell =====
+
+        [Test]
+        public void HasAdjacentUnexploredCell_AdjacentUnexplored_ReturnsTrue()
+        {
+            // Spawn at center with radius 1: center + 4 manhattan-1 neighbors explored
+            // (2,2), (1,2), (3,2), (2,1), (2,3) are explored
+            // (0,0), (4,4), etc. are unexplored
+            _sut.InitializeExplored(1, -1);
+
+            // (3,2) is explored, but (4,2) is unexplored and walkable -> should have adjacent unexplored
+            bool result = _sut.HasAdjacentUnexploredCell(3, 2);
+
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void HasAdjacentUnexploredCell_AllAdjacentExplored_ReturnsFalse()
+        {
+            // Reveal entire map with large radius
+            _sut.InitializeExplored(4, -1);
+
+            // Center cell (2,2): all 8 neighbors should be explored
+            bool result = _sut.HasAdjacentUnexploredCell(2, 2);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void HasAdjacentUnexploredCell_CornerCellAllNeighborsExplored_ReturnsFalse()
+        {
+            // Reveal large area so corner and its neighbors are all explored
+            _sut.InitializeExplored(4, -1);
+
+            // (0,0) corner: neighbors (1,0), (0,1), (1,1) all explored, others out of bounds
+            bool result = _sut.HasAdjacentUnexploredCell(0, 0);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void HasAdjacentUnexploredCell_AdjacentBlockedNotUnexplored_ReturnsFalse()
+        {
+            // Create map where all neighbors of a cell are either explored or blocked
+            // Map: 3x3, spawn at (1,1), blocked at (2,0), (2,1), (2,2), (0,0), (0,2)
+            // After radius 1 reveal: (1,1), (0,1), (1,0), (1,2) explored
+            // Blocked cells don't count as unexplored
+            CellType[] cells = CreateAllExplorableCells(3, 3);
+            cells[2 + 0 * 3] = CellType.Blocked; // (2,0)
+            cells[2 + 1 * 3] = CellType.Blocked; // (2,1)
+            cells[2 + 2 * 3] = CellType.Blocked; // (2,2)
+            cells[0 + 0 * 3] = CellType.Blocked; // (0,0)
+            cells[0 + 2 * 3] = CellType.Blocked; // (0,2)
+            MapData mapData = new MapData(3, 3, cells, new Vector2Int(1, 1), new List<List<Vector2Int>>());
+            GridMap sut = new GridMap(mapData, _monsterProvider);
+            sut.InitializeExplored(1, -1);
+
+            // (1,1) neighbors: (0,0)blocked, (1,0)explored, (2,0)blocked,
+            //                  (0,1)explored,               (2,1)blocked,
+            //                  (0,2)blocked, (1,2)explored, (2,2)blocked
+            // No walkable unexplored neighbors
+            bool result = sut.HasAdjacentUnexploredCell(1, 1);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void HasAdjacentUnexploredCell_OutOfBounds_ReturnsFalse()
+        {
+            _sut.InitializeExplored(1, -1);
+
+            bool result = _sut.HasAdjacentUnexploredCell(10, 10);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void HasAdjacentUnexploredCell_EdgeCellWithUnexploredNeighbor_ReturnsTrue()
+        {
+            // Spawn at (0,0) radius 0: only (0,0) explored
+            MapData mapData = CreateStandard5x5Map(new Vector2Int(0, 0));
+            GridMap sut = new GridMap(mapData, _monsterProvider);
+            sut.InitializeExplored(0, -1);
+
+            // (0,0) has neighbors (1,0), (0,1), (1,1) — all unexplored
+            bool result = sut.HasAdjacentUnexploredCell(0, 0);
+
+            Assert.IsTrue(result);
+        }
     }
 }

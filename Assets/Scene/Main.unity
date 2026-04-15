@@ -305,6 +305,11 @@ MonoBehaviour:
   _mapJson: {fileID: 4900000, guid: 7c6f77601131ac342be8125a229686cc, type: 3}
   _combatConfigJson: {fileID: 4900000, guid: 0b886fe49a5996f49b490b2ddb5d4809, type: 3}
   _monsterConfigJson: {fileID: 4900000, guid: 6cde131406476d548bd9d316a48ad7f3, type: 3}
+  _affinityConfigJson: {fileID: 4900000, guid: f21734a2aa6e8b44093085803457b466, type: 3}
+  _giftViewPrefab: {fileID: 7923149134027617366, guid: e2ccc2398b723304ca616cc8509d4589, type: 3}
+  _cgSceneConfigJson: {fileID: 4900000, guid: f150cf269d03ce14dad1a3286c8fde02, type: 3}
+  _galleryViewPrefab: {fileID: 1490817430148580, guid: 41a7e07c0123a844a8e2d61a655d410f, type: 3}
+  _kgcDialogueViewPrefab: {fileID: 8614997904038675671, guid: de4fb8fdcc9421b458fa3ab227de426c, type: 3}
   _uiContainer: {fileID: 1456230930}
   _typewriterCharsPerSecond: 20
 --- !u!1 &1552563258
@@ -518,9 +523,9 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1920, y: 1080}
+  m_ReferenceResolution: {x: 3840, y: 2160}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.5
+  m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96

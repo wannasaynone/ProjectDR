@@ -1,0 +1,21 @@
+{
+    "characters": [
+        {
+            "characterId": "VillageChiefWife",
+            "thresholds": [5]
+        },
+        {
+            "characterId": "Guard",
+            "thresholds": [5]
+        },
+        {
+            "characterId": "Witch",
+            "thresholds": [5]
+        },
+        {
+            "characterId": "FarmGirl",
+            "thresholds": [5]
+        }
+    ],
+    "defaultThresholds": [5]
+}

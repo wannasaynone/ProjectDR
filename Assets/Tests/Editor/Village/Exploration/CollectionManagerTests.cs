@@ -11,7 +11,8 @@ namespace ProjectDR.Tests.Village.Exploration
     /// <summary>
     /// CollectionManager unit tests.
     /// Covers: interaction availability, start/cancel gathering, item pickup,
-    /// movement locking, panel close, events, edge cases.
+    /// movement locking, panel close, events, edge cases,
+    /// item box transfer (TransferToBox, TransferToBackpack).
     /// GDD rules: 8-13, 44-46.
     /// </summary>
     [TestFixture]
@@ -331,7 +332,6 @@ namespace ProjectDR.Tests.Village.Exploration
         {
             SetUpWithCollectibleAtSpawn();
 
-            // Should not throw when not gathering
             Assert.DoesNotThrow(() => _sut.CancelGathering());
         }
 
@@ -342,7 +342,6 @@ namespace ProjectDR.Tests.Village.Exploration
             _sut.TryStartGathering();
             _sut.Update(4.0f); // complete first layer, now in Unlocking
 
-            // CancelGathering should do nothing in Unlocking phase
             _sut.CancelGathering();
 
             Assert.IsTrue(_sut.IsCollecting); // still collecting (in Unlocking)
@@ -356,7 +355,7 @@ namespace ProjectDR.Tests.Village.Exploration
             SetUpWithCollectibleAtSpawn();
             _sut.TryStartGathering();
 
-            _sut.Update(3.0f); // gatherDuration = 3.0
+            _sut.Update(3.0f);
 
             Assert.AreEqual(GatheringPhase.Unlocking, _sut.ActivePointState.Phase);
         }
@@ -368,7 +367,7 @@ namespace ProjectDR.Tests.Village.Exploration
             _sut.TryStartGathering();
 
             _sut.Update(3.0f); // complete first layer
-            _sut.Update(2.0f); // complete second layer (both items have 2.0 unlock)
+            _sut.Update(2.0f); // complete second layer
 
             Assert.AreEqual(CollectibleSlotState.Unlocked,
                 _sut.ActivePointState.GetSlotState(0));
@@ -391,12 +390,12 @@ namespace ProjectDR.Tests.Village.Exploration
         {
             SetUpWithCollectibleAtSpawn();
             _sut.TryStartGathering();
-            _sut.Update(3.0f); // complete first layer
-            _sut.Update(2.0f); // complete second layer
+            _sut.Update(3.0f);
+            _sut.Update(2.0f);
 
             int picked = _sut.TryPickItem(0);
 
-            Assert.AreEqual(2, picked); // Wood quantity = 2
+            Assert.AreEqual(2, picked);
             Assert.AreEqual(2, _backpack.GetItemCount("Wood"));
         }
 
@@ -417,7 +416,7 @@ namespace ProjectDR.Tests.Village.Exploration
         {
             SetUpWithCollectibleAtSpawn();
             _sut.TryStartGathering();
-            _sut.Update(3.0f); // complete first layer
+            _sut.Update(3.0f);
 
             _sut.CloseItemPanel();
 
@@ -460,6 +459,233 @@ namespace ProjectDR.Tests.Village.Exploration
             SetUpWithCollectibleAtSpawn();
 
             Assert.DoesNotThrow(() => _sut.CloseItemPanel());
+        }
+
+        // ===== TransferToBox =====
+
+        [Test]
+        public void TransferToBox_ValidItem_ReturnsTrue()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 3);
+            _sut.TryStartGathering();
+            _sut.Update(3.0f); // enter Unlocking
+
+            bool result = _sut.TransferToBox("Potion", 3);
+
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public void TransferToBox_RemovesFromBackpack()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 3);
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            _sut.TransferToBox("Potion", 3);
+
+            Assert.AreEqual(0, _backpack.GetItemCount("Potion"));
+        }
+
+        [Test]
+        public void TransferToBox_StoresInBox()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 3);
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            _sut.TransferToBox("Potion", 3);
+
+            // First empty slot should be index 2 (map items at 0,1)
+            CollectiblePointState state = _sut.ActivePointState;
+            Assert.AreEqual(CollectibleSlotState.PlayerStored, state.GetSlotState(2));
+        }
+
+        [Test]
+        public void TransferToBox_WhenNotCollecting_ReturnsFalse()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 3);
+
+            bool result = _sut.TransferToBox("Potion", 3);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void TransferToBox_InsufficientBackpackQuantity_ReturnsFalse()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 1);
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            bool result = _sut.TransferToBox("Potion", 3); // only 1 in backpack
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void TransferToBox_InsufficientBackpackQuantity_DoesNotRemoveFromBackpack()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 1);
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            _sut.TransferToBox("Potion", 3);
+
+            Assert.AreEqual(1, _backpack.GetItemCount("Potion")); // unchanged
+        }
+
+        [Test]
+        public void TransferToBox_NoEmptySlots_ReturnsFalse()
+        {
+            // Create with 6 map items (no empty slots)
+            List<CollectibleItemEntry> items = new List<CollectibleItemEntry>();
+            for (int i = 0; i < 6; i++)
+            {
+                items.Add(new CollectibleItemEntry($"Item{i}", 1, 0f));
+            }
+            CollectiblePointData cpData = new CollectiblePointData(2, 2, 0f, items);
+
+            CellType[] cells = CreateAllExplorableCells(5, 5);
+            MapData mapData = new MapData(5, 5, cells, new Vector2Int(2, 2),
+                new List<List<Vector2Int>>(),
+                new List<CollectiblePointData> { cpData });
+
+            GridMap gridMap = new GridMap(mapData, new MockMonsterPositionProvider());
+            gridMap.InitializeExplored(1, -1);
+
+            PlayerGridMovement pm = new PlayerGridMovement(
+                gridMap, new Vector2Int(2, 2), new MockMoveSpeedCalculator());
+
+            BackpackManager bp = new BackpackManager(5, 10);
+            bp.AddItem("Potion", 1);
+            CollectionManager sut = new CollectionManager(gridMap, pm, bp);
+
+            sut.TryStartGathering(); // zero duration, goes straight to Unlocking
+
+            bool result = sut.TransferToBox("Potion", 1);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void TransferToBox_NullItemId_ReturnsFalse()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            bool result = _sut.TransferToBox(null, 1);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void TransferToBox_EmptyItemId_ReturnsFalse()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            bool result = _sut.TransferToBox("", 1);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void TransferToBox_ZeroQuantity_ReturnsFalse()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 3);
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            bool result = _sut.TransferToBox("Potion", 0);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void TransferToBox_NegativeQuantity_ReturnsFalse()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 3);
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            bool result = _sut.TransferToBox("Potion", -1);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public void TransferToBox_PublishesItemStoredInBoxEvent()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 3);
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            ItemStoredInBoxEvent receivedEvent = null;
+            Action<ItemStoredInBoxEvent> handler = (e) => { receivedEvent = e; };
+            EventBus.Subscribe<ItemStoredInBoxEvent>(handler);
+
+            _sut.TransferToBox("Potion", 3);
+
+            EventBus.Unsubscribe<ItemStoredInBoxEvent>(handler);
+
+            Assert.IsNotNull(receivedEvent);
+            Assert.AreEqual("Potion", receivedEvent.ItemId);
+            Assert.AreEqual(3, receivedEvent.Quantity);
+        }
+
+        // ===== TransferToBackpack =====
+
+        [Test]
+        public void TransferToBackpack_UnlockedMapItem_AddsToBackpack()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+            _sut.Update(2.0f);
+
+            int picked = _sut.TransferToBackpack(0);
+
+            Assert.AreEqual(2, picked);
+            Assert.AreEqual(2, _backpack.GetItemCount("Wood"));
+        }
+
+        [Test]
+        public void TransferToBackpack_PlayerStoredItem_AddsToBackpack()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 3);
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            _sut.TransferToBox("Potion", 3);
+
+            // Now pick it back
+            int picked = _sut.TransferToBackpack(2);
+
+            Assert.AreEqual(3, picked);
+            Assert.AreEqual(3, _backpack.GetItemCount("Potion"));
+        }
+
+        [Test]
+        public void TransferToBackpack_WhenNotCollecting_ReturnsZero()
+        {
+            SetUpWithCollectibleAtSpawn();
+
+            int picked = _sut.TransferToBackpack(0);
+
+            Assert.AreEqual(0, picked);
         }
 
         // ===== Full workflow =====
@@ -519,6 +745,33 @@ namespace ProjectDR.Tests.Village.Exploration
             Assert.AreEqual(GatheringPhase.Unlocking, _sut.ActivePointState.Phase);
         }
 
+        [Test]
+        public void FullWorkflow_StoreAndRetrieve()
+        {
+            SetUpWithCollectibleAtSpawn();
+            _backpack.AddItem("Potion", 5);
+
+            // Start gathering and enter Unlocking
+            _sut.TryStartGathering();
+            _sut.Update(3.0f);
+
+            // Store item from backpack to box
+            Assert.IsTrue(_sut.TransferToBox("Potion", 5));
+            Assert.AreEqual(0, _backpack.GetItemCount("Potion"));
+
+            // Verify box has the item
+            CollectiblePointState state = _sut.ActivePointState;
+            Assert.AreEqual(CollectibleSlotState.PlayerStored, state.GetSlotState(2));
+
+            // Retrieve item from box to backpack
+            int picked = _sut.TransferToBackpack(2);
+            Assert.AreEqual(5, picked);
+            Assert.AreEqual(5, _backpack.GetItemCount("Potion"));
+
+            // Box slot should be empty again
+            Assert.AreEqual(CollectibleSlotState.Empty, state.GetSlotState(2));
+        }
+
         // ===== GDD rule 12, 13: Backpack capacity =====
 
         [Test]
@@ -530,21 +783,11 @@ namespace ProjectDR.Tests.Village.Exploration
             _sut.Update(2.0f);
 
             // Fill backpack to max
-            BackpackManager fullBackpack = new BackpackManager(1, 1);
-            fullBackpack.AddItem("Other", 1);
-
-            // Use a new CollectionManager with the full backpack
-            CollectionManager sut2 = new CollectionManager(_gridMap, _playerMovement, fullBackpack);
-
-            // Need to start gathering fresh since we need a new manager
-            // Instead, verify via the existing _sut but with modified backpack
-            // Let's fill the shared backpack
             for (int i = 0; i < 5; i++)
             {
                 _backpack.AddItem($"Fill{i}", 10);
             }
 
-            // Backpack should be full now (5 slots x 10 max stack)
             Assert.IsTrue(_backpack.IsFull);
 
             int picked = _sut.TryPickItem(0);

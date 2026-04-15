@@ -22,16 +22,16 @@
     ],
     "collectiblePoints": [
         {
-            "position": { "x": 3, "y": 3 },
-            "gatherDurationSeconds": 3.0,
+            "position": { "x": 1, "y": 3 },
+            "gatherDurationSeconds": 0.2,
             "items": [
                 { "itemId": "Wood", "quantity": 2, "unlockDurationSeconds": 1.0 },
                 { "itemId": "Herb", "quantity": 1, "unlockDurationSeconds": 2.0 }
             ]
         },
         {
-            "position": { "x": 5, "y": 2 },
-            "gatherDurationSeconds": 5.0,
+            "position": { "x": 6, "y": 4 },
+            "gatherDurationSeconds": 0.2,
             "items": [
                 { "itemId": "Stone", "quantity": 3, "unlockDurationSeconds": 1.5 },
                 { "itemId": "Crystal", "quantity": 1, "unlockDurationSeconds": 4.0 }

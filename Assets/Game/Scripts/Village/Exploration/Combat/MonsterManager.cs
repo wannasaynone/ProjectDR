@@ -193,63 +193,98 @@ namespace ProjectDR.Village.Exploration.Combat
 
         private bool UpdateRoamingOrChasing(MonsterState monster, float deltaTime, Vector2Int playerPos)
         {
-            // Check if player is in vision range -> switch to chasing
-            int dist = ManhattanDistance(monster.Position, playerPos);
-            bool playerInVision = dist <= monster.TypeData.VisionRange;
+            // X10: Monsters on unexplored cells only roam — no vision/chase/attack
+            bool monsterOnExploredCell = _gridMap.IsExplored(monster.Position.x, monster.Position.y);
 
-            // Check if player is adjacent (attack range) -> start attack
-            if (dist <= monster.TypeData.AttackRange && dist > 0)
+            if (monsterOnExploredCell)
             {
-                monster.AIState = MonsterAIState.AttackPreparing;
-                monster.StateTimer = monster.TypeData.AttackPrepareSeconds;
-                // Face toward player
-                monster.FacingDirection = GetFacingDirection(monster.Position, playerPos);
+                // Check if player is in vision range -> switch to chasing
+                int dist = ManhattanDistance(monster.Position, playerPos);
+                bool playerInVision = dist <= monster.TypeData.VisionRange;
 
-                EventBus.Publish(new MonsterAttackPrepareEvent
+                // Check if player is adjacent (attack range) -> start attack
+                if (dist <= monster.TypeData.AttackRange && dist > 0)
                 {
-                    MonsterId = monster.Id,
-                    Position = monster.Position,
-                    PrepareSeconds = monster.TypeData.AttackPrepareSeconds,
-                    AttackTargetPosition = monster.Position + monster.FacingDirection
-                });
+                    monster.AIState = MonsterAIState.AttackPreparing;
+                    monster.StateTimer = monster.TypeData.AttackPrepareSeconds;
+                    // Face toward player
+                    monster.FacingDirection = GetFacingDirection(monster.Position, playerPos);
+
+                    EventBus.Publish(new MonsterAttackPrepareEvent
+                    {
+                        MonsterId = monster.Id,
+                        Position = monster.Position,
+                        PrepareSeconds = monster.TypeData.AttackPrepareSeconds,
+                        AttackTargetPosition = monster.Position + monster.FacingDirection
+                    });
+                    return false;
+                }
+
+                // Movement cooldown
+                monster.MoveCooldownRemaining -= deltaTime;
+                if (monster.MoveCooldownRemaining > 0f)
+                    return false;
+
+                monster.MoveCooldownRemaining = monster.TypeData.MoveCooldownSeconds;
+
+                Vector2Int newPos;
+                if (playerInVision)
+                {
+                    monster.AIState = MonsterAIState.Chasing;
+                    newPos = GetChaseStep(monster.Position, playerPos, monsterOnExploredCell);
+                }
+                else
+                {
+                    monster.AIState = MonsterAIState.Roaming;
+                    newPos = GetRandomStep(monster.Position, monsterOnExploredCell);
+                }
+
+                if (newPos != monster.Position)
+                {
+                    Vector2Int oldPos = monster.Position;
+                    monster.FacingDirection = GetFacingDirection(oldPos, newPos);
+                    monster.Position = newPos;
+
+                    EventBus.Publish(new MonsterMovedEvent
+                    {
+                        MonsterId = monster.Id,
+                        From = oldPos,
+                        To = newPos
+                    });
+                    return true;
+                }
+
                 return false;
-            }
-
-            // Movement cooldown
-            monster.MoveCooldownRemaining -= deltaTime;
-            if (monster.MoveCooldownRemaining > 0f)
-                return false;
-
-            monster.MoveCooldownRemaining = monster.TypeData.MoveCooldownSeconds;
-
-            Vector2Int newPos;
-            if (playerInVision)
-            {
-                monster.AIState = MonsterAIState.Chasing;
-                newPos = GetChaseStep(monster.Position, playerPos);
             }
             else
             {
+                // X10: Monster on unexplored cell — only roam, no chase/attack
+                monster.MoveCooldownRemaining -= deltaTime;
+                if (monster.MoveCooldownRemaining > 0f)
+                    return false;
+
+                monster.MoveCooldownRemaining = monster.TypeData.MoveCooldownSeconds;
                 monster.AIState = MonsterAIState.Roaming;
-                newPos = GetRandomStep(monster.Position);
-            }
 
-            if (newPos != monster.Position)
-            {
-                Vector2Int oldPos = monster.Position;
-                monster.FacingDirection = GetFacingDirection(oldPos, newPos);
-                monster.Position = newPos;
+                Vector2Int newPos = GetRandomStep(monster.Position, monsterOnExploredCell);
 
-                EventBus.Publish(new MonsterMovedEvent
+                if (newPos != monster.Position)
                 {
-                    MonsterId = monster.Id,
-                    From = oldPos,
-                    To = newPos
-                });
-                return true;
-            }
+                    Vector2Int oldPos = monster.Position;
+                    monster.FacingDirection = GetFacingDirection(oldPos, newPos);
+                    monster.Position = newPos;
 
-            return false;
+                    EventBus.Publish(new MonsterMovedEvent
+                    {
+                        MonsterId = monster.Id,
+                        From = oldPos,
+                        To = newPos
+                    });
+                    return true;
+                }
+
+                return false;
+            }
         }
 
         private void UpdateAttackPreparing(MonsterState monster, float deltaTime, Vector2Int playerPos)
@@ -280,7 +315,7 @@ namespace ProjectDR.Village.Exploration.Combat
             }
         }
 
-        private Vector2Int GetChaseStep(Vector2Int from, Vector2Int target)
+        private Vector2Int GetChaseStep(Vector2Int from, Vector2Int target, bool currentCellExplored)
         {
             // Simple greedy: move one step toward player (prefer axis with larger distance)
             int dx = target.x - from.x;
@@ -300,7 +335,7 @@ namespace ProjectDR.Village.Exploration.Combat
             {
                 Vector2Int c = candidates[i];
                 if (c == from) continue;
-                if (!IsWalkableForMonster(c)) continue;
+                if (!IsWalkableForMonster(c, currentCellExplored)) continue;
 
                 int d = ManhattanDistance(c, target);
                 if (d < bestDist)
@@ -314,7 +349,7 @@ namespace ProjectDR.Village.Exploration.Combat
             return best;
         }
 
-        private Vector2Int GetRandomStep(Vector2Int from)
+        private Vector2Int GetRandomStep(Vector2Int from, bool currentCellExplored)
         {
             // Try random directions
             int startDir = _rng.Next(4);
@@ -328,16 +363,27 @@ namespace ProjectDR.Village.Exploration.Combat
             {
                 int idx = (startDir + i) % 4;
                 Vector2Int candidate = from + offsets[idx];
-                if (IsWalkableForMonster(candidate))
+                if (IsWalkableForMonster(candidate, currentCellExplored))
                     return candidate;
             }
 
             return from; // Can't move
         }
 
-        private bool IsWalkableForMonster(Vector2Int pos)
+        /// <summary>
+        /// Checks if a monster can move to the given position.
+        /// X9: Monster cannot cross explored/unexplored boundary.
+        /// </summary>
+        /// <param name="pos">Target position.</param>
+        /// <param name="currentCellExplored">Whether the monster's current cell is explored.</param>
+        private bool IsWalkableForMonster(Vector2Int pos, bool currentCellExplored)
         {
             if (!_gridMap.IsWalkable(pos.x, pos.y))
+                return false;
+
+            // X9: Cannot cross explored/unexplored boundary
+            bool targetExplored = _gridMap.IsExplored(pos.x, pos.y);
+            if (targetExplored != currentCellExplored)
                 return false;
 
             // Don't overlap with other monsters

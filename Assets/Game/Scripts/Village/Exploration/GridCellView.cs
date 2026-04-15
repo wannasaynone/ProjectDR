@@ -121,7 +121,8 @@ namespace ProjectDR.Village.Exploration
                 _spriteRenderer.color = _baseColor;
 
             int count = _gridMap.GetAdjacentMonsterCount(_gridX, _gridY);
-            if (count > 0)
+            bool hasAdjacentUnexplored = _gridMap.HasAdjacentUnexploredCell(_gridX, _gridY);
+            if (count > 0 && hasAdjacentUnexplored)
             {
                 _numberText.gameObject.SetActive(true);
                 _numberText.text = count.ToString();

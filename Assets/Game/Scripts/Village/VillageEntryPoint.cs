@@ -30,6 +30,17 @@ namespace ProjectDR.Village
         [SerializeField] private TextAsset _combatConfigJson;
         [SerializeField] private TextAsset _monsterConfigJson;
 
+        [Header("Affinity Config")]
+        [SerializeField] private TextAsset _affinityConfigJson;
+
+        [Header("Gift View")]
+        [SerializeField] private GiftAreaView _giftViewPrefab;
+
+        [Header("CG System")]
+        [SerializeField] private TextAsset _cgSceneConfigJson;
+        [SerializeField] private CGGalleryView _galleryViewPrefab;
+        [SerializeField] private ProjectBSR.DialogueSystem.View.DialogueView _kgcDialogueViewPrefab;
+
         [Header("UI Container")]
         [SerializeField] private Transform _uiContainer;
 
@@ -51,6 +62,15 @@ namespace ProjectDR.Village
         private FarmManager _farmManager;
         private ITimeProvider _timeProvider;
 
+        // 好感度系統
+        private AffinityManager _affinityManager;
+        private GiftManager _giftManager;
+
+        // CG 解鎖與回憶系統
+        private CGSceneConfig _cgSceneConfig;
+        private CGUnlockManager _cgUnlockManager;
+        private HCGDialogueSetup _hcgDialogueSetup;
+
         private ViewStackController _stackController;
         private readonly HashSet<string> _initializedViews = new HashSet<string>();
 
@@ -67,16 +87,28 @@ namespace ProjectDR.Village
             InitializeUI();
             SubscribeToNavigationEvents();
             SubscribeToExplorationEvents();
+            EventBus.Subscribe<CGUnlockedEvent>(OnCGUnlocked);
         }
 
         private void OnDestroy()
         {
             UnsubscribeFromNavigationEvents();
             UnsubscribeFromExplorationEvents();
+            EventBus.Unsubscribe<CGUnlockedEvent>(OnCGUnlocked);
 
             if (_explorationManager != null)
             {
                 _explorationManager.Dispose();
+            }
+
+            if (_cgUnlockManager != null)
+            {
+                _cgUnlockManager.Dispose();
+            }
+
+            if (_hcgDialogueSetup != null)
+            {
+                _hcgDialogueSetup.Dispose();
             }
         }
 
@@ -129,6 +161,33 @@ namespace ProjectDR.Village
             _storageManager.AddItem("seed_carrot", 3);
             _storageManager.AddItem("seed_herb", 2);
 
+            // 好感度系統
+            AffinityConfigData affinityConfigData = _affinityConfigJson != null
+                ? JsonUtility.FromJson<AffinityConfigData>(_affinityConfigJson.text)
+                : new AffinityConfigData
+                {
+                    characters = new AffinityCharacterConfigData[0],
+                    defaultThresholds = new int[] { 5 }
+                };
+            AffinityConfig affinityConfig = new AffinityConfig(affinityConfigData);
+            _affinityManager = new AffinityManager(affinityConfig);
+            _giftManager = new GiftManager(_affinityManager, _backpackManager, _storageManager);
+
+            // CG 解鎖與回憶系統
+            CGSceneConfigData cgConfigData = _cgSceneConfigJson != null
+                ? JsonUtility.FromJson<CGSceneConfigData>(_cgSceneConfigJson.text)
+                : new CGSceneConfigData { scenes = new CGSceneConfigEntry[0] };
+            _cgSceneConfig = new CGSceneConfig(cgConfigData);
+            _cgUnlockManager = new CGUnlockManager(_cgSceneConfig);
+
+            // HCG 劇情播放（需要 KGC DialogueView Prefab）
+            if (_kgcDialogueViewPrefab != null && _villageCanvas != null)
+            {
+                _hcgDialogueSetup = new HCGDialogueSetup(
+                    _kgcDialogueViewPrefab,
+                    _villageCanvas.transform);
+            }
+
             // IT 階段：強制解鎖所有角色 ID 以便導航
             _progressionManager.ForceUnlock(CharacterIds.VillageChiefWife);
             _progressionManager.ForceUnlock(CharacterIds.Guard);
@@ -152,7 +211,7 @@ namespace ProjectDR.Village
                         "歡迎回來，今天辛苦了。",
                         "倉庫裡的物資我已經整理好了，需要什麼儘管拿。"
                     }),
-                    new string[] { AreaIds.Storage, FunctionIds.Dialogue }
+                    new string[] { AreaIds.Storage, FunctionIds.Gift, FunctionIds.Gallery, FunctionIds.Dialogue }
                 ),
                 new CharacterMenuData(
                     CharacterIds.Guard,
@@ -162,7 +221,7 @@ namespace ProjectDR.Village
                         "又要出門嗎？小心點。",
                         "森林裡最近不太安寧。"
                     }),
-                    new string[] { AreaIds.Exploration, FunctionIds.Dialogue }
+                    new string[] { AreaIds.Exploration, FunctionIds.Gift, FunctionIds.Gallery, FunctionIds.Dialogue }
                 ),
                 new CharacterMenuData(
                     CharacterIds.Witch,
@@ -172,7 +231,7 @@ namespace ProjectDR.Village
                         "嗯...你來了啊。",
                         "需要藥水的話，自己看著辦吧。"
                     }),
-                    new string[] { AreaIds.Alchemy, FunctionIds.Dialogue }
+                    new string[] { AreaIds.Alchemy, FunctionIds.Gift, FunctionIds.Gallery, FunctionIds.Dialogue }
                 ),
                 new CharacterMenuData(
                     CharacterIds.FarmGirl,
@@ -182,7 +241,7 @@ namespace ProjectDR.Village
                         "啊！你來得正好！",
                         "今天的作物長得可好了！"
                     }),
-                    new string[] { AreaIds.Farm, FunctionIds.Dialogue }
+                    new string[] { AreaIds.Farm, FunctionIds.Gift, FunctionIds.Gallery, FunctionIds.Dialogue }
                 )
             };
         }
@@ -228,7 +287,7 @@ namespace ProjectDR.Village
             CharacterInteractionView interactionView = view as CharacterInteractionView;
             if (interactionView == null) return;
 
-            interactionView.Initialize(_dialogueManager, _navigationManager, _typewriterCharsPerSecond);
+            interactionView.Initialize(_dialogueManager, _navigationManager, _affinityManager, _typewriterCharsPerSecond);
 
             // 註冊功能 View Prefab 與初始化回呼
             RegisterFunctionPrefabs(interactionView);
@@ -317,6 +376,47 @@ namespace ProjectDR.Village
                                 _farmManager, _storageManager,
                                 _itemTypeResolver, _navigationManager);
                             farmView.SetReturnAction(() => interactionView.CloseOverlay());
+                        }
+                    }
+                );
+            }
+
+            // 回憶（CG Gallery）
+            if (_galleryViewPrefab != null)
+            {
+                interactionView.RegisterFunctionPrefab(
+                    FunctionIds.Gallery,
+                    _galleryViewPrefab,
+                    (ViewBase view) =>
+                    {
+                        CGGalleryView galleryView = view as CGGalleryView;
+                        if (galleryView != null)
+                        {
+                            string characterId = interactionView.CurrentCharacterId;
+                            galleryView.Initialize(_cgUnlockManager, _hcgDialogueSetup, characterId);
+                            galleryView.SetReturnAction(() => interactionView.CloseOverlay());
+                        }
+                    }
+                );
+            }
+
+            // 送禮
+            if (_giftViewPrefab != null)
+            {
+                interactionView.RegisterFunctionPrefab(
+                    FunctionIds.Gift,
+                    _giftViewPrefab,
+                    (ViewBase view) =>
+                    {
+                        GiftAreaView giftView = view as GiftAreaView;
+                        if (giftView != null)
+                        {
+                            string characterId = interactionView.CurrentCharacterId;
+                            giftView.Initialize(
+                                _giftManager, _affinityManager,
+                                _backpackManager, _storageManager,
+                                characterId);
+                            giftView.SetReturnAction(() => interactionView.CloseOverlay());
                         }
                     }
                 );
@@ -434,6 +534,32 @@ namespace ProjectDR.Village
 
             // 回到 Hub
             _navigationManager.ReturnToHub();
+        }
+
+        // ===== CG 解鎖自動播放 =====
+
+        private void OnCGUnlocked(CGUnlockedEvent e)
+        {
+            if (_hcgDialogueSetup == null || _cgSceneConfig == null) return;
+
+            CGSceneInfo sceneInfo = _cgSceneConfig.GetSceneInfo(e.CgSceneId);
+            if (sceneInfo == null) return;
+
+            // HCG 對話觸發時隱藏對話系統以外的 UI
+            if (_uiContainer != null)
+            {
+                _uiContainer.gameObject.SetActive(false);
+            }
+
+            // 好感度達標時直接播放 HCG 劇情
+            _hcgDialogueSetup.PlayCGScene(sceneInfo.DialogueId, () =>
+            {
+                // 播放完成，恢復 UI
+                if (_uiContainer != null)
+                {
+                    _uiContainer.gameObject.SetActive(true);
+                }
+            });
         }
     }
 }

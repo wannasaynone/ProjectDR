@@ -37,11 +37,11 @@
 | 檔案 | 用途 |
 |------|------|
 | `Assets/Game/Scripts/Village/AreaIds.cs` | 村莊區域 ID 常數定義（Hub、Storage、Exploration、Alchemy、Farm） |
-| `Assets/Game/Scripts/Village/CharacterIds.cs` | 角色 ID 常數定義（VillageChiefWife、Hunter、Witch、FarmGirl） |
+| `Assets/Game/Scripts/Village/CharacterIds.cs` | 角色 ID 常數定義（VillageChiefWife、Guard、Witch、FarmGirl） |
 | `Assets/Game/Scripts/Village/DialogueData.cs` | 對話資料結構（儲存對話行文字陣列） |
 | `Assets/Game/Scripts/Village/DialogueManager.cs` | 對話播放狀態管理器（純邏輯，管理對話行推進與事件發布） |
 | `Assets/Game/Scripts/Village/CharacterMenuData.cs` | 角色功能選單資料（角色 ID、顯示名稱、對話、功能清單） |
-| `Assets/Game/Scripts/Village/VillageEvents.cs` | 村莊系統事件類別定義（AreaUnlockedEvent、DialogueStartedEvent、DialogueCompletedEvent、FarmPlotPlantedEvent、FarmPlotHarvestedEvent 等 12 個事件） |
+| `Assets/Game/Scripts/Village/VillageEvents.cs` | 村莊系統事件類別定義（AreaUnlockedEvent、DialogueStartedEvent、DialogueCompletedEvent、FarmPlotPlantedEvent、FarmPlotHarvestedEvent、AffinityChangedEvent、AffinityThresholdReachedEvent、CGUnlockedEvent 等 15 個事件） |
 | `Assets/Game/Scripts/Village/StorageManager.cs` | 倉庫物品庫存管理器（無容量上限） |
 | `Assets/Game/Scripts/Village/BackpackSlot.cs` | 背包格子資料結構（struct） |
 | `Assets/Game/Scripts/Village/BackpackSnapshot.cs` | 背包快照（不可變，用於死亡回溯） |
@@ -60,6 +60,13 @@
 | `Assets/Game/Scripts/Village/ITimeProvider.cs` | 時間提供者介面（GetCurrentTimestampUtc），供 FarmManager 取得可替換的時間來源 |
 | `Assets/Game/Scripts/Village/SystemTimeProvider.cs` | 系統時間提供者（ITimeProvider 實作，回傳 DateTimeOffset.UtcNow） |
 | `Assets/Game/Scripts/Village/FarmManager.cs` | 農田管理器（Plant/Harvest/HarvestAll）與相關 enum/Result 類別（PlantError、PlantResult、HarvestError、HarvestResult、HarvestAllResult） |
+| `Assets/Game/Scripts/Village/AffinityManager.cs` | 好感度管理器（GetAffinity/AddAffinity/GetThresholds/GetReachedThresholds，門檻達成事件發布） |
+| `Assets/Game/Scripts/Village/AffinityConfigData.cs` | 好感度配置 JSON DTO（AffinityConfigData、AffinityCharacterConfigData）與不可變配置物件（AffinityConfig） |
+| `Assets/Game/Scripts/Village/GiftManager.cs` | 送禮業務邏輯管理器（GiveGift：扣物品先背包後倉庫→加好感度），含 GiftResult、GiftError |
+| `Assets/Game/Scripts/Village/CGSceneConfigData.cs` | CG 場景配置 JSON DTO（CGSceneConfigEntry、CGSceneConfigData）與不可變配置物件（CGSceneInfo、CGSceneConfig） |
+| `Assets/Game/Scripts/Village/CGUnlockManager.cs` | CG 解鎖管理器（監聽 AffinityThresholdReachedEvent、PlayerPrefs 持久化、Dispose 模式） |
+| `Assets/Game/Scripts/Village/ResourcesCGProvider.cs` | IT 階段 CG 圖片載入器（ICGProvider 實作，Resources/CG/ 載入或生成 placeholder） |
+| `Assets/Game/Scripts/Village/HCGDialogueSetup.cs` | HCG 劇情播放整合層（KGC DialogueManager + GameStaticDataManager，IT 硬編碼 4 角色對話） |
 
 ### 村莊 UI（Assets/Game/Scripts/Village/UI）
 | 檔案 | 用途 |
@@ -74,6 +81,8 @@
 | `Assets/Game/Scripts/Village/UI/ExplorationAreaView.cs` | 探索入口畫面，提供出發按鈕（出發後由 VillageEntryPoint 處理切換） |
 | `Assets/Game/Scripts/Village/UI/AlchemyAreaView.cs` | 煉金工坊畫面（IT 階段 Placeholder） |
 | `Assets/Game/Scripts/Village/UI/FarmAreaView.cs` | 農場畫面（農田格子顯示、種植/收穫互動、種子選擇面板） |
+| `Assets/Game/Scripts/Village/UI/GiftAreaView.cs` | 送禮畫面（合併背包+倉庫物品清單、好感度顯示、門檻達成回饋，overlay 模式） |
+| `Assets/Game/Scripts/Village/UI/CGGalleryView.cs` | CG 回憶圖鑑 overlay View（已解鎖場景清單、點擊重播 HCG 劇情） |
 
 ## 地圖資料（Assets/Game/Resources/Maps）
 
@@ -91,11 +100,14 @@
 | `Assets/Game/Prefabs/ExplorationAreaView.prefab` | 探索入口畫面 UGUI Prefab |
 | `Assets/Game/Prefabs/AlchemyAreaView.prefab` | 煉金工坊畫面 UGUI Prefab（Placeholder） |
 | `Assets/Game/Prefabs/FarmAreaView.prefab` | 農場畫面 UGUI Prefab（Placeholder） |
+| `Assets/Game/Prefabs/GiftAreaView.prefab` | 送禮畫面 UGUI Prefab（物品清單、好感度顯示、門檻回饋） |
+| `Assets/Game/Prefabs/CGGalleryView.prefab` | CG 回憶圖鑑 UGUI Prefab |
 | `Assets/Game/Prefabs/AreaButton.prefab` | 區域導航按鈕模板（VillageHubView 動態生成用） |
 | `Assets/Game/Prefabs/BackpackSlotRow.prefab` | 背包格子行模板（StorageAreaView 背包欄動態生成用） |
 | `Assets/Game/Prefabs/WarehouseItemRow.prefab` | 倉庫物品行模板（StorageAreaView 倉庫欄動態生成用） |
 | `Assets/Game/Prefabs/FarmPlotUI.prefab` | 農田格子 UI 模板（FarmAreaView 動態生成用） |
 | `Assets/Game/Prefabs/SeedItemButton.prefab` | 種子選項按鈕模板（FarmAreaView 種子選擇面板用） |
+| `Assets/Game/Prefabs/GiftItemRow.prefab` | 送禮物品行模板（GiftAreaView 物品清單動態生成用） |
 | `Assets/Game/Prefabs/ItemRow.prefab` | 物品列模板（舊版，保留備用） |
 
 ### 探索模組（Assets/Game/Scripts/Village/Exploration）
@@ -153,6 +165,8 @@
 |------|------|
 | `Assets/Game/Resources/Config/combat-config.json` | 玩家初始數值（HP/ATK/DEF/SPD）、劍攻擊參數（角度、範圍、冷卻）、移動速度參數 |
 | `Assets/Game/Resources/Config/monster-config.json` | 魔物種類定義（Slime、Bat：HP/ATK/DEF/SPD、移動冷卻、視野、攻擊參數、顏色） |
+| `Assets/Game/Resources/Config/affinity-config.json` | 好感度門檻配置（各角色門檻值陣列，IT 階段四角色各 [5]） |
+| `Assets/Game/Resources/Config/cg-scene-config.json` | CG 場景配置（角色對應 CG 場景 ID、門檻值、對話 ID、顯示名稱） |
 
 ## 測試程式碼（Tests）
 
@@ -185,4 +199,7 @@
 | `Assets/Tests/Editor/Village/Exploration/Combat/SpdMoveSpeedCalculatorTests.cs` | SpdMoveSpeedCalculator 單元測試（6 個：正常計算、高 SPD 下限、零 SPD、無效參數） |
 | `Assets/Tests/Editor/Village/Exploration/Combat/PlayerMovementBlockTests.cs` | PlayerGridMovement 額外阻擋檢查測試（4 個：GDD 規則 47 可見魔物阻擋移動） |
 | `Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs` | CombatManager 單元測試（8 個：可見魔物阻擋、魔物攻擊傷害、踩到魔物退格、事件清理） |
+| `Assets/Tests/Editor/Village/AffinityManagerTests.cs` | AffinityManager 單元測試（31 個：建構驗證、好感度增加/累加、門檻觸發/多門檻/跳越門檻、事件發布、JSON 反序列化） |
+| `Assets/Tests/Editor/Village/GiftManagerTests.cs` | GiftManager 單元測試（22 個：建構驗證、背包優先扣除、倉庫備援、物品不足、好感度累計、事件發布） |
+| `Assets/Tests/Editor/Village/CGUnlockManagerTests.cs` | CGUnlockManager + CGSceneConfig 單元測試（33 個：解鎖邏輯、PlayerPrefs 持久化、事件發布、JSON 反序列化） |
 | `Assets/Tests/Editor/Village/Exploration/Combat/DeathManagerTests.cs` | DeathManager 單元測試（13 個：死亡偵測、背包回溯、事件順序、重複觸發防護、Dispose、Reset） |

@@ -36,6 +36,9 @@ namespace ProjectDR.Village.Exploration.Combat
         // Attack warning timer
         private float _warningTimer;
 
+        /// <summary>Unique ID of the monster this view represents.</summary>
+        public int MonsterId => _monsterState != null ? _monsterState.Id : -1;
+
         public void Initialize(MonsterState monsterState, GridMap gridMap, ExplorationMapView mapView)
         {
             _monsterState = monsterState;
@@ -48,6 +51,15 @@ namespace ProjectDR.Village.Exploration.Combat
             _spriteRenderer.color = monsterState.TypeData.DisplayColor;
             _spriteRenderer.sortingOrder = 5;
             transform.localScale = new Vector3(0.7f, 0.7f, 1f);
+
+            // Add collider for contact detection
+            CircleCollider2D collider = gameObject.AddComponent<CircleCollider2D>();
+            collider.isTrigger = true;
+            collider.radius = 0.3f;
+
+            // Rigidbody2D needed for trigger detection, but monster movement is manual
+            Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
+            rb.bodyType = RigidbodyType2D.Kinematic;
 
             UpdateWorldPosition();
             CreateHpBar();

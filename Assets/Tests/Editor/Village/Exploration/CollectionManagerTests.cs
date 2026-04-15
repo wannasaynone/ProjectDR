@@ -28,15 +28,15 @@ namespace ProjectDR.Tests.Village.Exploration
             }
         }
 
-        private class MockMoveSpeedCalculator : IMoveSpeedCalculator
+        private class MockMoveSpeedProvider : IMoveSpeedProvider
         {
-            public float CalculateMoveDuration() => 0.5f;
+            public float GetMoveSpeed() => 5.0f;
         }
 
         // ===== Test infrastructure =====
 
         private GridMap _gridMap;
-        private PlayerGridMovement _playerMovement;
+        private PlayerFreeMovement _playerMovement;
         private BackpackManager _backpack;
         private CollectionManager _sut;
         private MapData _mapData;
@@ -73,8 +73,8 @@ namespace ProjectDR.Tests.Village.Exploration
             _gridMap = new GridMap(_mapData, new MockMonsterPositionProvider());
             _gridMap.InitializeExplored(1, -1);
 
-            _playerMovement = new PlayerGridMovement(
-                _gridMap, new Vector2Int(2, 2), new MockMoveSpeedCalculator());
+            _playerMovement = new PlayerFreeMovement(
+                _gridMap, new Vector2Int(2, 2), 1.0f, Vector3.zero, new MockMoveSpeedProvider());
 
             _backpack = new BackpackManager(5, 10);
             _sut = new CollectionManager(_gridMap, _playerMovement, _backpack);
@@ -92,8 +92,8 @@ namespace ProjectDR.Tests.Village.Exploration
             _gridMap = new GridMap(_mapData, new MockMonsterPositionProvider());
             _gridMap.InitializeExplored(1, -1);
 
-            _playerMovement = new PlayerGridMovement(
-                _gridMap, new Vector2Int(2, 2), new MockMoveSpeedCalculator());
+            _playerMovement = new PlayerFreeMovement(
+                _gridMap, new Vector2Int(2, 2), 1.0f, Vector3.zero, new MockMoveSpeedProvider());
 
             _backpack = new BackpackManager(5, 10);
             _sut = new CollectionManager(_gridMap, _playerMovement, _backpack);
@@ -116,15 +116,14 @@ namespace ProjectDR.Tests.Village.Exploration
         [Test]
         public void Constructor_NullGridMap_ThrowsArgumentNullException()
         {
+            CellType[] cells = CreateAllExplorableCells(3, 3);
+            MapData md = new MapData(3, 3, cells, new Vector2Int(1, 1), new List<List<Vector2Int>>());
+            GridMap gm = new GridMap(md, null);
+            gm.InitializeExplored(0, -1);
+            PlayerFreeMovement pm = new PlayerFreeMovement(gm, new Vector2Int(1, 1), 1.0f, Vector3.zero, new MockMoveSpeedProvider());
+
             Assert.Throws<ArgumentNullException>(() =>
-                new CollectionManager(null,
-                    new PlayerGridMovement(
-                        new GridMap(
-                            new MapData(3, 3, CreateAllExplorableCells(3, 3),
-                                new Vector2Int(1, 1), new List<List<Vector2Int>>()),
-                            null),
-                        new Vector2Int(1, 1), new MockMoveSpeedCalculator()),
-                    new BackpackManager(5, 10)));
+                new CollectionManager(null, pm, new BackpackManager(5, 10)));
         }
 
         [Test]
@@ -145,7 +144,7 @@ namespace ProjectDR.Tests.Village.Exploration
             MapData mapData = new MapData(3, 3, cells, new Vector2Int(1, 1), new List<List<Vector2Int>>());
             GridMap gridMap = new GridMap(mapData, null);
             gridMap.InitializeExplored(0, -1);
-            PlayerGridMovement pm = new PlayerGridMovement(gridMap, new Vector2Int(1, 1), new MockMoveSpeedCalculator());
+            PlayerFreeMovement pm = new PlayerFreeMovement(gridMap, new Vector2Int(1, 1), 1.0f, Vector3.zero, new MockMoveSpeedProvider());
 
             Assert.Throws<ArgumentNullException>(() =>
                 new CollectionManager(gridMap, pm, null));
@@ -180,11 +179,11 @@ namespace ProjectDR.Tests.Village.Exploration
         }
 
         [Test]
-        public void CanInteract_WhileMoving_ReturnsFalse()
+        public void CanInteract_WhileMovementLocked_ReturnsFalse()
         {
             SetUpWithCollectibleAtSpawn();
 
-            _playerMovement.TryMove(MoveDirection.Right);
+            _playerMovement.SetMovementLock(true);
 
             Assert.IsFalse(_sut.CanInteract());
         }
@@ -261,11 +260,11 @@ namespace ProjectDR.Tests.Village.Exploration
         }
 
         [Test]
-        public void TryStartGathering_WhileMoving_ReturnsFalse()
+        public void TryStartGathering_WhileMovementLocked_ReturnsFalse()
         {
             SetUpWithCollectibleAtSpawn();
 
-            _playerMovement.TryMove(MoveDirection.Right);
+            _playerMovement.SetMovementLock(true);
 
             bool result = _sut.TryStartGathering();
 
@@ -281,9 +280,13 @@ namespace ProjectDR.Tests.Village.Exploration
 
             _sut.TryStartGathering();
 
-            bool moveResult = _playerMovement.TryMove(MoveDirection.Right);
+            // Movement should be locked during gathering
+            Assert.IsTrue(_playerMovement.IsMovementLocked);
 
-            Assert.IsFalse(moveResult);
+            // Trying to move should have no effect
+            Vector2 posBefore = _playerMovement.WorldPosition;
+            _playerMovement.Move(Vector2.right, 0.5f);
+            Assert.AreEqual(posBefore.x, _playerMovement.WorldPosition.x, 0.001f);
         }
 
         // ===== CancelGathering (GDD rule 44) =====
@@ -560,8 +563,8 @@ namespace ProjectDR.Tests.Village.Exploration
             GridMap gridMap = new GridMap(mapData, new MockMonsterPositionProvider());
             gridMap.InitializeExplored(1, -1);
 
-            PlayerGridMovement pm = new PlayerGridMovement(
-                gridMap, new Vector2Int(2, 2), new MockMoveSpeedCalculator());
+            PlayerFreeMovement pm = new PlayerFreeMovement(
+                gridMap, new Vector2Int(2, 2), 1.0f, Vector3.zero, new MockMoveSpeedProvider());
 
             BackpackManager bp = new BackpackManager(5, 10);
             bp.AddItem("Potion", 1);
@@ -865,7 +868,7 @@ namespace ProjectDR.Tests.Village.Exploration
             Assert.IsFalse(_gridMap.HasCollectiblePoint(0, 0));
         }
 
-        // ===== PlayerGridMovement: movement lock =====
+        // ===== PlayerFreeMovement: movement lock =====
 
         [Test]
         public void PlayerMovement_SetMovementLock_True_PreventsMovement()
@@ -875,7 +878,10 @@ namespace ProjectDR.Tests.Village.Exploration
             _playerMovement.SetMovementLock(true);
 
             Assert.IsTrue(_playerMovement.IsMovementLocked);
-            Assert.IsFalse(_playerMovement.TryMove(MoveDirection.Right));
+
+            Vector2 posBefore = _playerMovement.WorldPosition;
+            _playerMovement.Move(Vector2.right, 0.5f);
+            Assert.AreEqual(posBefore.x, _playerMovement.WorldPosition.x, 0.001f);
         }
 
         [Test]
@@ -887,7 +893,10 @@ namespace ProjectDR.Tests.Village.Exploration
             _playerMovement.SetMovementLock(false);
 
             Assert.IsFalse(_playerMovement.IsMovementLocked);
-            Assert.IsTrue(_playerMovement.TryMove(MoveDirection.Right));
+
+            Vector2 posBefore = _playerMovement.WorldPosition;
+            _playerMovement.Move(Vector2.right, 0.1f);
+            Assert.Greater(_playerMovement.WorldPosition.x, posBefore.x);
         }
     }
 }

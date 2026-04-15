@@ -1,5 +1,5 @@
 // CollectionManager — 管理採集互動的核心邏輯。
-// 協調 PlayerGridMovement（移動鎖定）、CollectiblePointState（兩層計時）、BackpackManager（物品存放）。
+// 協調 PlayerFreeMovement（移動鎖定）、CollectiblePointState（兩層計時）、BackpackManager（物品存放）。
 // 對應 GDD 規則 8-13, 44-46。
 
 using System;
@@ -15,7 +15,7 @@ namespace ProjectDR.Village.Exploration
     public class CollectionManager
     {
         private readonly GridMap _gridMap;
-        private readonly PlayerGridMovement _playerMovement;
+        private readonly PlayerFreeMovement _playerMovement;
         private readonly BackpackManager _backpack;
         private readonly Dictionary<long, CollectiblePointState> _pointStates;
 
@@ -32,9 +32,9 @@ namespace ProjectDR.Village.Exploration
         /// 建立採集管理器。
         /// </summary>
         /// <param name="gridMap">格子地圖。</param>
-        /// <param name="playerMovement">玩家移動邏輯（用於鎖定移動）。</param>
+        /// <param name="playerMovement">玩家自由移動邏輯（用於鎖定移動與取得當前格子位置）。</param>
         /// <param name="backpack">背包（用於物品拾取）。</param>
-        public CollectionManager(GridMap gridMap, PlayerGridMovement playerMovement, BackpackManager backpack)
+        public CollectionManager(GridMap gridMap, PlayerFreeMovement playerMovement, BackpackManager backpack)
         {
             _gridMap = gridMap ?? throw new ArgumentNullException(nameof(gridMap));
             _playerMovement = playerMovement ?? throw new ArgumentNullException(nameof(playerMovement));
@@ -48,11 +48,11 @@ namespace ProjectDR.Village.Exploration
         public bool CanInteract()
         {
             if (IsCollecting) return false;
-            if (_playerMovement.IsMoving) return false;
+            if (_playerMovement.IsMovementLocked) return false;
 
             CollectiblePointData pointData = _gridMap.GetCollectiblePointAt(
-                _playerMovement.CurrentPosition.x,
-                _playerMovement.CurrentPosition.y);
+                _playerMovement.CurrentGridCell.x,
+                _playerMovement.CurrentGridCell.y);
 
             return pointData != null;
         }
@@ -64,10 +64,10 @@ namespace ProjectDR.Village.Exploration
         public bool TryStartGathering()
         {
             if (IsCollecting) return false;
-            if (_playerMovement.IsMoving) return false;
+            if (_playerMovement.IsMovementLocked) return false;
 
-            int x = _playerMovement.CurrentPosition.x;
-            int y = _playerMovement.CurrentPosition.y;
+            int x = _playerMovement.CurrentGridCell.x;
+            int y = _playerMovement.CurrentGridCell.y;
 
             CollectiblePointData pointData = _gridMap.GetCollectiblePointAt(x, y);
             if (pointData == null) return false;

@@ -11,19 +11,17 @@ namespace ProjectDR.Village.Exploration.Combat
     public class CombatInputHandler : MonoBehaviour
     {
         private SwordAttack _swordAttack;
-        private PlayerGridMovement _playerMovement;
-        private ExplorationMapView _mapView;
+        private PlayerFreeMovement _playerMovement;
         private CollectionManager _collectionManager;
         private Transform _playerVisualTransform;
         private Camera _mainCamera;
 
-        public void Initialize(SwordAttack swordAttack, PlayerGridMovement playerMovement,
-            ExplorationMapView mapView, CollectionManager collectionManager = null,
+        public void Initialize(SwordAttack swordAttack, PlayerFreeMovement playerMovement,
+            CollectionManager collectionManager = null,
             Transform playerVisualTransform = null)
         {
             _swordAttack = swordAttack;
             _playerMovement = playerMovement;
-            _mapView = mapView;
             _collectionManager = collectionManager;
             _playerVisualTransform = playerVisualTransform;
             _mainCamera = Camera.main;
@@ -31,7 +29,7 @@ namespace ProjectDR.Village.Exploration.Combat
 
         private void Update()
         {
-            if (_swordAttack == null || _playerMovement == null || _mapView == null)
+            if (_swordAttack == null || _playerMovement == null)
                 return;
 
             // Block attacks during collection interaction
@@ -51,22 +49,18 @@ namespace ProjectDR.Village.Exploration.Combat
             if (_mainCamera == null)
                 return;
 
-            // Get player world position — use visual transform if available (accurate during lerp),
-            // otherwise fall back to grid-based position.
-            Vector3 playerWorldPos3;
+            // Get player world position from free movement
+            Vector2 playerWorldPos;
             if (_playerVisualTransform != null)
             {
-                playerWorldPos3 = _playerVisualTransform.position;
+                playerWorldPos = new Vector2(_playerVisualTransform.position.x, _playerVisualTransform.position.y);
             }
             else
             {
-                playerWorldPos3 = _mapView.GridToWorldPosition(
-                    _playerMovement.CurrentPosition.x, _playerMovement.CurrentPosition.y);
+                playerWorldPos = _playerMovement.WorldPosition;
             }
-            Vector2 playerWorldPos = new Vector2(playerWorldPos3.x, playerWorldPos3.y);
 
-            // Get mouse world position — z must be the distance from camera to game plane (z=0),
-            // otherwise ScreenToWorldPoint returns the camera's own position for perspective cameras.
+            // Get mouse world position
             Vector3 mouseScreenPos = Input.mousePosition;
             mouseScreenPos.z = Mathf.Abs(_mainCamera.transform.position.z);
             Vector3 mouseWorldPos3 = _mainCamera.ScreenToWorldPoint(mouseScreenPos);

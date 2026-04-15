@@ -115,18 +115,23 @@
 |------|------|
 | `Assets/Game/Scripts/Village/Exploration/CellType.cs` | 格子類型列舉（Explorable、Blocked） |
 | `Assets/Game/Scripts/Village/Exploration/MoveDirection.cs` | 移動方向列舉（Up、Down、Left、Right） |
-| `Assets/Game/Scripts/Village/Exploration/ExplorationEvents.cs` | 探索系統事件定義（CellRevealedEvent、MonsterCountsChangedEvent、PlayerMoveStartedEvent、PlayerMoveCompletedEvent、ExplorationMapInitializedEvent、EvacuationStartedEvent、EvacuationCancelledEvent、ExplorationCompletedEvent、CollectionStartedEvent、CollectionCancelledEvent、GatheringCompletedEvent、ItemSlotUnlockedEvent、ItemPickedUpEvent、CollectionPanelClosedEvent） |
+| `Assets/Game/Scripts/Village/Exploration/ExplorationEvents.cs` | 探索系統事件定義（CellRevealedEvent、MonsterCountsChangedEvent、PlayerMoveStartedEvent、PlayerMoveCompletedEvent、PlayerCellChangedEvent、ExplorationMapInitializedEvent、EvacuationStartedEvent、EvacuationCancelledEvent、ExplorationCompletedEvent、CollectionStartedEvent、CollectionCancelledEvent、GatheringCompletedEvent、ItemSlotUnlockedEvent、ItemPickedUpEvent、CollectionPanelClosedEvent） |
 | `Assets/Game/Scripts/Village/Exploration/IMonsterPositionProvider.cs` | 魔物位置提供者介面（GridMap 透過此介面取得魔物位置） |
-| `Assets/Game/Scripts/Village/Exploration/IMoveSpeedCalculator.cs` | 移動速度計算器介面（根據 SPD 計算 lerp 時間） |
-| `Assets/Game/Scripts/Village/Exploration/FixedMoveSpeedCalculator.cs` | 固定移動速度計算器（IT 階段使用，回傳固定 lerp 時間） |
+| `Assets/Game/Scripts/Village/Exploration/IMoveSpeedCalculator.cs` | 格子制移動速度計算器介面（回傳 lerp duration，已棄用但保留） |
+| `Assets/Game/Scripts/Village/Exploration/FixedMoveSpeedCalculator.cs` | 固定格子制移動速度計算器（已棄用但保留） |
+| `Assets/Game/Scripts/Village/Exploration/IMoveSpeedProvider.cs` | 自由移動速度提供者介面（回傳 units/second） |
+| `Assets/Game/Scripts/Village/Exploration/FixedMoveSpeedProvider.cs` | 固定自由移動速度提供者（測試用） |
 | `Assets/Game/Scripts/Village/Exploration/MapData.cs` | 地圖靜態資料（寬高、格子類型、出發點、撤離點群組，從 JSON 載入） |
 | `Assets/Game/Scripts/Village/Exploration/MapDataJson.cs` | JSON DTO（MapDataJson、PositionJson、EvacuationGroupJson）與靜態載入器 MapDataLoader |
 | `Assets/Game/Scripts/Village/Exploration/GridMap.cs` | 格子地圖邏輯管理器（探索狀態、魔物數量計算、格子揭開、撤離點管理） |
-| `Assets/Game/Scripts/Village/Exploration/PlayerGridMovement.cs` | 玩家格子移動邏輯（座標管理、移動狀態機、lerp 時間計算） |
+| `Assets/Game/Scripts/Village/Exploration/PlayerGridMovement.cs` | 玩家格子移動邏輯（已棄用但保留，供舊測試參考） |
+| `Assets/Game/Scripts/Village/Exploration/PlayerFreeMovement.cs` | 玩家自由移動邏輯（世界座標追蹤、格子變更偵測、撞牆滑動、擊退） |
 | `Assets/Game/Scripts/Village/Exploration/GridCellView.cs` | 單格 View（SpriteRenderer 顏色 + TMP 數字，訂閱 CellRevealedEvent / MonsterCountsChangedEvent） |
 | `Assets/Game/Scripts/Village/Exploration/ExplorationMapView.cs` | 地圖 View（動態生成所有可走格子的 GridCellView，提供 GridToWorldPosition） |
-| `Assets/Game/Scripts/Village/Exploration/ExplorationPlayerView.cs` | 玩家 token View（白色方塊，訂閱 PlayerMoveStartedEvent 執行 Lerp 動畫） |
-| `Assets/Game/Scripts/Village/Exploration/ExplorationInputHandler.cs` | 鍵盤輸入處理器（WASD / 方向鍵 → PlayerGridMovement.TryMove） |
+| `Assets/Game/Scripts/Village/Exploration/ExplorationPlayerView.cs` | 玩家 token View（已棄用但保留，格子制 Lerp 動畫） |
+| `Assets/Game/Scripts/Village/Exploration/ExplorationFreePlayerView.cs` | 玩家 token View（自由移動版，每幀同步 WorldPosition） |
+| `Assets/Game/Scripts/Village/Exploration/ExplorationInputHandler.cs` | 鍵盤輸入處理器（已棄用但保留，格子制離散輸入） |
+| `Assets/Game/Scripts/Village/Exploration/ExplorationFreeInputHandler.cs` | 鍵盤輸入處理器（自由移動版，WASD 持續輸入） |
 | `Assets/Game/Scripts/Village/Exploration/EvacuationManager.cs` | 撤離倒數管理器（純 C# 邏輯，監控玩家位置、管理 6 秒倒數計時） |
 | `Assets/Game/Scripts/Village/Exploration/EvacuationView.cs` | 撤離倒數 View（WorldSpace TextMeshPro 顯示倒數文字） |
 | `Assets/Game/Scripts/Village/Exploration/CollectiblePointData.cs` | 探索點靜態資料（CollectibleItemEntry + CollectiblePointData，物品清單、採集時間、解鎖時間） |
@@ -142,19 +147,22 @@
 ### 戰鬥模組（Assets/Game/Scripts/Village/Exploration/Combat）
 | 檔案 | 用途 |
 |------|------|
-| `Assets/Game/Scripts/Village/Exploration/Combat/CombatConfigData.cs` | 戰鬥配置 JSON DTO 與不可變 CombatConfig（玩家數值、劍攻擊參數、移動速度） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/CombatConfigData.cs` | 戰鬥配置 JSON DTO 與不可變 CombatConfig（玩家數值、劍攻擊參數、移動速度、自由移動速度、擊退參數） |
 | `Assets/Game/Scripts/Village/Exploration/Combat/MonsterConfigData.cs` | 魔物配置 JSON DTO 與不可變 MonsterConfig / MonsterTypeData（魔物種類定義） |
 | `Assets/Game/Scripts/Village/Exploration/Combat/PlayerCombatStats.cs` | 玩家戰鬥數值容器（HP/ATK/DEF/SPD，TakeDamage/Heal，發布 HP 變更事件） |
 | `Assets/Game/Scripts/Village/Exploration/Combat/DamageCalculator.cs` | 靜態傷害計算（DMG = ATK - DEF，最小值 1） |
 | `Assets/Game/Scripts/Village/Exploration/Combat/SwordAttack.cs` | 劍攻擊邏輯（扇形範圍判定、冷卻、SPD 影響冷卻） |
 | `Assets/Game/Scripts/Village/Exploration/Combat/MonsterState.cs` | 單一魔物運行時狀態（位置、HP、AI 狀態機：Idle/Roaming/Chasing/AttackPreparing/AttackCooldown） |
 | `Assets/Game/Scripts/Village/Exploration/Combat/MonsterManager.cs` | 魔物管理器（生成、AI 更新、死亡移除），實作 IMonsterPositionProvider |
-| `Assets/Game/Scripts/Village/Exploration/Combat/CombatManager.cs` | 戰鬥互動管理器（玩家攻擊判定、魔物攻擊判定、踩到魔物退格） |
-| `Assets/Game/Scripts/Village/Exploration/Combat/CombatEvents.cs` | 戰鬥系統事件定義（PlayerHpChanged、PlayerDied、PlayerDeath、DeathRewindCompleted、MonsterDamaged、MonsterDied、PlayerAttack、MonsterAttackPrepare/Execute、PlayerSteppedOnMonster、MonsterMoved、MonsterSpawned） |
-| `Assets/Game/Scripts/Village/Exploration/Combat/SpdMoveSpeedCalculator.cs` | SPD 基礎移動速度計算器（duration = base - spd * factor） |
-| `Assets/Game/Scripts/Village/Exploration/Combat/CombatInputHandler.cs` | 滑鼠輸入處理器（左鍵攻擊，方向跟隨滑鼠） |
-| `Assets/Game/Scripts/Village/Exploration/Combat/PlayerCombatView.cs` | 玩家戰鬥 View（HP bar、劍揮擊閃現、踩到魔物退格動畫） |
-| `Assets/Game/Scripts/Village/Exploration/Combat/MonsterView.cs` | 魔物 View（彩色方塊 + HP bar + 攻擊準備警告，已探索格才可見） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/CombatManager.cs` | 戰鬥互動管理器（玩家攻擊判定、魔物攻擊判定、碰觸傷害+擊退） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/CombatEvents.cs` | 戰鬥系統事件定義（PlayerHpChanged、PlayerDied、PlayerDeath、DeathRewindCompleted、MonsterDamaged、MonsterDied、PlayerAttack、MonsterAttackPrepare/Execute、PlayerContactDamage、PlayerKnockback、PlayerSteppedOnMonster(legacy)、MonsterMoved、MonsterSpawned） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/SpdMoveSpeedCalculator.cs` | SPD 基礎格子制移動速度計算器（已棄用但保留） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/SpdMoveSpeedProvider.cs` | SPD 基礎自由移動速度提供者（speed = base + spd * factor） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/CombatInputHandler.cs` | 滑鼠輸入處理器（左鍵攻擊，方向跟隨滑鼠，使用 PlayerFreeMovement） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/PlayerCombatView.cs` | 玩家戰鬥 View（HP bar、劍揮擊閃現） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/PlayerContactDetector.cs` | 玩家碰撞偵測器（Collider2D 偵測魔物碰觸，發布 PlayerContactDamageEvent） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/AimIndicatorView.cs` | 瞄準方向指示器（LineRenderer 從玩家到滑鼠方向畫線） |
+| `Assets/Game/Scripts/Village/Exploration/Combat/MonsterView.cs` | 魔物 View（彩色方塊 + HP bar + 攻擊準備警告 + 碰撞體，已探索格才可見） |
 | `Assets/Game/Scripts/Village/Exploration/Combat/DeathManager.cs` | 死亡管理器（監聽 PlayerDiedEvent，執行背包回溯、發布死亡事件、結束探索） |
 | `Assets/Game/Scripts/Village/Exploration/Combat/DeathView.cs` | 死亡視覺回饋 View（紅色閃爍、畫面變暗、「時間回溯...」文字提示） |
 | `Assets/Game/Scripts/Village/Exploration/Combat/DamageNumberView.cs` | 傷害數字飄字 View（浮動上升並淡出） |
@@ -187,7 +195,8 @@
 | `Assets/Tests/Editor/Village/Exploration/MapDataLoaderTests.cs` | MapDataLoader 單元測試（8 個：正常反序列化、寬高、出發點、格子類型、撤離點、null/empty/invalid cell 例外） |
 | `Assets/Tests/Editor/Village/Exploration/GridMapTests.cs` | GridMap 單元測試（初始化探索、揭開邏輯、魔物數量計算、撤離點、事件發布） |
 | `Assets/Tests/Editor/Village/Exploration/EvacuationManagerTests.cs` | EvacuationManager 單元測試（建構驗證、觸發點偵測、倒數啟動/取消/完成、進度計算、狀態鎖定、事件發布） |
-| `Assets/Tests/Editor/Village/Exploration/PlayerGridMovementTests.cs` | PlayerGridMovement 單元測試（移動發起/完成、狀態轉換、邊界條件、事件發布、FixedMoveSpeedCalculator） |
+| `Assets/Tests/Editor/Village/Exploration/PlayerGridMovementTests.cs` | PlayerGridMovement 單元測試（已棄用但保留，驗證舊格子制移動邏輯） |
+| `Assets/Tests/Editor/Village/Exploration/PlayerFreeMovementTests.cs` | PlayerFreeMovement 單元測試（自由移動、格子變更偵測、撞牆、擊退、座標轉換） |
 | `Assets/Tests/Editor/Village/Exploration/CollectiblePointDataTests.cs` | CollectiblePointData 單元測試（14 個：建構驗證、防禦性拷貝、邊界條件） |
 | `Assets/Tests/Editor/Village/Exploration/CollectiblePointStateTests.cs` | CollectiblePointState 單元測試（44 個：狀態機轉換、兩層計時、物品拾取、取消重置、事件發布） |
 | `Assets/Tests/Editor/Village/Exploration/CollectionManagerTests.cs` | CollectionManager 單元測試（45 個：互動可用性、開始/取消採集、移動鎖定、物品拾取、完整流程） |
@@ -196,9 +205,9 @@
 | `Assets/Tests/Editor/Village/Exploration/Combat/SwordAttackTests.cs` | SwordAttack 單元測試（20 個：冷卻計算、攻擊執行、扇形範圍判定、事件發布） |
 | `Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs` | MonsterState 單元測試（6 個：初始化、唯一 ID、傷害、死亡） |
 | `Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs` | MonsterManager 單元測試（17 個：生成、位置查詢、傷害、死亡移除、AI 狀態轉換、事件發布） |
-| `Assets/Tests/Editor/Village/Exploration/Combat/SpdMoveSpeedCalculatorTests.cs` | SpdMoveSpeedCalculator 單元測試（6 個：正常計算、高 SPD 下限、零 SPD、無效參數） |
-| `Assets/Tests/Editor/Village/Exploration/Combat/PlayerMovementBlockTests.cs` | PlayerGridMovement 額外阻擋檢查測試（4 個：GDD 規則 47 可見魔物阻擋移動） |
-| `Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs` | CombatManager 單元測試（8 個：可見魔物阻擋、魔物攻擊傷害、踩到魔物退格、事件清理） |
+| `Assets/Tests/Editor/Village/Exploration/Combat/SpdMoveSpeedCalculatorTests.cs` | SpdMoveSpeedCalculator 單元測試（已棄用但保留） |
+| `Assets/Tests/Editor/Village/Exploration/Combat/SpdMoveSpeedProviderTests.cs` | SpdMoveSpeedProvider 單元測試（6 個：正常計算、下限、零 SPD、無效參數） |
+| `Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs` | CombatManager 單元測試（6 個：魔物攻擊傷害、碰觸傷害+擊退、死亡魔物無效、事件清理） |
 | `Assets/Tests/Editor/Village/AffinityManagerTests.cs` | AffinityManager 單元測試（31 個：建構驗證、好感度增加/累加、門檻觸發/多門檻/跳越門檻、事件發布、JSON 反序列化） |
 | `Assets/Tests/Editor/Village/GiftManagerTests.cs` | GiftManager 單元測試（22 個：建構驗證、背包優先扣除、倉庫備援、物品不足、好感度累計、事件發布） |
 | `Assets/Tests/Editor/Village/CGUnlockManagerTests.cs` | CGUnlockManager + CGSceneConfig 單元測試（33 個：解鎖邏輯、PlayerPrefs 持久化、事件發布、JSON 反序列化） |

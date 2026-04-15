@@ -10,14 +10,12 @@ namespace ProjectDR.Village.Exploration.Combat
     /// - HP bar (simple world-space bar above player token)
     /// - Sword attack direction indicator
     /// - Sword sweep flash on attack
-    /// - Push-back visual on stepping on hidden monster
     /// </summary>
     public class PlayerCombatView : MonoBehaviour
     {
         private PlayerCombatStats _playerStats;
         private SwordAttack _swordAttack;
-        private ExplorationPlayerView _playerView;
-        private ExplorationMapView _mapView;
+        private Transform _playerViewTransform;
         private Camera _mainCamera;
 
         // HP bar
@@ -31,28 +29,18 @@ namespace ProjectDR.Village.Exploration.Combat
         private float _sweepFlashTimer;
         private const float SweepFlashDuration = 0.15f;
 
-        // Push-back animation
-        private bool _isPushingBack;
-        private Vector3 _pushBackFrom;
-        private Vector3 _pushBackTo;
-        private float _pushBackTimer;
-        private const float PushBackDuration = 0.2f;
-
         // Event handlers
         private Action<PlayerHpChangedEvent> _onHpChanged;
         private Action<PlayerAttackEvent> _onAttack;
-        private Action<PlayerSteppedOnMonsterEvent> _onSteppedOnMonster;
 
         public void Initialize(
             PlayerCombatStats playerStats,
             SwordAttack swordAttack,
-            ExplorationPlayerView playerView,
-            ExplorationMapView mapView)
+            Transform playerViewTransform)
         {
             _playerStats = playerStats;
             _swordAttack = swordAttack;
-            _playerView = playerView;
-            _mapView = mapView;
+            _playerViewTransform = playerViewTransform;
             _mainCamera = Camera.main;
 
             CreateHpBar();
@@ -60,21 +48,19 @@ namespace ProjectDR.Village.Exploration.Combat
 
             _onHpChanged = (e) => UpdateHpBar();
             _onAttack = HandleAttack;
-            _onSteppedOnMonster = HandleSteppedOnMonster;
 
             EventBus.Subscribe<PlayerHpChangedEvent>(_onHpChanged);
             EventBus.Subscribe<PlayerAttackEvent>(_onAttack);
-            EventBus.Subscribe<PlayerSteppedOnMonsterEvent>(_onSteppedOnMonster);
 
             UpdateHpBar();
         }
 
         private void Update()
         {
-            if (_playerView != null)
+            if (_playerViewTransform != null)
             {
                 // Follow player position
-                transform.position = _playerView.transform.position;
+                transform.position = _playerViewTransform.position;
             }
 
             // Sweep flash timer
@@ -84,19 +70,6 @@ namespace ProjectDR.Village.Exploration.Combat
                 if (_sweepFlashTimer <= 0f)
                 {
                     _sweepIndicator.SetActive(false);
-                }
-            }
-
-            // Push-back animation
-            if (_isPushingBack && _playerView != null)
-            {
-                _pushBackTimer += Time.deltaTime;
-                float t = Mathf.Clamp01(_pushBackTimer / PushBackDuration);
-                _playerView.transform.position = Vector3.Lerp(_pushBackFrom, _pushBackTo, t);
-
-                if (t >= 1f)
-                {
-                    _isPushingBack = false;
                 }
             }
 
@@ -111,7 +84,6 @@ namespace ProjectDR.Village.Exploration.Combat
         {
             if (_onHpChanged != null) EventBus.Unsubscribe<PlayerHpChangedEvent>(_onHpChanged);
             if (_onAttack != null) EventBus.Unsubscribe<PlayerAttackEvent>(_onAttack);
-            if (_onSteppedOnMonster != null) EventBus.Unsubscribe<PlayerSteppedOnMonsterEvent>(_onSteppedOnMonster);
         }
 
         private void CreateHpBar()
@@ -195,17 +167,6 @@ namespace ProjectDR.Village.Exploration.Combat
                 e.Direction.x * e.Range * 0.5f,
                 e.Direction.y * e.Range * 0.5f,
                 0f);
-        }
-
-        private void HandleSteppedOnMonster(PlayerSteppedOnMonsterEvent e)
-        {
-            if (_playerView == null || _mapView == null) return;
-
-            // Animate push-back
-            _pushBackFrom = _mapView.GridToWorldPosition(e.MonsterPosition.x, e.MonsterPosition.y);
-            _pushBackTo = _mapView.GridToWorldPosition(e.ReturnPosition.x, e.ReturnPosition.y);
-            _pushBackTimer = 0f;
-            _isPushingBack = true;
         }
 
         private static Sprite CreateWhiteSprite()

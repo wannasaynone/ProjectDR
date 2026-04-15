@@ -155,12 +155,6 @@ namespace ProjectDR.Village
                 farmPlotCount, seedDataMap, _itemTypeResolver,
                 _storageManager, _timeProvider);
 
-            // IT 測試用：預設種子入庫，方便測試農田種植功能
-            // TODO: 正式版本刪除此段
-            _storageManager.AddItem("seed_wheat", 5);
-            _storageManager.AddItem("seed_carrot", 3);
-            _storageManager.AddItem("seed_herb", 2);
-
             // 好感度系統
             AffinityConfigData affinityConfigData = _affinityConfigJson != null
                 ? JsonUtility.FromJson<AffinityConfigData>(_affinityConfigJson.text)

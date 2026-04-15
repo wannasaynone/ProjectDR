@@ -12,5 +12,9 @@
         "spdCooldownFactor": 0.02
     },
     "moveSpeedBase": 0.2,
-    "spdMoveSpeedFactor": 0.005
+    "spdMoveSpeedFactor": 0.005,
+    "freeMovementBaseSpeed": 3.0,
+    "spdFreeMovementSpeedFactor": 0.1,
+    "knockbackDistance": 1.5,
+    "knockbackDuration": 0.2
 }

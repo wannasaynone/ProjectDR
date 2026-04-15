@@ -72,6 +72,31 @@ namespace ProjectDR.Village.Exploration.Combat
         public int DamageDealt;
     }
 
+    /// <summary>
+    /// Published when the player makes physical contact with a monster (collision).
+    /// Replaces the old grid-based "stepped on monster" mechanic.
+    /// </summary>
+    public class PlayerContactDamageEvent : GameEventBase
+    {
+        /// <summary>The monster that was contacted.</summary>
+        public int MonsterId;
+        /// <summary>World-space position of the contact.</summary>
+        public Vector2 ContactPosition;
+        /// <summary>Normalized direction for knockback (from monster to player).</summary>
+        public Vector2 KnockbackDirection;
+        /// <summary>Damage dealt to the player.</summary>
+        public int DamageDealt;
+    }
+
+    /// <summary>Published when the player is knocked back after contact damage.</summary>
+    public class PlayerKnockbackEvent : GameEventBase
+    {
+        /// <summary>World-space direction of knockback (normalized).</summary>
+        public Vector2 Direction;
+        /// <summary>Distance of knockback in world units.</summary>
+        public float Distance;
+    }
+
     /// <summary>Published when a monster changes position.</summary>
     public class MonsterMovedEvent : GameEventBase
     {

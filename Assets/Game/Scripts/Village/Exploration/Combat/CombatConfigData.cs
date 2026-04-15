@@ -18,6 +18,10 @@ namespace ProjectDR.Village.Exploration.Combat
         public SwordConfigJson sword;
         public float moveSpeedBase;
         public float spdMoveSpeedFactor;
+        public float freeMovementBaseSpeed;
+        public float spdFreeMovementSpeedFactor;
+        public float knockbackDistance;
+        public float knockbackDuration;
     }
 
     [Serializable]
@@ -55,6 +59,10 @@ namespace ProjectDR.Village.Exploration.Combat
 
         public float MoveSpeedBase { get; }
         public float SpdMoveSpeedFactor { get; }
+        public float FreeMovementBaseSpeed { get; }
+        public float SpdFreeMovementSpeedFactor { get; }
+        public float KnockbackDistance { get; }
+        public float KnockbackDuration { get; }
 
         public CombatConfig(CombatConfigJson json)
         {
@@ -74,6 +82,10 @@ namespace ProjectDR.Village.Exploration.Combat
 
             MoveSpeedBase = json.moveSpeedBase;
             SpdMoveSpeedFactor = json.spdMoveSpeedFactor;
+            FreeMovementBaseSpeed = json.freeMovementBaseSpeed;
+            SpdFreeMovementSpeedFactor = json.spdFreeMovementSpeedFactor;
+            KnockbackDistance = json.knockbackDistance;
+            KnockbackDuration = json.knockbackDuration;
         }
 
         /// <summary>

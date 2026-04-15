@@ -57,6 +57,15 @@ namespace ProjectDR.Village.Exploration
     /// <summary>Published when the evacuation countdown completes and exploration ends.</summary>
     public class ExplorationCompletedEvent : GameEventBase { }
 
+    /// <summary>Published when the player's grid cell changes during free movement.</summary>
+    public class PlayerCellChangedEvent : GameEventBase
+    {
+        /// <summary>The grid cell the player was previously in.</summary>
+        public Vector2Int PreviousCell;
+        /// <summary>The grid cell the player has entered.</summary>
+        public Vector2Int NewCell;
+    }
+
     // ----- Collection system events (GDD rules 8-13, 44-46) -----
 
     /// <summary>Published when the player starts gathering at a collectible point.</summary>

@@ -1,3 +1,4 @@
+using System;
 using KahaGameCore.GameEvent;
 using ProjectDR.Village;
 using ProjectDR.Village.Exploration.Combat;
@@ -28,10 +29,9 @@ namespace ProjectDR.Village.Exploration
         private DeathManager _deathManager;
         private SwordAttack _swordAttack;
         private PlayerCombatStats _playerStats;
-        private PlayerGridMovement _playerMovement;
+        private PlayerFreeMovement _playerMovement;
 
-        private System.Action<PlayerMoveCompletedEvent> _onPlayerMoveCompleted;
-        private System.Action<PlayerMoveStartedEvent> _onPlayerMoveStarted;
+        private Action<PlayerCellChangedEvent> _onPlayerCellChanged;
 
         // Village-level dependencies (injected via Initialize before Start)
         private BackpackManager _villageBackpack;
@@ -71,9 +71,6 @@ namespace ProjectDR.Village.Exploration
             // Player combat stats from config
             _playerStats = PlayerCombatStats.FromConfig(combatConfig);
 
-            // SPD-based move speed calculator
-            IMoveSpeedCalculator speedCalc = SpdMoveSpeedCalculator.FromConfig(combatConfig, _playerStats.Spd);
-
             // GridMap (with null monster provider initially — set after MonsterManager is created)
             GridMap gridMapFinal = new GridMap(mapData, null);
 
@@ -98,15 +95,13 @@ namespace ProjectDR.Village.Exploration
                 }
             }
 
-            // Player movement
-            _playerMovement = new PlayerGridMovement(gridMapFinal, mapData.SpawnPosition, speedCalc);
+            // SPD-based free movement speed provider
+            IMoveSpeedProvider speedProvider = SpdMoveSpeedProvider.FromConfig(combatConfig, _playerStats.Spd);
 
-            // Rule 47: visible monsters block player entry
-            _playerMovement.SetAdditionalBlockCheck((x, y) =>
-            {
-                if (!gridMapFinal.IsExplored(x, y)) return false;
-                return _monsterManager.GetMonsterAt(x, y) != null;
-            });
+            // Player free movement
+            float cellSize = 1.0f;
+            Vector3 mapOrigin = Vector3.zero; // Will be set from map view
+            _playerMovement = new PlayerFreeMovement(gridMapFinal, mapData.SpawnPosition, cellSize, mapOrigin, speedProvider);
 
             // Sword attack
             _swordAttack = SwordAttack.FromConfig(combatConfig, _playerStats.Spd);
@@ -115,15 +110,19 @@ namespace ProjectDR.Village.Exploration
             float evacuationDuration = 6f;
             _evacuationManager = new EvacuationManager(gridMapFinal, mapData.SpawnPosition, evacuationDuration);
 
-            // Wire events
-            _onPlayerMoveCompleted = (e) => _evacuationManager.OnPlayerArrived(e.Position);
-            _onPlayerMoveStarted = (e) =>
+            // Wire cell changed events for evacuation
+            _onPlayerCellChanged = (e) =>
             {
-                _evacuationManager.OnPlayerMoveStarted();
-                _combatManager?.OnPlayerMoveStarted(e.From);
+                // When leaving a cell, cancel any active evacuation countdown
+                if (_evacuationManager.IsEvacuating)
+                {
+                    _evacuationManager.OnPlayerMoveStarted();
+                }
+
+                // When entering a new cell, check if it's an evacuation trigger
+                _evacuationManager.OnPlayerArrived(e.NewCell);
             };
-            EventBus.Subscribe<PlayerMoveCompletedEvent>(_onPlayerMoveCompleted);
-            EventBus.Subscribe<PlayerMoveStartedEvent>(_onPlayerMoveStarted);
+            EventBus.Subscribe<PlayerCellChangedEvent>(_onPlayerCellChanged);
 
             // Collection system — use village backpack if injected, otherwise create standalone
             BackpackManager backpack = _villageBackpack ?? new BackpackManager(10, 99);
@@ -139,21 +138,27 @@ namespace ProjectDR.Village.Exploration
             ExplorationMapView mapView = mapViewObj.AddComponent<ExplorationMapView>();
             mapView.Initialize(gridMapFinal, mapData);
 
-            GameObject playerViewObj = new GameObject("ExplorationPlayerView");
+            // Player view (free movement — syncs transform each frame)
+            GameObject playerViewObj = new GameObject("ExplorationFreePlayerView");
             playerViewObj.transform.SetParent(root);
-            ExplorationPlayerView playerView = playerViewObj.AddComponent<ExplorationPlayerView>();
-            playerView.Initialize(_playerMovement, mapView, mapData.SpawnPosition);
+            ExplorationFreePlayerView playerView = playerViewObj.AddComponent<ExplorationFreePlayerView>();
+            playerView.Initialize(_playerMovement);
 
-            // Camera follow — 攝影機跟隨玩家 token
+            // Camera follow
             GameObject cameraFollowObj = new GameObject("ExplorationCameraFollow");
             cameraFollowObj.transform.SetParent(root);
             ExplorationCameraFollow cameraFollow = cameraFollowObj.AddComponent<ExplorationCameraFollow>();
             cameraFollow.Initialize(playerViewObj.transform);
 
-            // Combat manager (connects player attacks <-> monster damage)
+            // Player contact detector (collision-based monster contact)
+            PlayerContactDetector contactDetector = playerViewObj.AddComponent<PlayerContactDetector>();
+            contactDetector.Initialize(_playerMovement);
+
+            // Combat manager (connects player attacks <-> monster damage + contact damage)
             _combatManager = new CombatManager(
                 _playerStats, _swordAttack, _monsterManager,
-                gridMapFinal, _playerMovement, mapView);
+                gridMapFinal, _playerMovement, mapView,
+                combatConfig.KnockbackDistance);
 
             // Death manager (GDD rules 27-30: HP=0 -> time rewind -> backpack restore -> end exploration)
             if (_explorationEntryManager != null)
@@ -167,12 +172,18 @@ namespace ProjectDR.Village.Exploration
                 deathView.Initialize();
             }
 
-            // Input handlers
-            ExplorationInputHandler inputHandler = gameObject.AddComponent<ExplorationInputHandler>();
+            // Input handlers (free movement)
+            ExplorationFreeInputHandler inputHandler = gameObject.AddComponent<ExplorationFreeInputHandler>();
             inputHandler.Initialize(_playerMovement, _collectionManager);
 
             CombatInputHandler combatInput = gameObject.AddComponent<CombatInputHandler>();
-            combatInput.Initialize(_swordAttack, _playerMovement, mapView, _collectionManager, playerViewObj.transform);
+            combatInput.Initialize(_swordAttack, _playerMovement, _collectionManager, playerViewObj.transform);
+
+            // Aim indicator
+            GameObject aimIndicatorObj = new GameObject("AimIndicatorView");
+            aimIndicatorObj.transform.SetParent(root);
+            AimIndicatorView aimIndicator = aimIndicatorObj.AddComponent<AimIndicatorView>();
+            aimIndicator.Initialize(playerViewObj.transform);
 
             // Evacuation countdown display
             Vector3 evacViewPos = mapView.GridToWorldPosition(mapData.Width / 2, 0)
@@ -186,7 +197,7 @@ namespace ProjectDR.Village.Exploration
             GameObject playerCombatViewObj = new GameObject("PlayerCombatView");
             playerCombatViewObj.transform.SetParent(root);
             PlayerCombatView playerCombatView = playerCombatViewObj.AddComponent<PlayerCombatView>();
-            playerCombatView.Initialize(_playerStats, _swordAttack, playerView, mapView);
+            playerCombatView.Initialize(_playerStats, _swordAttack, playerViewObj.transform);
 
             // Monster views
             for (int i = 0; i < _monsterManager.Monsters.Count; i++)
@@ -206,28 +217,28 @@ namespace ProjectDR.Village.Exploration
 
             // --- Collection Views ---
 
-            // 採集點地圖標記：已探索且有採集點的格子疊加藍色小方塊
+            // 採集點地圖標記
             GameObject collectIndicatorObj = new GameObject("CollectiblePointIndicatorView");
             collectIndicatorObj.transform.SetParent(root);
             CollectiblePointIndicatorView collectIndicatorView =
                 collectIndicatorObj.AddComponent<CollectiblePointIndicatorView>();
             collectIndicatorView.Initialize(gridMapFinal, mapView, mapData);
 
-            // 互動提示：站在採集點上顯示「按 E 採集」/「按 E 取消」
+            // 互動提示
             GameObject interactionHintObj = new GameObject("CollectionInteractionHintView");
             interactionHintObj.transform.SetParent(root);
             CollectionInteractionHintView interactionHintView =
                 interactionHintObj.AddComponent<CollectionInteractionHintView>();
             interactionHintView.Initialize(_collectionManager, mapView);
 
-            // 採集進度條（第一層計時）：採集開始後顯示進度條
+            // 採集進度條
             GameObject gatheringViewObj = new GameObject("CollectionGatheringView");
             gatheringViewObj.transform.SetParent(root);
             CollectionGatheringView gatheringView =
                 gatheringViewObj.AddComponent<CollectionGatheringView>();
             gatheringView.Initialize(_collectionManager, mapView);
 
-            // 物品欄 UI（第二層計時）：採集完成後顯示物品欄與背包狀態
+            // 物品欄 UI
             GameObject itemPanelObj = new GameObject("CollectionItemPanelView");
             itemPanelObj.transform.SetParent(root);
             CollectionItemPanelView itemPanelView =
@@ -261,15 +272,13 @@ namespace ProjectDR.Village.Exploration
                 _swordAttack.Update(dt);
 
             if (_monsterManager != null && _playerMovement != null)
-                _monsterManager.Update(dt, _playerMovement.CurrentPosition);
+                _monsterManager.Update(dt, _playerMovement.CurrentGridCell);
         }
 
         private void OnDestroy()
         {
-            if (_onPlayerMoveCompleted != null)
-                EventBus.Unsubscribe<PlayerMoveCompletedEvent>(_onPlayerMoveCompleted);
-            if (_onPlayerMoveStarted != null)
-                EventBus.Unsubscribe<PlayerMoveStartedEvent>(_onPlayerMoveStarted);
+            if (_onPlayerCellChanged != null)
+                EventBus.Unsubscribe<PlayerCellChangedEvent>(_onPlayerCellChanged);
             if (_combatManager != null)
                 _combatManager.Dispose();
             if (_deathManager != null)

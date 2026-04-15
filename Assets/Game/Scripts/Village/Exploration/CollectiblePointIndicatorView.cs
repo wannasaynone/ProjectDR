@@ -1,6 +1,6 @@
 // CollectiblePointIndicatorView — 採集點地圖標記 View。
 // 在已探索且有採集點的格子上，將格子顏色疊加為淡藍色以區別普通格子。
-// 訂閱 CellRevealedEvent 與 PlayerMoveCompletedEvent，隨狀態即時更新。
+// 訂閱 CellRevealedEvent 與 PlayerCellChangedEvent，隨狀態即時更新。
 
 using System;
 using System.Collections.Generic;

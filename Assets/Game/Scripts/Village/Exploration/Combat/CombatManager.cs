@@ -9,8 +9,7 @@ namespace ProjectDR.Village.Exploration.Combat
     /// Manages combat interactions between the player and monsters:
     /// - Player sword attack -> hit detection -> damage monsters
     /// - Monster attack execution -> damage player
-    /// - Player steps on hidden monster (unexplored cell) -> take damage, push back to previous cell
-    /// - Visible monster cells block player entry (rule 47)
+    /// - Contact damage: player collides with monster -> take damage + knockback
     /// </summary>
     public class CombatManager
     {
@@ -18,26 +17,29 @@ namespace ProjectDR.Village.Exploration.Combat
         private readonly SwordAttack _swordAttack;
         private readonly MonsterManager _monsterManager;
         private readonly GridMap _gridMap;
-        private readonly PlayerGridMovement _playerMovement;
+        private readonly PlayerFreeMovement _playerMovement;
         private readonly ExplorationMapView _mapView;
+        private readonly float _knockbackDistance;
 
         private Action<PlayerAttackEvent> _onPlayerAttack;
         private Action<MonsterAttackExecuteEvent> _onMonsterAttackExecute;
-        private Action<PlayerMoveCompletedEvent> _onPlayerMoveCompleted;
+        private Action<PlayerContactDamageEvent> _onPlayerContactDamage;
 
-        /// <summary>
-        /// The position the player was at before the current move.
-        /// Used for push-back when stepping on hidden monsters.
-        /// </summary>
-        private Vector2Int _previousPlayerPosition;
-
+        /// <param name="playerStats">Player combat stats.</param>
+        /// <param name="swordAttack">Sword attack logic.</param>
+        /// <param name="monsterManager">Monster management.</param>
+        /// <param name="gridMap">Grid map for exploration checks.</param>
+        /// <param name="playerMovement">Player free movement.</param>
+        /// <param name="mapView">Map view for coordinate conversion. Can be null in tests.</param>
+        /// <param name="knockbackDistance">Knockback distance in world units on contact.</param>
         public CombatManager(
             PlayerCombatStats playerStats,
             SwordAttack swordAttack,
             MonsterManager monsterManager,
             GridMap gridMap,
-            PlayerGridMovement playerMovement,
-            ExplorationMapView mapView)
+            PlayerFreeMovement playerMovement,
+            ExplorationMapView mapView,
+            float knockbackDistance)
         {
             _playerStats = playerStats ?? throw new ArgumentNullException(nameof(playerStats));
             _swordAttack = swordAttack ?? throw new ArgumentNullException(nameof(swordAttack));
@@ -45,16 +47,15 @@ namespace ProjectDR.Village.Exploration.Combat
             _gridMap = gridMap ?? throw new ArgumentNullException(nameof(gridMap));
             _playerMovement = playerMovement ?? throw new ArgumentNullException(nameof(playerMovement));
             _mapView = mapView; // Can be null in tests
-
-            _previousPlayerPosition = playerMovement.CurrentPosition;
+            _knockbackDistance = knockbackDistance;
 
             _onPlayerAttack = HandlePlayerAttack;
             _onMonsterAttackExecute = HandleMonsterAttackExecute;
-            _onPlayerMoveCompleted = HandlePlayerMoveCompleted;
+            _onPlayerContactDamage = HandlePlayerContactDamage;
 
             EventBus.Subscribe<PlayerAttackEvent>(_onPlayerAttack);
             EventBus.Subscribe<MonsterAttackExecuteEvent>(_onMonsterAttackExecute);
-            EventBus.Subscribe<PlayerMoveCompletedEvent>(_onPlayerMoveCompleted);
+            EventBus.Subscribe<PlayerContactDamageEvent>(_onPlayerContactDamage);
         }
 
         /// <summary>
@@ -66,20 +67,8 @@ namespace ProjectDR.Village.Exploration.Combat
                 EventBus.Unsubscribe<PlayerAttackEvent>(_onPlayerAttack);
             if (_onMonsterAttackExecute != null)
                 EventBus.Unsubscribe<MonsterAttackExecuteEvent>(_onMonsterAttackExecute);
-            if (_onPlayerMoveCompleted != null)
-                EventBus.Unsubscribe<PlayerMoveCompletedEvent>(_onPlayerMoveCompleted);
-        }
-
-        /// <summary>
-        /// Checks if a cell contains a visible monster that blocks player entry.
-        /// GDD rule 47: Visible monsters on explored cells block player movement.
-        /// </summary>
-        public bool IsBlockedByVisibleMonster(int x, int y)
-        {
-            if (!_gridMap.IsExplored(x, y))
-                return false;
-
-            return _monsterManager.GetMonsterAt(x, y) != null;
+            if (_onPlayerContactDamage != null)
+                EventBus.Unsubscribe<PlayerContactDamageEvent>(_onPlayerContactDamage);
         }
 
         // ------------------------------------------------------------------
@@ -121,45 +110,36 @@ namespace ProjectDR.Village.Exploration.Combat
             if (monster == null || monster.IsDead) return;
 
             // GDD rule 18: Monster attack is grid-restricted based on facing direction.
-            // Check if player is in the attack cells (adjacent in facing direction).
             Vector2Int attackTarget = monster.Position + e.FacingDirection;
+            Vector2Int playerCell = _playerMovement.CurrentGridCell;
 
-            if (_playerMovement.CurrentPosition == attackTarget ||
-                (_playerMovement.IsMoving && _playerMovement.TargetPosition == attackTarget))
+            if (playerCell == attackTarget)
             {
                 int dmg = DamageCalculator.Calculate(monster.TypeData.Atk, _playerStats.Def);
                 _playerStats.TakeDamage(dmg);
             }
         }
 
-        private void HandlePlayerMoveCompleted(PlayerMoveCompletedEvent e)
+        private void HandlePlayerContactDamage(PlayerContactDamageEvent e)
         {
-            // GDD rule 15: Stepping on a monster in an unexplored cell -> take damage and push back.
-            MonsterState monster = _monsterManager.GetMonsterAt(e.Position.x, e.Position.y);
+            MonsterState monster = _monsterManager.GetMonsterById(e.MonsterId);
+            if (monster == null || monster.IsDead) return;
 
-            if (monster != null)
+            // Apply damage
+            int dmg = DamageCalculator.Calculate(monster.TypeData.Atk, _playerStats.Def);
+            _playerStats.TakeDamage(dmg);
+
+            // Apply knockback
+            if (_knockbackDistance > 0f && e.KnockbackDirection.sqrMagnitude > 0.001f)
             {
-                // Player stepped on a hidden monster!
-                int dmg = DamageCalculator.Calculate(monster.TypeData.Atk, _playerStats.Def);
-                _playerStats.TakeDamage(dmg);
+                _playerMovement.ApplyKnockback(e.KnockbackDirection, _knockbackDistance);
 
-                EventBus.Publish(new PlayerSteppedOnMonsterEvent
+                EventBus.Publish(new PlayerKnockbackEvent
                 {
-                    MonsterPosition = e.Position,
-                    ReturnPosition = _previousPlayerPosition,
-                    DamageDealt = dmg
+                    Direction = e.KnockbackDirection,
+                    Distance = _knockbackDistance
                 });
             }
-
-            _previousPlayerPosition = e.Position;
-        }
-
-        /// <summary>
-        /// Called by the entry point to record the player's position before each move starts.
-        /// </summary>
-        public void OnPlayerMoveStarted(Vector2Int fromPosition)
-        {
-            _previousPlayerPosition = fromPosition;
         }
     }
 }

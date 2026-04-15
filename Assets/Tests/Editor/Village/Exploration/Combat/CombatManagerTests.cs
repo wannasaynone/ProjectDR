@@ -11,12 +11,21 @@ namespace ProjectDR.Tests.Village.Exploration.Combat
     [TestFixture]
     public class CombatManagerTests
     {
+        private class MockMoveSpeedProvider : IMoveSpeedProvider
+        {
+            public float GetMoveSpeed() => 5.0f;
+        }
+
         private GridMap _gridMap;
         private MonsterManager _monsterManager;
-        private PlayerGridMovement _playerMovement;
+        private PlayerFreeMovement _playerMovement;
         private PlayerCombatStats _playerStats;
         private SwordAttack _swordAttack;
         private CombatManager _sut;
+
+        private const float CellSize = 1.0f;
+        private static readonly Vector3 MapOrigin = Vector3.zero;
+        private const float KnockbackDistance = 1.5f;
 
         private static CellType[] CreateAllExplorableCells(int w, int h)
         {
@@ -55,20 +64,18 @@ namespace ProjectDR.Tests.Village.Exploration.Combat
             CellType[] cells = CreateAllExplorableCells(8, 8);
             MapData mapData = new MapData(8, 8, cells, new Vector2Int(3, 7), new List<List<Vector2Int>>());
 
-            // First pass: create GridMap with null monster provider (no monsters yet)
             _gridMap = new GridMap(mapData, null);
             _gridMap.InitializeExplored(3, -1);
 
-            // Create monster manager with the gridMap
             _monsterManager = new MonsterManager(_gridMap, () => _gridMap.RecalculateAllMonsterCounts(), 42);
 
-            var speedCalc = new FixedMoveSpeedCalculator(0.5f);
-            _playerMovement = new PlayerGridMovement(_gridMap, new Vector2Int(3, 7), speedCalc);
+            var speedProvider = new MockMoveSpeedProvider();
+            _playerMovement = new PlayerFreeMovement(_gridMap, new Vector2Int(3, 7), CellSize, MapOrigin, speedProvider);
 
             _playerStats = new PlayerCombatStats(20, 5, 2, 10);
             _swordAttack = new SwordAttack(45f, 1.5f, 0.8f, 0.02f, 10);
 
-            _sut = new CombatManager(_playerStats, _swordAttack, _monsterManager, _gridMap, _playerMovement, null);
+            _sut = new CombatManager(_playerStats, _swordAttack, _monsterManager, _gridMap, _playerMovement, null, KnockbackDistance);
         }
 
         [TearDown]
@@ -79,45 +86,15 @@ namespace ProjectDR.Tests.Village.Exploration.Combat
         }
 
         [Test]
-        public void IsBlockedByVisibleMonster_ExploredCellWithMonster_ReturnsTrue()
-        {
-            _monsterManager.SpawnMonster(CreateSlimeType(), new Vector2Int(3, 6));
-
-            bool blocked = _sut.IsBlockedByVisibleMonster(3, 6);
-
-            Assert.IsTrue(blocked);
-        }
-
-        [Test]
-        public void IsBlockedByVisibleMonster_ExploredCellWithoutMonster_ReturnsFalse()
-        {
-            bool blocked = _sut.IsBlockedByVisibleMonster(3, 6);
-
-            Assert.IsFalse(blocked);
-        }
-
-        [Test]
-        public void IsBlockedByVisibleMonster_UnexploredCellWithMonster_ReturnsFalse()
-        {
-            // Cell (0,0) is unexplored (outside reveal radius 3 from spawn (3,7))
-            _monsterManager.SpawnMonster(CreateSlimeType(), new Vector2Int(0, 0));
-
-            bool blocked = _sut.IsBlockedByVisibleMonster(0, 0);
-
-            Assert.IsFalse(blocked);
-        }
-
-        [Test]
         public void MonsterAttackExecute_PlayerInFacingDirection_TakeDamage()
         {
             // Place monster at (3,6), facing down (0,1), player at (3,7)
             var type = CreateSlimeType(); // atk=3
             var monster = _monsterManager.SpawnMonster(type, new Vector2Int(3, 6));
-            monster.FacingDirection = new Vector2Int(0, 1); // facing toward player
+            monster.FacingDirection = new Vector2Int(0, 1);
 
             int hpBefore = _playerStats.CurrentHp;
 
-            // Simulate monster attack execute event
             EventBus.Publish(new MonsterAttackExecuteEvent
             {
                 MonsterId = monster.Id,
@@ -132,10 +109,9 @@ namespace ProjectDR.Tests.Village.Exploration.Combat
         [Test]
         public void MonsterAttackExecute_PlayerNotInFacingDirection_NoDamage()
         {
-            // Monster at (3,6), facing left (-1,0), player at (3,7) - not in attack direction
             var type = CreateSlimeType();
             var monster = _monsterManager.SpawnMonster(type, new Vector2Int(3, 6));
-            monster.FacingDirection = new Vector2Int(-1, 0);
+            monster.FacingDirection = new Vector2Int(-1, 0); // facing left, not toward player
 
             int hpBefore = _playerStats.CurrentHp;
 
@@ -150,38 +126,75 @@ namespace ProjectDR.Tests.Village.Exploration.Combat
         }
 
         [Test]
-        public void PlayerMoveCompleted_StepOnMonster_TakesDamageAndPublishesEvent()
+        public void ContactDamage_TakesDamageAndPublishesKnockback()
         {
-            // Place a hidden monster at (3,6)
-            _monsterManager.SpawnMonster(CreateSlimeType(), new Vector2Int(3, 6));
+            var type = CreateSlimeType(); // atk=3
+            var monster = _monsterManager.SpawnMonster(type, new Vector2Int(3, 6));
 
-            PlayerSteppedOnMonsterEvent received = null;
-            Action<PlayerSteppedOnMonsterEvent> handler = (e) => { received = e; };
-            EventBus.Subscribe<PlayerSteppedOnMonsterEvent>(handler);
+            int hpBefore = _playerStats.CurrentHp;
 
-            // Record previous position
-            _sut.OnPlayerMoveStarted(new Vector2Int(3, 7));
+            PlayerKnockbackEvent knockbackReceived = null;
+            Action<PlayerKnockbackEvent> handler = (e) => { knockbackReceived = e; };
+            EventBus.Subscribe<PlayerKnockbackEvent>(handler);
 
-            // Simulate player arriving at monster cell
-            EventBus.Publish(new PlayerMoveCompletedEvent { Position = new Vector2Int(3, 6) });
+            EventBus.Publish(new PlayerContactDamageEvent
+            {
+                MonsterId = monster.Id,
+                ContactPosition = new Vector2(3f, -6f),
+                KnockbackDirection = Vector2.down,
+                DamageDealt = 0 // Actual damage is calculated by CombatManager
+            });
 
-            EventBus.Unsubscribe<PlayerSteppedOnMonsterEvent>(handler);
+            EventBus.Unsubscribe<PlayerKnockbackEvent>(handler);
 
-            Assert.IsNotNull(received);
-            Assert.AreEqual(new Vector2Int(3, 6), received.MonsterPosition);
-            Assert.AreEqual(new Vector2Int(3, 7), received.ReturnPosition);
-            Assert.Greater(received.DamageDealt, 0);
+            // Should take damage: DMG = 3 - 2 = 1
+            Assert.AreEqual(hpBefore - 1, _playerStats.CurrentHp);
+
+            // Should publish knockback
+            Assert.IsNotNull(knockbackReceived);
+            Assert.AreEqual(KnockbackDistance, knockbackReceived.Distance, 0.001f);
         }
 
         [Test]
-        public void PlayerMoveCompleted_NoMonster_NoDamage()
+        public void ContactDamage_DeadMonster_NoDamage()
         {
+            var type = CreateSlimeType();
+            var monster = _monsterManager.SpawnMonster(type, new Vector2Int(3, 6));
+
+            // Kill the monster
+            _monsterManager.DamageMonster(monster.Id, 100);
+            Assert.IsTrue(monster.IsDead);
+
             int hpBefore = _playerStats.CurrentHp;
 
-            _sut.OnPlayerMoveStarted(new Vector2Int(3, 7));
-            EventBus.Publish(new PlayerMoveCompletedEvent { Position = new Vector2Int(3, 6) });
+            EventBus.Publish(new PlayerContactDamageEvent
+            {
+                MonsterId = monster.Id,
+                ContactPosition = new Vector2(3f, -6f),
+                KnockbackDirection = Vector2.down,
+                DamageDealt = 0
+            });
 
             Assert.AreEqual(hpBefore, _playerStats.CurrentHp);
+        }
+
+        [Test]
+        public void ContactDamage_ZeroKnockbackDirection_NoCrash()
+        {
+            var type = CreateSlimeType();
+            var monster = _monsterManager.SpawnMonster(type, new Vector2Int(3, 6));
+
+            // Zero direction should not crash, just apply damage without knockback
+            Assert.DoesNotThrow(() =>
+            {
+                EventBus.Publish(new PlayerContactDamageEvent
+                {
+                    MonsterId = monster.Id,
+                    ContactPosition = new Vector2(3f, -6f),
+                    KnockbackDirection = Vector2.zero,
+                    DamageDealt = 0
+                });
+            });
         }
 
         [Test]
@@ -189,15 +202,23 @@ namespace ProjectDR.Tests.Village.Exploration.Combat
         {
             _sut.Dispose();
 
-            // After dispose, events should not cause damage
             int hpBefore = _playerStats.CurrentHp;
 
-            _monsterManager.SpawnMonster(CreateSlimeType(), new Vector2Int(3, 6));
-            EventBus.Publish(new PlayerMoveCompletedEvent { Position = new Vector2Int(3, 6) });
+            var type = CreateSlimeType();
+            _monsterManager.SpawnMonster(type, new Vector2Int(3, 6));
+
+            // Contact damage should not be processed after dispose
+            EventBus.Publish(new PlayerContactDamageEvent
+            {
+                MonsterId = 1,
+                ContactPosition = Vector2.zero,
+                KnockbackDirection = Vector2.down,
+                DamageDealt = 0
+            });
 
             Assert.AreEqual(hpBefore, _playerStats.CurrentHp);
 
-            _sut = null; // prevent double dispose in TearDown
+            _sut = null;
         }
     }
 }

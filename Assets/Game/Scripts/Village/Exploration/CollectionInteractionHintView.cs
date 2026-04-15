@@ -20,7 +20,7 @@ namespace ProjectDR.Village.Exploration
         private ExplorationMapView _mapView;
         private TextMeshPro _text;
 
-        private Action<PlayerMoveCompletedEvent> _onPlayerMoveCompleted;
+        private Action<PlayerCellChangedEvent> _onPlayerCellChanged;
         private Action<ExplorationMapInitializedEvent> _onMapInitialized;
         private Action<CollectionStartedEvent> _onCollectionStarted;
         private Action<CollectionCancelledEvent> _onCollectionCancelled;
@@ -49,14 +49,14 @@ namespace ProjectDR.Village.Exploration
             RectTransform rt = _text.GetComponent<RectTransform>();
             rt.sizeDelta = new Vector2(3f, 0.8f);
 
-            _onPlayerMoveCompleted = (e) => RefreshHint(e.Position);
+            _onPlayerCellChanged = (e) => RefreshHint(e.NewCell);
             _onMapInitialized = (e) => RefreshHint(e.SpawnPosition);
             _onCollectionStarted = (e) => UpdateHintText();
             _onCollectionCancelled = (e) => UpdateHintText();
             _onGatheringCompleted = (e) => HideHint();
             _onPanelClosed = (e) => UpdateHintBasedOnCurrentPosition();
 
-            EventBus.Subscribe<PlayerMoveCompletedEvent>(_onPlayerMoveCompleted);
+            EventBus.Subscribe<PlayerCellChangedEvent>(_onPlayerCellChanged);
             EventBus.Subscribe<ExplorationMapInitializedEvent>(_onMapInitialized);
             EventBus.Subscribe<CollectionStartedEvent>(_onCollectionStarted);
             EventBus.Subscribe<CollectionCancelledEvent>(_onCollectionCancelled);
@@ -124,8 +124,8 @@ namespace ProjectDR.Village.Exploration
 
         private void OnDestroy()
         {
-            if (_onPlayerMoveCompleted != null)
-                EventBus.Unsubscribe<PlayerMoveCompletedEvent>(_onPlayerMoveCompleted);
+            if (_onPlayerCellChanged != null)
+                EventBus.Unsubscribe<PlayerCellChangedEvent>(_onPlayerCellChanged);
             if (_onMapInitialized != null)
                 EventBus.Unsubscribe<ExplorationMapInitializedEvent>(_onMapInitialized);
             if (_onCollectionStarted != null)

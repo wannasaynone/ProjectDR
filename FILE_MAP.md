@@ -6,6 +6,18 @@
 |------|------|
 | `project-status.md` | 專案狀態檔（當前階段、階段焦點、活躍 Sprint、待決事項、已知阻塞） |
 
+## Sprint
+
+| 檔案 | 用途 |
+|------|------|
+| `sprint/sprint-4-mvp-game-flow.md` | Sprint 4 — MVP 開局循環（按鈕 incremental 原型），21 項工作項目 |
+
+## 專案技術文件（projects/ProjectDR/tech/）
+
+| 檔案 | 用途 |
+|------|------|
+| `tech/mvp-ui-prefab-spec.md` | Sprint 4 MVP UI Prefab 規格文件（給 ui-ux-designer 建 Scene/Prefab 用） |
+
 ## GDD 設計文件
 
 > **2026-04-17**：因轉向 Dark Room A+ 方向，既有 GDD 與敘事文件全部清空重寫。目前 `gdd/` 下僅保留 `random-ideas/`（含方向討論脈絡）。新 GDD 尚未撰寫。
@@ -19,6 +31,7 @@
 | `gdd/random-ideas/alternate-dimension-random-encounters.md` | 異空間隨機邂逅方向（概念 B）的完整討論脈絡，含九輪演變紀錄 |
 | `gdd/random-ideas/market-research-deep-dive-request.md` | 委託外部 AI 的第二輪深入調查題目（四矛盾點） |
 | `gdd/random-ideas/dark-room-clone-direction.md` | Dark Room 照抄方向（第五路徑 A+）的討論脈絡與設計決定演進 |
+| `gdd/random-ideas/new-game-flow.md` | 從頭開始的玩法描述（製作人口述逐輪演進），含開局流程、矛盾檢驗、待釐清問題 |
 
 ## 正式遊戲程式碼（Assets/Game/Scripts）
 
@@ -62,6 +75,34 @@
 | `Assets/Game/Scripts/Village/ResourcesCGProvider.cs` | IT 階段 CG 圖片載入器（ICGProvider 實作，Resources/CG/ 載入或生成 placeholder） |
 | `Assets/Game/Scripts/Village/HCGDialogueSetup.cs` | HCG 劇情播放整合層（KGC DialogueManager + GameStaticDataManager，IT 硬編碼 4 角色對話） |
 
+### MVP 模組（Assets/Game/Scripts/Village/Mvp）— Sprint 4 新增
+| 檔案 | 用途 |
+|------|------|
+| `Assets/Game/Scripts/Village/Mvp/MvpConfigData.cs` | MVP 配置 JSON DTO（MvpConfigData 等）與不可變 MvpConfig（包含搜索/火堆/寒冷/蓋屋/人口/對話全數值） |
+| `Assets/Game/Scripts/Village/Mvp/MvpEvents.cs` | MVP 系統事件定義（ResourceChanged、FireStateChanged、ColdStateChanged、HutBuilt、NpcArrived、DialogueSession 等 16 個事件 + MvpDialogueDirection enum） |
+| `Assets/Game/Scripts/Village/Mvp/MvpConstants.cs` | MVP 結構性常數（MvpResourceIds.Wood、MvpActionKeys.Search/FireExtend/HutBuild） |
+| `Assets/Game/Scripts/Village/Mvp/IDispatchStateProvider.cs` | 派遣狀態提供者介面（Sprint 4 使用 NoDispatchProvider 永遠回傳 false） |
+| `Assets/Game/Scripts/Village/Mvp/ResourceManager.cs` | MVP 資源管理器（Add/TrySpend/Has/GetAmount，發 MvpResourceChangedEvent） |
+| `Assets/Game/Scripts/Village/Mvp/ColdStatusSystem.cs` | 寒冷狀態系統（訂閱 FireStateChanged，提供 IsCold，Dispose 模式） |
+| `Assets/Game/Scripts/Village/Mvp/ActionTimeManager.cs` | 行動冷卻計時管理器（TryStartCooldown/Tick，寒冷時自動套用倍率） |
+| `Assets/Game/Scripts/Village/Mvp/SearchSystem.cs` | 搜索系統（TrySearch，IRandomSource / SystemRandomSource 定義於此檔） |
+| `Assets/Game/Scripts/Village/Mvp/FireSystem.cs` | 火堆系統（TryLight/TryExtend/Tick，HasEverBeenLit 用於蓋屋解鎖） |
+| `Assets/Game/Scripts/Village/Mvp/HutBuildSystem.cs` | 小屋建造系統（TryStartBuild/Tick，完成時 PopulationManager.IncreaseCap） |
+| `Assets/Game/Scripts/Village/Mvp/PopulationManager.cs` | 人口管理器（Cap/Count，IncreaseCap/TryIncrementCount） |
+| `Assets/Game/Scripts/Village/Mvp/NpcArrivalManager.cs` | NPC 來訪管理器（訂閱 PopulationCapIncreased，從 placeholder 池抽 NPC） |
+| `Assets/Game/Scripts/Village/Mvp/DialogueCooldownManager.cs` | 玩家主動對話冷卻管理器（每角色獨立計時，派遣倍率預留） |
+| `Assets/Game/Scripts/Village/Mvp/NPCInitiativeManager.cs` | 角色主動發話管理器（自動訂閱 NpcArrived 註冊角色；Tick 達間隔時發 Ready 事件） |
+| `Assets/Game/Scripts/Village/Mvp/MvpDialogueSession.cs` | MVP 對話 session 協調器（整合 DialogueManager + AffinityManager + Cooldown + Initiative，處理紅點路徑與玩家主動路徑） |
+| `Assets/Game/Scripts/Village/Mvp/MvpEntryPoint.cs` | MVP 場景進入點（MonoBehaviour，組裝所有邏輯層與 UI，Update Tick 計時系統） |
+
+### MVP UI（Assets/Game/Scripts/Village/Mvp/UI）— Sprint 4 新增
+| 檔案 | 用途 |
+|------|------|
+| `Assets/Game/Scripts/Village/Mvp/UI/RedDotView.cs` | 紅點 UI 元件（SetVisible 切換顯示） |
+| `Assets/Game/Scripts/Village/Mvp/UI/MvpCharacterListItemView.cs` | 角色清單單項 View（名字/好感度/紅點/按鈕） |
+| `Assets/Game/Scripts/Village/Mvp/UI/MvpMainView.cs` | MVP 主畫面 View（資源欄/狀態列/動作按鈕區/角色清單） |
+| `Assets/Game/Scripts/Village/Mvp/UI/MvpCharacterInteractionView.cs` | MVP 版角色互動畫面（[對話][派遣]，無送禮/回憶） |
+
 ### 村莊 UI（Assets/Game/Scripts/Village/UI）
 | 檔案 | 用途 |
 |------|------|
@@ -103,6 +144,15 @@
 | `Assets/Game/Prefabs/SeedItemButton.prefab` | 種子選項按鈕模板（FarmAreaView 種子選擇面板用） |
 | `Assets/Game/Prefabs/GiftItemRow.prefab` | 送禮物品行模板（GiftAreaView 物品清單動態生成用） |
 | `Assets/Game/Prefabs/ItemRow.prefab` | 物品列模板（舊版，保留備用） |
+| `Assets/Game/Prefabs/MvpMainView.prefab` | MVP 主畫面 UGUI Prefab（資源欄/狀態列/動作按鈕區/角色清單 ScrollView） |
+| `Assets/Game/Prefabs/MvpCharacterListItem.prefab` | MVP 角色清單單項 UGUI Prefab（名字/好感度/紅點/對話按鈕） |
+| `Assets/Game/Prefabs/MvpCharacterInteractionView.prefab` | MVP 角色互動畫面 UGUI Prefab（[對話][派遣]，無送禮/回憶） |
+
+## Unity 場景（Assets/Game/Scenes）
+
+| 檔案 | 用途 |
+|------|------|
+| `Assets/Game/Scenes/MvpMain.unity` | Sprint 4 MVP 遊戲入口場景（EventSystem + MainCamera + Canvas + MvpEntryPoint，Build Index 0） |
 
 ### 探索模組（Assets/Game/Scripts/Village/Exploration）
 | 檔案 | 用途 |
@@ -165,6 +215,7 @@
 
 | 檔案 | 用途 |
 |------|------|
+| `Assets/Game/Resources/Config/mvp-config.json` | Sprint 4 MVP 配置（搜索冷卻/火堆/寒冷/蓋屋/人口/對話冷卻/placeholder 角色池與對話） |
 | `Assets/Game/Resources/Config/combat-config.json` | 玩家初始數值（HP/ATK/DEF/SPD）、劍攻擊參數（角度、範圍、冷卻）、移動速度參數 |
 | `Assets/Game/Resources/Config/monster-config.json` | 魔物種類定義（Slime、Bat：HP/ATK/DEF/SPD、移動冷卻、視野、攻擊參數、顏色） |
 | `Assets/Game/Resources/Config/affinity-config.json` | 好感度門檻配置（各角色門檻值陣列，IT 階段四角色各 [5]） |
@@ -206,3 +257,18 @@
 | `Assets/Tests/Editor/Village/GiftManagerTests.cs` | GiftManager 單元測試（22 個：建構驗證、背包優先扣除、倉庫備援、物品不足、好感度累計、事件發布） |
 | `Assets/Tests/Editor/Village/CGUnlockManagerTests.cs` | CGUnlockManager + CGSceneConfig 單元測試（33 個：解鎖邏輯、PlayerPrefs 持久化、事件發布、JSON 反序列化） |
 | `Assets/Tests/Editor/Village/Exploration/Combat/DeathManagerTests.cs` | DeathManager 單元測試（13 個：死亡偵測、背包回溯、事件順序、重複觸發防護、Dispose、Reset） |
+| `Assets/Tests/Editor/Village/Mvp/MvpTestConfig.cs` | MVP 測試共用（MvpTestConfig.MakeDefault、SequenceRandomSource、ZeroRandomSource） |
+| `Assets/Tests/Editor/Village/Mvp/MvpConfigTests.cs` | MvpConfig 建構驗證單元測試（8 個） |
+| `Assets/Tests/Editor/Village/Mvp/MvpConfigJsonLoadTests.cs` | mvp-config.json 從 Resources 反序列化 + Sprint 4 規格值斷言（1 個） |
+| `Assets/Tests/Editor/Village/Mvp/ResourceManagerTests.cs` | ResourceManager 單元測試（11 個：Add/TrySpend/Has/事件） |
+| `Assets/Tests/Editor/Village/Mvp/ColdStatusSystemTests.cs` | ColdStatusSystem 單元測試（5 個：初始/變寒冷/解除/不重複/Dispose） |
+| `Assets/Tests/Editor/Village/Mvp/ActionTimeManagerTests.cs` | ActionTimeManager 單元測試（11 個：冷卻/Tick/寒冷倍率/獨立 key） |
+| `Assets/Tests/Editor/Village/Mvp/FireSystemTests.cs` | FireSystem 單元測試（12 個：生火/延長/倒數/熄滅/事件） |
+| `Assets/Tests/Editor/Village/Mvp/PopulationManagerTests.cs` | PopulationManager 單元測試（8 個：Cap/Count/事件） |
+| `Assets/Tests/Editor/Village/Mvp/HutBuildSystemTests.cs` | HutBuildSystem 單元測試（9 個：解鎖/開工/進度/完成/人口 +1） |
+| `Assets/Tests/Editor/Village/Mvp/SearchSystemTests.cs` | SearchSystem 單元測試（6 個：冷卻/+木材/寒冷倍率） |
+| `Assets/Tests/Editor/Village/Mvp/NpcArrivalManagerTests.cs` | NpcArrivalManager 單元測試（6 個：自動抽 NPC/池耗盡/Dispose） |
+| `Assets/Tests/Editor/Village/Mvp/DialogueCooldownManagerTests.cs` | DialogueCooldownManager 單元測試（6 個：冷卻/派遣倍率/獨立角色） |
+| `Assets/Tests/Editor/Village/Mvp/NPCInitiativeManagerTests.cs` | NPCInitiativeManager 單元測試（7 個：計時/Ready/Consume/自動註冊） |
+| `Assets/Tests/Editor/Village/Mvp/MvpDialogueSessionTests.cs` | MvpDialogueSession 單元測試（6 個：Player/Character direction、紅點路徑、好感度） |
+| `Assets/Tests/Editor/Village/Mvp/MvpIntegrationFlowTests.cs` | MVP 整合流測試（3 個：完整開局循環、寒冷倍率流、紅點流） |

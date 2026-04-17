@@ -1,0 +1,61 @@
+{
+    "search": {
+        "cooldownSeconds": 1.0,
+        "woodGainPerSearch": 1,
+        "feedbackLines": [
+            "你翻找著地上的樹枝。",
+            "折下一根枯枝。",
+            "撿起一段木頭。",
+            "踢開落葉，抓起一根粗枝。",
+            "從倒下的樹幹上掰下一塊木頭。"
+        ]
+    },
+    "fire": {
+        "unlockWoodThreshold": 5,
+        "lightCost": 1,
+        "durationSeconds": 60.0,
+        "extendCost": 1,
+        "extendSeconds": 60.0
+    },
+    "cold": {
+        "actionCooldownMultiplier": 2.0
+    },
+    "hut": {
+        "woodCost": 10,
+        "buildSeconds": 10.0,
+        "populationCapIncrement": 1
+    },
+    "population": {
+        "initialCap": 0
+    },
+    "dialogue": {
+        "affinityGainPerDialogue": 3,
+        "playerDialogueCooldownSeconds": 30.0,
+        "dispatchCooldownMultiplier": 2.0,
+        "npcInitiativeIntervalSeconds": 45.0
+    },
+    "placeholderCharacters": [
+        { "characterId": "SurvivorA", "displayName": "倖存者 A" },
+        { "characterId": "SurvivorB", "displayName": "倖存者 B" },
+        { "characterId": "SurvivorC", "displayName": "倖存者 C" },
+        { "characterId": "SurvivorD", "displayName": "倖存者 D" },
+        { "characterId": "SurvivorE", "displayName": "倖存者 E" },
+        { "characterId": "SurvivorF", "displayName": "倖存者 F" }
+    ],
+    "placeholderDialogue": {
+        "characterInitiativeLines": [
+            "你還好嗎？",
+            "這裡的夜晚總是讓人不安。",
+            "謝謝你當時的幫忙。",
+            "外面到底發生了什麼事？",
+            "你從哪裡來的？"
+        ],
+        "playerInitiativeLines": [
+            "你今天感覺怎麼樣？",
+            "需要我幫你做什麼嗎？",
+            "你習慣這裡的生活了嗎？",
+            "你還記得家人嗎？",
+            "對於未來，你有什麼打算？"
+        ]
+    }
+}

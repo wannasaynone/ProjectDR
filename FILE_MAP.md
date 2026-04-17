@@ -8,27 +8,17 @@
 
 ## GDD 設計文件
 
-| 檔案 | 用途 |
-|------|------|
-| `gdd/game-concept.md` | 遊戲概念文件（專案最高層級總覽） |
-| `gdd/core-definition.md` | 核心定義文件（核心循環、核心樂趣、驗證標準、目標受眾、開發環境） |
-| `gdd/world-setting.md` | 世界觀設定文件（世界觀背景、村莊與森林設定、玩家角色；探索系統規則概述，詳細規則見 exploration-system.md） |
-| `gdd/exploration-system.md` | 探索系統規格書（完整 55 條規則：地圖、移動、物品箱、背包倉庫、數值、戰鬥、魔物、死亡、撤離） |
-| `gdd/characters.md` | 角色設定文件（角色總覽：背景、個性、對應村莊功能） |
-| `gdd/character-interaction.md` | 角色互動系統（互動流程、畫面佈局、打字機效果、功能選單、懸浮覆蓋） |
-| `gdd/village-economy.md` | 村莊經濟系統（物品分類、農田、通用製作、贈禮效果、角色功能對應、物品流向圖） |
-| `gdd/base-management.md` | 基地經營系統（NPC 導向架構、互動選單結構、設施框架、升級機制、村莊等級、解鎖機制、系統接口） |
-| `gdd/character-content-template.md` | 單一角色內容量規格模板（好感度階段、對話量、CG/HCG 數量、立繪差分、喜好清單、量產估算） |
-| `gdd/dialogue-writing-sop.md` | 對話撰寫 SOP（製作人撰寫單一角色完整對話內容的線性 checklist，按等級 1～7 逐步推進） |
+> **2026-04-17**：因轉向 Dark Room A+ 方向，既有 GDD 與敘事文件全部清空重寫。目前 `gdd/` 下僅保留 `random-ideas/`（含方向討論脈絡）。新 GDD 尚未撰寫。
 
-## 敘事文件（narrative）
+*（待新方向 GDD 撰寫後補上）*
+
+## 想法記錄（random-ideas）
 
 | 檔案 | 用途 |
 |------|------|
-| `gdd/narrative/village-chief-wife/character-spec.md` | 村長夫人角色設定 |
-| `gdd/narrative/guard/character-spec.md` | 守衛角色設定 |
-| `gdd/narrative/witch/character-spec.md` | 魔女（魔藥學家）角色設定 |
-| `gdd/narrative/farm-girl/character-spec.md` | 農女角色設定 |
+| `gdd/random-ideas/alternate-dimension-random-encounters.md` | 異空間隨機邂逅方向（概念 B）的完整討論脈絡，含九輪演變紀錄 |
+| `gdd/random-ideas/market-research-deep-dive-request.md` | 委託外部 AI 的第二輪深入調查題目（四矛盾點） |
+| `gdd/random-ideas/dark-room-clone-direction.md` | Dark Room 照抄方向（第五路徑 A+）的討論脈絡與設計決定演進 |
 
 ## 正式遊戲程式碼（Assets/Game/Scripts）
 

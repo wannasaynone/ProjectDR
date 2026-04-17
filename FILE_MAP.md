@@ -12,10 +12,14 @@
 |------|------|
 | `gdd/game-concept.md` | 遊戲概念文件（專案最高層級總覽） |
 | `gdd/core-definition.md` | 核心定義文件（核心循環、核心樂趣、驗證標準、目標受眾、開發環境） |
-| `gdd/world-setting.md` | 世界觀設定文件（世界觀背景、村莊與森林設定、玩家角色、探索系統規則） |
+| `gdd/world-setting.md` | 世界觀設定文件（世界觀背景、村莊與森林設定、玩家角色；探索系統規則概述，詳細規則見 exploration-system.md） |
+| `gdd/exploration-system.md` | 探索系統規格書（完整 55 條規則：地圖、移動、物品箱、背包倉庫、數值、戰鬥、魔物、死亡、撤離） |
 | `gdd/characters.md` | 角色設定文件（角色總覽：背景、個性、對應村莊功能） |
 | `gdd/character-interaction.md` | 角色互動系統（互動流程、畫面佈局、打字機效果、功能選單、懸浮覆蓋） |
 | `gdd/village-economy.md` | 村莊經濟系統（物品分類、農田、通用製作、贈禮效果、角色功能對應、物品流向圖） |
+| `gdd/base-management.md` | 基地經營系統（NPC 導向架構、互動選單結構、設施框架、升級機制、村莊等級、解鎖機制、系統接口） |
+| `gdd/character-content-template.md` | 單一角色內容量規格模板（好感度階段、對話量、CG/HCG 數量、立繪差分、喜好清單、量產估算） |
+| `gdd/dialogue-writing-sop.md` | 對話撰寫 SOP（製作人撰寫單一角色完整對話內容的線性 checklist，按等級 1～7 逐步推進） |
 
 ## 敘事文件（narrative）
 

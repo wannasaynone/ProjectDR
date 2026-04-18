@@ -1,0 +1,285 @@
+{
+    "schema_version": 1,
+    "note": "📝 AI 填寫 placeholder，待製作人審閱。村長夫人三個節點的對話、VN 選項、選擇後回應。line_type: narration/dialogue/choice_prompt/choice_option/choice_response。choice_branch: 空=共通, farm_girl=選農女分支, witch=選魔女分支。",
+    "node_dialogue_lines": [
+        {
+            "line_id": "node0_narration_001",
+            "node_id": "node_0",
+            "sequence": 1,
+            "speaker": "narrator",
+            "text": "這片森林已經圍住這裡多少年了，沒有人記得清楚。",
+            "line_type": "narration",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_narration_002",
+            "node_id": "node_0",
+            "sequence": 2,
+            "speaker": "narrator",
+            "text": "村子裡的人靠著農地和手藝生活，靠著彼此維持秩序。只是沒有男人了。最後一個男人離開這裡，已經是很多年前的事。",
+            "line_type": "narration",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_narration_003",
+            "node_id": "node_0",
+            "sequence": 3,
+            "speaker": "narrator",
+            "text": "然後你出現了。",
+            "line_type": "narration",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_narration_004",
+            "node_id": "node_0",
+            "sequence": 4,
+            "speaker": "narrator",
+            "text": "在森林邊界，意識模糊，身上什麼都沒有。她們把你帶回來，也沒問你是誰，因為問了你也答不出來。",
+            "line_type": "narration",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_vcw_001",
+            "node_id": "node_0",
+            "sequence": 5,
+            "speaker": "VillageChiefWife",
+            "text": "你應該已經知道一些基本的事了。這裡是霧鎖村，四面被森林圍著，外面有魔物。我們自給自足已經很多年了。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_vcw_002",
+            "node_id": "node_0",
+            "sequence": 6,
+            "speaker": "VillageChiefWife",
+            "text": "村子的運作，現在是我在負責。倉庫的物資、各處的維修、日常的分配……不是我一個人的功勞，但協調這些事的人是我。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_vcw_003",
+            "node_id": "node_0",
+            "sequence": 7,
+            "speaker": "VillageChiefWife",
+            "text": "你能在森林裡活著走回來——這件事比你想的重要。這片森林會讓路變，讓人迷失。但你做到了。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_vcw_004",
+            "node_id": "node_0",
+            "sequence": 8,
+            "speaker": "VillageChiefWife",
+            "text": "所以我想直接問你：你願意幫我們嗎？不是命令，是邀請。留下來，和我們一起維持這個村子。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_vcw_005",
+            "node_id": "node_0",
+            "sequence": 9,
+            "speaker": "VillageChiefWife",
+            "text": "在你能開始做這些事之前，先認識一下村子裡的人吧。我這裡還有兩個人想介紹給你。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_vcw_006",
+            "node_id": "node_0",
+            "sequence": 10,
+            "speaker": "VillageChiefWife",
+            "text": "田那邊的女孩，種了全村大部分的糧食。還有山邊小屋的那位，是我們唯一能調製藥水的人。今天你想先認識誰？",
+            "line_type": "choice_prompt",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node0_choice_a",
+            "node_id": "node_0",
+            "sequence": 11,
+            "speaker": "player",
+            "text": "田那邊的女孩。",
+            "line_type": "choice_option",
+            "choice_branch": "farm_girl"
+        },
+        {
+            "line_id": "node0_choice_b",
+            "node_id": "node_0",
+            "sequence": 12,
+            "speaker": "player",
+            "text": "山邊小屋的那位。",
+            "line_type": "choice_option",
+            "choice_branch": "witch"
+        },
+        {
+            "line_id": "node0_response_farm_girl",
+            "node_id": "node_0",
+            "sequence": 13,
+            "speaker": "VillageChiefWife",
+            "text": "蘿啊。她應該在田裡。……那孩子說話很直，你習慣一下就好。等你準備好了，去找她吧——Hub 上的按鈕已經開了。",
+            "line_type": "choice_response",
+            "choice_branch": "farm_girl"
+        },
+        {
+            "line_id": "node0_response_witch",
+            "node_id": "node_0",
+            "sequence": 14,
+            "speaker": "VillageChiefWife",
+            "text": "席薇雅。她多半在小屋裡做研究。……不太容易打招呼，但她不會把人拒之門外的。等你準備好了，去找她吧——Hub 上的按鈕已經開了。",
+            "line_type": "choice_response",
+            "choice_branch": "witch"
+        },
+        {
+            "line_id": "node1_vcw_001",
+            "node_id": "node_1",
+            "sequence": 1,
+            "speaker": "VillageChiefWife",
+            "text": "我聽說你和她相處得不錯。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node1_vcw_002",
+            "node_id": "node_1",
+            "sequence": 2,
+            "speaker": "VillageChiefWife",
+            "text": "她不是個容易讓陌生人進去的人。你能做到，說明你有讓人放鬆的方式——或者，只是她覺得你夠用。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node1_vcw_003",
+            "node_id": "node_1",
+            "sequence": 3,
+            "speaker": "narrator",
+            "text": "她說最後那句話的時候帶著一點淡淡的笑意，不確定是在讚你還是在說笑。",
+            "line_type": "narration",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node1_vcw_004",
+            "node_id": "node_1",
+            "sequence": 4,
+            "speaker": "VillageChiefWife",
+            "text": "村子要穩定下去，需要更多人手互相認識、互相信任。你能成為這個橋梁，比我在這邊說更有效。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node1_vcw_005",
+            "node_id": "node_1",
+            "sequence": 5,
+            "speaker": "VillageChiefWife",
+            "text": "還有另一個人，你還沒見過她。去見一下，好嗎？",
+            "line_type": "choice_prompt",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node1_choice_meet",
+            "node_id": "node_1",
+            "sequence": 6,
+            "speaker": "player",
+            "text": "好，帶我去見她。",
+            "line_type": "choice_option",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node1_response_farm_girl",
+            "node_id": "node_1",
+            "sequence": 7,
+            "speaker": "VillageChiefWife",
+            "text": "田那邊的蘿你已經認識了。山邊的席薇雅還在等你去打個招呼。她不是個難相處的人，只是……需要你主動一點。Hub 上已經開了她的按鈕了，有空去找她吧。",
+            "line_type": "choice_response",
+            "choice_branch": "witch"
+        },
+        {
+            "line_id": "node1_response_witch",
+            "node_id": "node_1",
+            "sequence": 8,
+            "speaker": "VillageChiefWife",
+            "text": "山邊的席薇雅你已經認識了。田那邊的蘿還沒見過你。她說話很直接，但心是好的——去田裡找她，她多半在那邊。Hub 上已經開了她的按鈕了。",
+            "line_type": "choice_response",
+            "choice_branch": "farm_girl"
+        },
+        {
+            "line_id": "node2_vcw_001",
+            "node_id": "node_2",
+            "sequence": 1,
+            "speaker": "VillageChiefWife",
+            "text": "你做到了。兩個人你都認識了，也都幫上了忙。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node2_vcw_002",
+            "node_id": "node_2",
+            "sequence": 2,
+            "speaker": "narrator",
+            "text": "她說這句話的方式不是誇獎，更像是一個小小的確認——像是什麼一直懸著的東西終於落地了。",
+            "line_type": "narration",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node2_vcw_003",
+            "node_id": "node_2",
+            "sequence": 3,
+            "speaker": "VillageChiefWife",
+            "text": "村子有你，確實不一樣了。我說的不是客套話。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node2_vcw_004",
+            "node_id": "node_2",
+            "sequence": 4,
+            "speaker": "VillageChiefWife",
+            "text": "只是……還有一件事我必須說。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node2_vcw_005",
+            "node_id": "node_2",
+            "sequence": 5,
+            "speaker": "VillageChiefWife",
+            "text": "有個人，一直在外面執勤。她一個人在森林邊界，已經很久了。我們等她回來，等了很久……",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node2_vcw_006",
+            "node_id": "node_2",
+            "sequence": 6,
+            "speaker": "narrator",
+            "text": "她的視線短暫地移開，落在窗外的方向——那個森林的方向。",
+            "line_type": "narration",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node2_vcw_007",
+            "node_id": "node_2",
+            "sequence": 7,
+            "speaker": "VillageChiefWife",
+            "text": "你準備好出去看看外面了嗎？探索入口現在可以用了。如果你出去——很有可能會遇到她。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node2_vcw_008",
+            "node_id": "node_2",
+            "sequence": 8,
+            "speaker": "VillageChiefWife",
+            "text": "她不認識你，她的個性……比較警戒。但她是自己人。我想辦法先告訴她你的事，但時機上難以保證。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        },
+        {
+            "line_id": "node2_vcw_009",
+            "node_id": "node_2",
+            "sequence": 9,
+            "speaker": "VillageChiefWife",
+            "text": "去吧。Hub 上的探索入口已經開了。小心。",
+            "line_type": "dialogue",
+            "choice_branch": ""
+        }
+    ]
+}

@@ -7,10 +7,34 @@ using TMPro;
 namespace ProjectDR.Village.UI
 {
     /// <summary>
+    /// 角色互動畫面的五種狀態（對應 character-interaction.md v2.2）。
+    /// </summary>
+    public enum CharacterInteractionState
+    {
+        /// <summary>正常模式：既有互動畫面，對話 + 功能選單 + 返回按鈕。</summary>
+        Normal = 0,
+
+        /// <summary>強制模式：無返回按鈕，節點 0 / 強制劇情事件使用。</summary>
+        Forced = 1,
+
+        /// <summary>首次進入：播放登場 CG + 短劇情，每角色只觸發一次。</summary>
+        FirstEntry = 2,
+
+        /// <summary>委託中：功能選單位置顯示「工作中 mm:ss」倒數 + 認真工作對話。</summary>
+        CommissionInProgress = 3,
+
+        /// <summary>完成領取：功能選單位置顯示「領取」按鈕。</summary>
+        CommissionReady = 4,
+    }
+
+    /// <summary>
     /// 角色互動畫面。
     /// 左側為立繪區（Animator 預留），右上為對話區（打字機效果），
-    /// 右下為功能選單（對話結束後顯示）。
+    /// 右下為功能選單（對話結束後顯示），並支援 VN 式選項容器。
     /// 支援在 overlay container 中顯示功能 View（懸浮覆蓋）。
+    ///
+    /// 五種狀態（見 CharacterInteractionState）：
+    /// Normal / Forced / FirstEntry / CommissionInProgress / CommissionReady。
     /// </summary>
     public class CharacterInteractionView : ViewBase
     {
@@ -26,6 +50,20 @@ namespace ProjectDR.Village.UI
         [Header("功能選單")]
         [SerializeField] private Transform _menuContainer;
         [SerializeField] private Button _menuButtonPrefab;
+
+        [Header("選項容器（VN 式選項）")]
+        [Tooltip("對話中呈現 VN 選項時使用的容器，內容動態生成於此。")]
+        [SerializeField] private Transform _choiceContainer;
+        [Tooltip("選項按鈕 Prefab（可與 _menuButtonPrefab 同一份，或獨立設計）。")]
+        [SerializeField] private Button _choiceButtonPrefab;
+
+        [Header("委託中狀態")]
+        [Tooltip("「工作中 mm:ss」倒數計時文字，位於功能選單位置。")]
+        [SerializeField] private TMP_Text _commissionCountdownText;
+
+        [Header("完成領取狀態")]
+        [Tooltip("委託完成時顯示的「領取」按鈕，位於功能選單位置。")]
+        [SerializeField] private Button _commissionClaimButton;
 
         [Header("Overlay")]
         [SerializeField] private Transform _overlayContainer;
@@ -45,6 +83,18 @@ namespace ProjectDR.Village.UI
 
         /// <summary>取得當前顯示的角色 ID。若未設定角色資料則回傳 null。</summary>
         public string CurrentCharacterId => _characterData?.CharacterId;
+
+        /// <summary>目前的狀態（預設 Normal）。</summary>
+        public CharacterInteractionState CurrentState => _currentState;
+
+        private CharacterInteractionState _currentState = CharacterInteractionState.Normal;
+
+        // 委託中倒數剩餘秒數（由 SetState 或 SetCommissionRemainingSeconds 更新）
+        private int _commissionRemainingSeconds;
+
+        // 領取按鈕的外部回呼
+        private System.Action _commissionClaimCallback;
+
         private TypewriterEffect _typewriterEffect;
         private CharacterMenuData _characterData;
 
@@ -71,6 +121,16 @@ namespace ProjectDR.Village.UI
                 { CharacterIds.Guard, new[] { "哦...謝了。" } },
                 { CharacterIds.Witch, new[] { "嗯，這個有點意思。" } },
                 { CharacterIds.FarmGirl, new[] { "哇，給我的嗎？好開心！" } }
+            };
+
+        // IT 階段委託中 placeholder 台詞（B12，硬編碼）
+        // 例外說明：IT 階段為最小成本驗證，工作中台詞暫時硬編碼於 View 層
+        private static readonly Dictionary<string, string[]> WorkingLines
+            = new Dictionary<string, string[]>
+            {
+                { CharacterIds.Guard, new[] { "……（正在巡邏中，請稍候。）" } },
+                { CharacterIds.Witch, new[] { "……（正在煉製中，請勿打擾。）" } },
+                { CharacterIds.FarmGirl, new[] { "……（正在耕種中，努力中！）" } }
             };
 
         /// <summary>
@@ -123,9 +183,92 @@ namespace ProjectDR.Village.UI
         {
             _characterData = characterData;
             _pendingDialogueStart = true;
+            // 預設以內部驅動模式啟動；opening flow 會在 SetCharacter 之後再呼叫
+            // SetExternalDialogueMode(true) 改為外部驅動，避免殘留上一輪的狀態
+            _externalDialogueMode = false;
+        }
+
+        /// <summary>
+        /// 設定是否由外部驅動 DialogueManager（而非由本 View 呼叫 StartDialogue）。
+        /// 開場劇情（OpeningSequenceController）等由外部推進對話時使用，
+        /// 外部模式下 OnShow 僅準備 UI，不自動啟動角色預設對話；
+        /// 打字機會在 DialogueStartedEvent 到達時自動播放當前行。
+        /// </summary>
+        public void SetExternalDialogueMode(bool enabled)
+        {
+            _externalDialogueMode = enabled;
+            if (enabled)
+            {
+                _pendingDialogueStart = false;
+            }
+        }
+
+        /// <summary>
+        /// 設定當前狀態。
+        /// 呼叫時立即更新 UI 顯示（返回按鈕、選單、倒數、領取按鈕）。
+        /// </summary>
+        /// <param name="state">目標狀態。</param>
+        public void SetState(CharacterInteractionState state)
+        {
+            _currentState = state;
+            ApplyStateToUI();
+        }
+
+        /// <summary>
+        /// 更新委託中狀態的剩餘秒數（mm:ss 格式顯示）。
+        /// 僅在 CommissionInProgress 狀態時有效。
+        /// </summary>
+        public void SetCommissionRemainingSeconds(int remainingSeconds)
+        {
+            _commissionRemainingSeconds = remainingSeconds < 0 ? 0 : remainingSeconds;
+            RefreshCommissionCountdownText();
+        }
+
+        /// <summary>
+        /// 設定「領取」按鈕被按下時的回呼。
+        /// 僅在 CommissionReady 狀態下按鈕才會顯示。
+        /// </summary>
+        public void SetCommissionClaimCallback(System.Action callback)
+        {
+            _commissionClaimCallback = callback;
         }
 
         private bool _pendingDialogueStart;
+        private bool _externalDialogueMode;
+
+        // CTRL 快轉：按住 LeftCtrl / RightCtrl 時連續跳過打字機並自動推進到下一行
+        // 在等待 VN 選項時暫停（必須由玩家選擇）。頻率控制：每 0.05s 推進一次。
+        private const float FastForwardIntervalSeconds = 0.05f;
+        private float _fastForwardAccumulator;
+
+        private void Update()
+        {
+            if (_dialogueManager == null) return;
+            if (!_dialogueManager.IsActive) return;
+            if (_dialogueManager.IsWaitingForChoice) return;
+
+            bool ctrlHeld = UnityEngine.Input.GetKey(UnityEngine.KeyCode.LeftControl)
+                || UnityEngine.Input.GetKey(UnityEngine.KeyCode.RightControl);
+            if (!ctrlHeld)
+            {
+                _fastForwardAccumulator = 0f;
+                return;
+            }
+
+            // 打字機播放中 → 立即跳到當前行完整顯示
+            if (_typewriterEffect != null && _typewriterEffect.IsPlaying)
+            {
+                _typewriterEffect.Skip();
+                _fastForwardAccumulator = 0f;
+                return;
+            }
+
+            // 打字機已完成 → 以固定間隔推進到下一行
+            _fastForwardAccumulator += UnityEngine.Time.unscaledDeltaTime;
+            if (_fastForwardAccumulator < FastForwardIntervalSeconds) return;
+            _fastForwardAccumulator = 0f;
+            AdvanceDialogue();
+        }
 
         protected override void OnShow()
         {
@@ -144,14 +287,32 @@ namespace ProjectDR.Village.UI
                 _returnButton.onClick.AddListener(OnReturnClicked);
             }
 
+            if (_commissionClaimButton != null)
+            {
+                _commissionClaimButton.onClick.AddListener(OnCommissionClaimClicked);
+            }
+
             // 訂閱好感度變更事件以即時刷新顯示
             EventBus.Subscribe<AffinityChangedEvent>(OnAffinityChanged);
 
             // 訂閱送禮成功事件以播放感謝對話
             EventBus.Subscribe<GiftSuccessEvent>(OnGiftSuccess);
 
-            // 在 GameObject active 後才啟動對話與打字機
-            if (_pendingDialogueStart && _characterData != null)
+            // 訂閱 VN 選項事件
+            EventBus.Subscribe<DialogueChoicePresentedEvent>(OnDialogueChoicePresented);
+
+            // 訂閱 DialogueStartedEvent — 外部驅動模式下由此觸發打字機播放首行
+            EventBus.Subscribe<DialogueStartedEvent>(OnExternalDialogueStarted);
+
+            // 初次套用狀態到 UI（Normal 為預設）
+            ApplyStateToUI();
+
+            if (_externalDialogueMode)
+            {
+                // 外部驅動：不呼叫 StartDialogue，只準備 UI 等 DialogueStartedEvent 觸發打字機
+                PrepareDialogueUI();
+            }
+            else if (_pendingDialogueStart && _characterData != null)
             {
                 _pendingDialogueStart = false;
                 StartDialoguePlayback();
@@ -164,14 +325,51 @@ namespace ProjectDR.Village.UI
         /// </summary>
         private void StartDialoguePlayback()
         {
+            PrepareDialogueUI();
+
+            // 委託進行中：改用 placeholder 工作中台詞（B12）
+            DialogueData dialogueToPlay = _characterData.Dialogue;
+            if (_currentState == CharacterInteractionState.CommissionInProgress
+                && _characterData != null)
+            {
+                string[] workingLinesForChar;
+                if (WorkingLines.TryGetValue(_characterData.CharacterId, out workingLinesForChar))
+                {
+                    dialogueToPlay = new DialogueData(workingLinesForChar);
+                }
+            }
+
+            // 開始對話
+            _dialogueManager.StartDialogue(dialogueToPlay);
+
+            // 播放第一行打字機效果
+            string firstLine = _dialogueManager.GetCurrentLine();
+            if (firstLine != null && _typewriterEffect != null)
+            {
+                _typewriterEffect.OnComplete += OnTypewriterLineComplete;
+                _typewriterEffect.Play(firstLine, _typewriterCharsPerSecond);
+            }
+        }
+
+        /// <summary>
+        /// 準備對話區的 UI（角色名、隱藏選單、清除選項、啟用全螢幕點擊、訂閱 Completed）。
+        /// 共用於內部啟動對話（StartDialoguePlayback）與外部驅動模式（OnShow）。
+        /// </summary>
+        private void PrepareDialogueUI()
+        {
             // 設定角色名稱
-            if (_characterNameLabel != null)
+            if (_characterNameLabel != null && _characterData != null)
             {
                 _characterNameLabel.text = _characterData.DisplayName;
             }
 
-            // 隱藏功能選單
+            // 隱藏功能選單 / 倒數 / 領取按鈕（對話開始時全部隱藏）
             SetMenuVisible(false);
+            SetCommissionCountdownVisible(false);
+            SetCommissionClaimButtonVisible(false);
+
+            // 清除選項容器（重新對話前清除）
+            ClearChoiceContainer();
 
             // 啟用全螢幕對話點擊區域
             if (_fullScreenDialogueArea != null)
@@ -188,17 +386,28 @@ namespace ProjectDR.Village.UI
             // 確保不重複訂閱（重新對話時仍在 Show 狀態，OnHide 不會觸發取消訂閱）
             EventBus.Unsubscribe<DialogueCompletedEvent>(OnDialogueCompleted);
             EventBus.Subscribe<DialogueCompletedEvent>(OnDialogueCompleted);
+        }
 
-            // 開始對話
-            _dialogueManager.StartDialogue(_characterData.Dialogue);
+        /// <summary>
+        /// 外部驅動模式下，DialogueManager 被上層啟動時觸發打字機播放首行。
+        /// 非外部驅動模式或非本 View 的對話忽略（例：View 未顯示時）。
+        /// </summary>
+        private void OnExternalDialogueStarted(DialogueStartedEvent e)
+        {
+            if (!_externalDialogueMode) return;
+            if (!gameObject.activeInHierarchy) return;
+            if (_typewriterEffect == null) return;
 
-            // 播放第一行打字機效果
-            string firstLine = _dialogueManager.GetCurrentLine();
-            if (firstLine != null && _typewriterEffect != null)
+            string firstLine = e?.FirstLine;
+            if (string.IsNullOrEmpty(firstLine) && _dialogueManager != null)
             {
-                _typewriterEffect.OnComplete += OnTypewriterLineComplete;
-                _typewriterEffect.Play(firstLine, _typewriterCharsPerSecond);
+                firstLine = _dialogueManager.GetCurrentLine();
             }
+            if (string.IsNullOrEmpty(firstLine)) return;
+
+            _typewriterEffect.OnComplete -= OnTypewriterLineComplete;
+            _typewriterEffect.OnComplete += OnTypewriterLineComplete;
+            _typewriterEffect.Play(firstLine, _typewriterCharsPerSecond);
         }
 
         protected override void OnHide()
@@ -219,10 +428,17 @@ namespace ProjectDR.Village.UI
                 _returnButton.onClick.RemoveListener(OnReturnClicked);
             }
 
+            if (_commissionClaimButton != null)
+            {
+                _commissionClaimButton.onClick.RemoveListener(OnCommissionClaimClicked);
+            }
+
             // 清理事件訂閱
             EventBus.Unsubscribe<DialogueCompletedEvent>(OnDialogueCompleted);
             EventBus.Unsubscribe<AffinityChangedEvent>(OnAffinityChanged);
             EventBus.Unsubscribe<GiftSuccessEvent>(OnGiftSuccess);
+            EventBus.Unsubscribe<DialogueChoicePresentedEvent>(OnDialogueChoicePresented);
+            EventBus.Unsubscribe<DialogueStartedEvent>(OnExternalDialogueStarted);
 
             if (_typewriterEffect != null)
             {
@@ -231,6 +447,9 @@ namespace ProjectDR.Village.UI
 
             // 關閉 overlay
             CloseOverlay();
+
+            // 清除選項容器
+            ClearChoiceContainer();
         }
 
         private void OnDestroy()
@@ -238,15 +457,24 @@ namespace ProjectDR.Village.UI
             EventBus.Unsubscribe<DialogueCompletedEvent>(OnDialogueCompleted);
             EventBus.Unsubscribe<AffinityChangedEvent>(OnAffinityChanged);
             EventBus.Unsubscribe<GiftSuccessEvent>(OnGiftSuccess);
+            EventBus.Unsubscribe<DialogueChoicePresentedEvent>(OnDialogueChoicePresented);
+            EventBus.Unsubscribe<DialogueStartedEvent>(OnExternalDialogueStarted);
         }
 
         /// <summary>
         /// 對話區域被點擊時的處理。
         /// 若打字機正在播放 → 跳過（直接顯示完整文字）。
         /// 若打字機已完成 → 前進到下一行。
+        /// 若正在等待玩家選擇選項 → 不做任何事（點擊被選項吸收）。
         /// </summary>
         private void OnDialogueClicked()
         {
+            // 等待選擇中：忽略對話區點擊
+            if (_dialogueManager != null && _dialogueManager.IsWaitingForChoice)
+            {
+                return;
+            }
+
             if (_typewriterEffect != null && _typewriterEffect.IsPlaying)
             {
                 _typewriterEffect.Skip();
@@ -293,9 +521,95 @@ namespace ProjectDR.Village.UI
                 _fullScreenDialogueArea.gameObject.SetActive(false);
             }
 
-            // 顯示功能選單
-            SetMenuVisible(true);
-            RefreshMenu();
+            // 對話結束後依據當前狀態呈現對應 UI
+            // Normal / FirstEntry 完成 → 顯示功能選單
+            // CommissionInProgress → 顯示倒數（維持委託中）
+            // CommissionReady → 顯示領取按鈕
+            // Forced → 不顯示選單（等外部 SetState 切回 Normal / 觸發節點劇情完成流程）
+            ApplyStateToUI();
+
+            // 在 Normal / FirstEntry 狀態下，對話完成 → 顯示功能選單
+            if (_currentState == CharacterInteractionState.Normal
+                || _currentState == CharacterInteractionState.FirstEntry)
+            {
+                SetMenuVisible(true);
+                RefreshMenu();
+            }
+        }
+
+        /// <summary>
+        /// DialogueManager 發布選項事件 → 動態生成選項按鈕於 _choiceContainer。
+        /// 點擊後呼叫 DialogueManager.SelectChoice。
+        /// </summary>
+        private void OnDialogueChoicePresented(DialogueChoicePresentedEvent e)
+        {
+            if (!gameObject.activeInHierarchy) return;
+            if (_choiceContainer == null || _choiceButtonPrefab == null)
+            {
+                Debug.LogWarning("[CharacterInteractionView] 未設定選項容器或選項按鈕 Prefab，無法呈現 VN 選項。");
+                return;
+            }
+            if (e == null || e.Choices == null) return;
+
+            ClearChoiceContainer();
+
+            // 對話呈現選項期間：隱藏全螢幕對話點擊（避免誤點跳過）
+            if (_fullScreenDialogueArea != null)
+            {
+                _fullScreenDialogueArea.gameObject.SetActive(false);
+            }
+
+            // 選項容器顯示
+            _choiceContainer.gameObject.SetActive(true);
+
+            foreach (DialogueChoice choice in e.Choices)
+            {
+                string capturedId = choice.ChoiceId;
+                string capturedText = choice.Text;
+
+                Button button = Instantiate(_choiceButtonPrefab, _choiceContainer);
+                button.gameObject.SetActive(true);
+
+                TMP_Text label = button.GetComponentInChildren<TMP_Text>();
+                if (label != null)
+                {
+                    label.text = capturedText;
+                }
+
+                button.onClick.AddListener(() => OnChoiceSelected(capturedId));
+            }
+        }
+
+        private void OnChoiceSelected(string choiceId)
+        {
+            if (_dialogueManager == null) return;
+            if (!_dialogueManager.IsWaitingForChoice) return;
+
+            // 通知 DialogueManager
+            _dialogueManager.SelectChoice(choiceId);
+
+            // 清除選項 UI
+            ClearChoiceContainer();
+
+            // 重新啟用全螢幕對話點擊（進入分支回應時推進對話）
+            if (_fullScreenDialogueArea != null)
+            {
+                _fullScreenDialogueArea.gameObject.SetActive(true);
+            }
+
+            // 若 SelectChoice 後呼叫端已 AppendLines，繼續推進到下一行
+            // 若沒有附加，Advance 會直接發布 Completed
+            AdvanceDialogue();
+        }
+
+        private void ClearChoiceContainer()
+        {
+            if (_choiceContainer == null) return;
+            for (int i = _choiceContainer.childCount - 1; i >= 0; i--)
+            {
+                Destroy(_choiceContainer.GetChild(i).gameObject);
+            }
+            _choiceContainer.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -346,12 +660,83 @@ namespace ProjectDR.Village.UI
             }
         }
 
+        // ===== 狀態套用 =====
+
+        /// <summary>
+        /// 依 _currentState 更新 UI 可見性：返回按鈕、選單、倒數、領取按鈕。
+        /// </summary>
+        private void ApplyStateToUI()
+        {
+            // 返回按鈕：僅在非強制模式下可見
+            bool returnButtonVisible = _currentState != CharacterInteractionState.Forced;
+            if (_returnButton != null)
+            {
+                _returnButton.gameObject.SetActive(returnButtonVisible);
+            }
+
+            switch (_currentState)
+            {
+                case CharacterInteractionState.Normal:
+                case CharacterInteractionState.FirstEntry:
+                case CharacterInteractionState.Forced:
+                    // 功能選單由對話完成事件觸發顯示（StartDialoguePlayback 先隱藏）
+                    SetCommissionCountdownVisible(false);
+                    SetCommissionClaimButtonVisible(false);
+                    break;
+
+                case CharacterInteractionState.CommissionInProgress:
+                    // 委託中：隱藏功能選單，顯示倒數
+                    SetMenuVisible(false);
+                    SetCommissionClaimButtonVisible(false);
+                    SetCommissionCountdownVisible(true);
+                    RefreshCommissionCountdownText();
+                    break;
+
+                case CharacterInteractionState.CommissionReady:
+                    // 完成領取：隱藏功能選單與倒數，顯示領取按鈕
+                    SetMenuVisible(false);
+                    SetCommissionCountdownVisible(false);
+                    SetCommissionClaimButtonVisible(true);
+                    break;
+            }
+        }
+
+        private void OnCommissionClaimClicked()
+        {
+            _commissionClaimCallback?.Invoke();
+        }
+
         private void SetMenuVisible(bool visible)
         {
             if (_menuContainer != null)
             {
                 _menuContainer.gameObject.SetActive(visible);
             }
+        }
+
+        private void SetCommissionCountdownVisible(bool visible)
+        {
+            if (_commissionCountdownText != null)
+            {
+                _commissionCountdownText.gameObject.SetActive(visible);
+            }
+        }
+
+        private void SetCommissionClaimButtonVisible(bool visible)
+        {
+            if (_commissionClaimButton != null)
+            {
+                _commissionClaimButton.gameObject.SetActive(visible);
+            }
+        }
+
+        private void RefreshCommissionCountdownText()
+        {
+            if (_commissionCountdownText == null) return;
+            int seconds = _commissionRemainingSeconds;
+            int mm = seconds / 60;
+            int ss = seconds % 60;
+            _commissionCountdownText.text = $"工作中... {mm:00}:{ss:00}";
         }
 
         /// <summary>
@@ -370,9 +755,11 @@ namespace ProjectDR.Village.UI
             {
                 _dialogueText.transform.parent.parent.gameObject.SetActive(visible);
             }
+            // 返回按鈕僅在非強制模式下可見（overlay 開啟時一律隱藏）
             if (_returnButton != null)
             {
-                _returnButton.gameObject.SetActive(visible);
+                bool effective = visible && _currentState != CharacterInteractionState.Forced;
+                _returnButton.gameObject.SetActive(effective);
             }
         }
 
@@ -406,13 +793,62 @@ namespace ProjectDR.Village.UI
         {
             if (functionId == FunctionIds.Dialogue)
             {
-                // 「對話」功能：重新播放對話
-                OnDialogueOptionClicked();
+                // B14：若有註冊 PlayerQuestionsView Prefab，以 overlay 開啟；
+                // 否則 fallback 至舊的「重新播放對話」行為。
+                if (_functionPrefabs.ContainsKey(FunctionIds.Dialogue))
+                {
+                    OpenOverlay(FunctionIds.Dialogue);
+                }
+                else
+                {
+                    OnDialogueOptionClicked();
+                }
+                return;
+            }
+
+            // 委託功能（耕種/煉製/探索周圍）：開啟格子式工作台
+            if (functionId == FunctionIds.CommissionFarm
+                || functionId == FunctionIds.CommissionAlchemy
+                || functionId == FunctionIds.CommissionScout)
+            {
+                OpenCraftWorkbench(functionId);
                 return;
             }
 
             // 其他功能：開啟 overlay
             OpenOverlay(functionId);
+        }
+
+        /// <summary>
+        /// 開啟格子式工作台（CraftWorkbenchView），依 GDD character-interaction.md v2.2 § 6：
+        /// 點擊委託功能按鈕時，右側對話框與功能選單消失，顯示格子工作台。
+        /// </summary>
+        private void OpenCraftWorkbench(string functionId)
+        {
+            CloseOverlay();
+
+            if (!_functionPrefabs.TryGetValue(functionId, out ViewBase prefab))
+            {
+                Debug.LogWarning(string.Format("[CharacterInteractionView] 未註冊委託工作台 Prefab: {0}", functionId));
+                return;
+            }
+
+            if (_overlayContainer == null) return;
+
+            ViewBase overlayView = Instantiate(prefab, _overlayContainer);
+            _currentOverlayInstance = overlayView.gameObject;
+
+            if (_functionInitializers.TryGetValue(functionId, out System.Action<ViewBase> initializer))
+            {
+                initializer(overlayView);
+            }
+
+            overlayView.Show();
+
+            // 工作台開啟時：隱藏選單，保留立繪，對話面板消失（依 GDD §6 規則 6）
+            SetMenuVisible(false);
+            if (_dialogueText != null)
+                _dialogueText.transform.parent.parent.gameObject.SetActive(false);
         }
 
         private void OnDialogueOptionClicked()
@@ -465,15 +901,22 @@ namespace ProjectDR.Village.UI
                 Destroy(_currentOverlayInstance);
                 _currentOverlayInstance = null;
 
-                // overlay 關閉時恢復 UI 元素
+                // overlay 關閉時恢復 UI 元素（含對話面板）
                 SetMenuVisible(true);
                 RefreshMenu();
                 SetNonDialogueUIVisible(true);
+
+                // 恢復對話面板（工作台開啟時曾隱藏）
+                if (_dialogueText != null)
+                    _dialogueText.transform.parent.parent.gameObject.SetActive(true);
             }
         }
 
         private void OnReturnClicked()
         {
+            // 強制模式下忽略（按鈕本應被隱藏，防禦性檢查）
+            if (_currentState == CharacterInteractionState.Forced) return;
+
             // 先關閉 overlay
             CloseOverlay();
 
@@ -509,8 +952,24 @@ namespace ProjectDR.Village.UI
                 case FunctionIds.Dialogue: return "對話";
                 case FunctionIds.Gift: return "送禮";
                 case FunctionIds.Gallery: return "回憶";
+                case FunctionIds.CommissionFarm: return "耕種";
+                case FunctionIds.CommissionAlchemy: return "煉製";
+                case FunctionIds.CommissionScout: return "探索周圍";
                 default: return functionId;
             }
+        }
+
+        /// <summary>
+        /// 讓呼叫端在 DialogueCompleted 後顯示功能選單（Normal / FirstEntry 狀態）。
+        /// 分離此 API 讓外部系統（節點劇情控制器）在特定狀態下控制菜單呈現。
+        /// </summary>
+        public void ShowFunctionMenu()
+        {
+            if (_currentState == CharacterInteractionState.CommissionInProgress) return;
+            if (_currentState == CharacterInteractionState.CommissionReady) return;
+
+            SetMenuVisible(true);
+            RefreshMenu();
         }
     }
 
@@ -522,5 +981,11 @@ namespace ProjectDR.Village.UI
         public const string Dialogue = "Dialogue";
         public const string Gift = "Gift";
         public const string Gallery = "Gallery";
+
+        // 委託功能 ID（B11/B12，對應委託型三角色的專業功能按鈕）
+        // 依 character-interaction.md v2.2 § 3：耕種/煉製/探索周圍
+        public const string CommissionFarm    = "CommissionFarm";    // 農女 [耕種]
+        public const string CommissionAlchemy = "CommissionAlchemy"; // 魔女 [煉製]
+        public const string CommissionScout   = "CommissionScout";   // 守衛 [探索周圍]
     }
 }

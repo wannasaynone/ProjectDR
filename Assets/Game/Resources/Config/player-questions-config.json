@@ -1,0 +1,318 @@
+{
+    "schema_version": 1,
+    "note": "AI 生成 placeholder，B14 IT 階段用。每角色 12~13 題，分 3 個好感度階段（0/1/2）解鎖。所有題目均標注「AI placeholder，待製作人撰寫」。",
+    "questions": [
+        {
+            "question_id": "vcw_q01",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 0,
+            "question_text": "這個村子叫什麼名字？",
+            "response_text": "霧鎖村。名字來自這片圍繞我們的霧——老一輩說，霧不散，村子就在。【AI placeholder，待製作人撰寫】",
+            "sort_order": 1
+        },
+        {
+            "question_id": "vcw_q02",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 0,
+            "question_text": "村子裡有多少人？",
+            "response_text": "目前十七人。都是女性，除了你。這個狀況已經持續了將近三年。【AI placeholder，待製作人撰寫】",
+            "sort_order": 2
+        },
+        {
+            "question_id": "vcw_q03",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 0,
+            "question_text": "森林為什麼讓人迷路？",
+            "response_text": "沒有人知道。有人說是某種魔法，有人說森林本身是活的。我只知道，進去的人很少能照自己預期的方向走出來。【AI placeholder，待製作人撰寫】",
+            "sort_order": 3
+        },
+        {
+            "question_id": "vcw_q04",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 0,
+            "question_text": "你是怎麼成為村長夫人的？",
+            "response_text": "……嫁給了前任村長。他離開之後，稱呼就沒有改過。村子裡的人大概覺得，換掉稱呼等於承認他不回來了。【AI placeholder，待製作人撰寫】",
+            "sort_order": 4
+        },
+        {
+            "question_id": "vcw_q05",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 1,
+            "question_text": "倉庫裡的東西是村子的公共財嗎？",
+            "response_text": "算是。有人帶回來的東西統一放進去，有需要的人再取用。這樣比較不會浪費。我負責記帳。【AI placeholder，待製作人撰寫】",
+            "sort_order": 5
+        },
+        {
+            "question_id": "vcw_q06",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 1,
+            "question_text": "有沒有人試過強行穿越森林？",
+            "response_text": "有。最後一次是兩年前，三個人出發，一個人回來。那個人說她走了三天，還是繞回了原點。我們現在不鼓勵這樣做了。【AI placeholder，待製作人撰寫】",
+            "sort_order": 6
+        },
+        {
+            "question_id": "vcw_q07",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 1,
+            "question_text": "你有想過離開這裡嗎？",
+            "response_text": "……想過。但有些事做了就要負責。我選擇留下來，這是我自己的選擇。不後悔。【AI placeholder，待製作人撰寫】",
+            "sort_order": 7
+        },
+        {
+            "question_id": "vcw_q08",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 1,
+            "question_text": "你平時都做些什麼？",
+            "response_text": "管帳、分配物資、調解村民的紛爭。偶爾煮點藥湯。說起來不複雜，但每天都有新的問題需要處理。【AI placeholder，待製作人撰寫】",
+            "sort_order": 8
+        },
+        {
+            "question_id": "vcw_q09",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 2,
+            "question_text": "你最擔心的事是什麼？",
+            "response_text": "糧食。每到冬季末尾，我都在計算還剩多少、能撐多久。你能夠進出森林，這讓情況稍微好了一點。【AI placeholder，待製作人撰寫】",
+            "sort_order": 9
+        },
+        {
+            "question_id": "vcw_q10",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 2,
+            "question_text": "村長是為什麼離開的？",
+            "response_text": "他說要去找出路。進了森林，沒有回來。……這不是我願意多說的話題，你能理解嗎。【AI placeholder，待製作人撰寫】",
+            "sort_order": 10
+        },
+        {
+            "question_id": "vcw_q11",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 2,
+            "question_text": "你喜歡什麼東西？",
+            "response_text": "……這個問題有點突然。我喜歡傍晚的光線，安靜的時候。還有煮湯的過程——不是因為湯好喝，是因為它需要時間。【AI placeholder，待製作人撰寫】",
+            "sort_order": 11
+        },
+        {
+            "question_id": "vcw_q12",
+            "character_id": "VillageChiefWife",
+            "unlock_affinity_stage": 2,
+            "question_text": "你信任我嗎？",
+            "response_text": "……我信任你能做到你說的事。至於其他的——信任是要時間建立的。不急。【AI placeholder，待製作人撰寫】",
+            "sort_order": 12
+        },
+        {
+            "question_id": "fg_q01",
+            "character_id": "FarmGirl",
+            "unlock_affinity_stage": 0,
+            "question_text": "你一個人管這麼大的農田？",
+            "response_text": "對啊，都是我一個人。偶爾有人來幫忙收成，但播種、翻土、澆水這些都是我自己來。習慣了，不覺得難。【AI placeholder，待製作人撰寫】",
+            "sort_order": 1
+        },
+        {
+            "question_id": "fg_q02",
+            "character_id": "FarmGirl",
+            "unlock_affinity_stage": 0,
+            "question_text": "你種什麼作物？",
+            "response_text": "主要是麥子和根莖類，比較耐種。也試過種藥草，但效果忽好忽壞——席薇雅說我土壤調配的問題，我懶得理她。【AI placeholder，待製作人撰寫】",
+            "sort_order": 2
+        },
+        {
+            "question_id": "fg_q03",
+            "character_id": "FarmGirl",
+            "unlock_affinity_stage": 0,
+            "question_text": "你在這個村子住多久了？",
+            "response_text": "從小就在這。沒有去過外面，外面對我來說就是森林那邊——聽說過，但沒親眼看見過。【AI placeholder，待製作人撰寫】",
+            "sort_order": 3
+        },
+        {
+            "question_id": "fg_q04",
+            "character_id": "FarmGirl",
+            "unlock_affinity_stage": 0,
+            "question_text": "農活最難的部分是什麼？",
+            "response_text": "蟲害。不是普通的蟲——森林邊界的蟲不一樣，牠們吃東西的速度快，如果沒有早發現，一整排作物就毀了。【AI placeholder，待製作人撰寫】",
+            "sort_order": 4
+        },
+        {
+            "question_id": "fg_q05",
+            "character_id": "FarmGirl",
+            "unlock_affinity_stage": 1,
+            "question_text": "你和魔女的關係怎麼樣？",
+            "response_text": "……還好吧。她說話直接，我也說話直接，所以不太會吵架。就是偶爾意見不同，但那是正常的。【AI placeholder，待製作人撰寫】",
+            "sort_order": 5
+        },
+        {
+            "question_id": "fg_q06",
+            "character_id": "FarmGirl",
+            "unlock_affinity_stage": 1,
+            "question_text": "你有沒有想過從事農業以外的事？",
+            "response_text": "……有時候想。但我擅長的就是這個，而且村子需要糧食。我覺得做好一件事比什麼都想做、什麼都做不好要好。【AI placeholder，待製作人撰寫】",
+            "sort_order": 6
+        },
+        {
+            "question_id": "fg_q07",
+            "character_id": "FarmGirl",
+            "unlock_affinity_stage": 1,
+            "question_text": "你最喜歡哪個季節？",
+            "response_text": "秋天。作物收成的時候，田裡的顏色很好看，而且收穫的時候有一種……很踏實的感覺。不知道怎麼解釋，就是很好。【AI placeholder，待製作人撰寫】",
+            "sort_order": 7
+        },
+        {
+            "question_id": "fg_q08",
+            "character_id": "FarmGirl",
+            "unlock_affinity_stage": 2,
+            "question_text": "你有沒有害怕過什麼？",
+            "response_text": "……作物一直長不好的時候。那種感覺很難受，就像無論怎麼努力都沒有用。但通常撐過去就好了，所以我現在比較不怕了。【AI placeholder，待製作人撰寫】",
+            "sort_order": 8
+        },
+        {
+            "question_id": "fg_q09",
+            "character_id": "FarmGirl",
+            "unlock_affinity_stage": 2,
+            "question_text": "你想要什麼？",
+            "response_text": "……一塊更大的田，還有水利設施。這樣冬天就不需要一桶一桶地擔水了。【AI placeholder，待製作人撰寫】",
+            "sort_order": 9
+        },
+        {
+            "question_id": "w_q01",
+            "character_id": "Witch",
+            "unlock_affinity_stage": 0,
+            "question_text": "你研究的是什麼魔法？",
+            "response_text": "魔藥學，不是魔法。這兩個不一樣——魔法靠天份，魔藥學靠配方和材料。任何人都可以學，只要有耐心。【AI placeholder，待製作人撰寫】",
+            "sort_order": 1
+        },
+        {
+            "question_id": "w_q02",
+            "character_id": "Witch",
+            "unlock_affinity_stage": 0,
+            "question_text": "那頂帽子是必要的嗎？",
+            "response_text": "……不是。但有它感覺煉製的時候比較能集中。也可能只是習慣了。別盯著它看。【AI placeholder，待製作人撰寫】",
+            "sort_order": 2
+        },
+        {
+            "question_id": "w_q03",
+            "character_id": "Witch",
+            "unlock_affinity_stage": 0,
+            "question_text": "你研究森林嗎？",
+            "response_text": "在研究。這片森林有某種特殊的魔力殘留，我在試圖分析成分。目前資料還不夠，無法得出結論。【AI placeholder，待製作人撰寫】",
+            "sort_order": 3
+        },
+        {
+            "question_id": "w_q04",
+            "character_id": "Witch",
+            "unlock_affinity_stage": 0,
+            "question_text": "你有沒有什麼是賣不出去的？",
+            "response_text": "時間。如果你想讓我加急處理你的委託，費率翻倍。這不是在開玩笑。【AI placeholder，待製作人撰寫】",
+            "sort_order": 4
+        },
+        {
+            "question_id": "w_q05",
+            "character_id": "Witch",
+            "unlock_affinity_stage": 1,
+            "question_text": "你是從哪裡學魔藥學的？",
+            "response_text": "自學。這裡沒有老師，只有書。找到一本，讀完，找下一本。大部分書裡有一半是錯的，但那也是學習的一部分。【AI placeholder，待製作人撰寫】",
+            "sort_order": 5
+        },
+        {
+            "question_id": "w_q06",
+            "character_id": "Witch",
+            "unlock_affinity_stage": 1,
+            "question_text": "你最得意的成品是什麼？",
+            "response_text": "三年前做出來的一劑解迷霧藥。效果持續時間比任何配方記載的都長——後來試著重製，成功率只有四成，原因還在找。【AI placeholder，待製作人撰寫】",
+            "sort_order": 6
+        },
+        {
+            "question_id": "w_q07",
+            "character_id": "Witch",
+            "unlock_affinity_stage": 1,
+            "question_text": "你喜歡這個工作嗎？",
+            "response_text": "……喜歡。這是我自己選的。沒有人逼我，也沒有人付我薪水——除了物資。選自己喜歡的事做，這樣最有效率。【AI placeholder，待製作人撰寫】",
+            "sort_order": 7
+        },
+        {
+            "question_id": "w_q08",
+            "character_id": "Witch",
+            "unlock_affinity_stage": 2,
+            "question_text": "你有沒有失敗過的配方？",
+            "response_text": "很多。記錄都在那本藍色的本子裡，二十三頁，全是失敗紀錄。失敗不可恥，不記錄才可恥。【AI placeholder，待製作人撰寫】",
+            "sort_order": 8
+        },
+        {
+            "question_id": "w_q09",
+            "character_id": "Witch",
+            "unlock_affinity_stage": 2,
+            "question_text": "你在意別人怎麼看你嗎？",
+            "response_text": "……有一點。我不想讓人覺得我的研究是在胡搞。至於生活上的事，不太在意。效率最重要。【AI placeholder，待製作人撰寫】",
+            "sort_order": 9
+        },
+        {
+            "question_id": "g_q01",
+            "character_id": "Guard",
+            "unlock_affinity_stage": 0,
+            "question_text": "你巡邏的範圍有多大？",
+            "response_text": "以村子為中心，往外約三百步。森林邊緣的位置每天都會有一點偏移，所以路線必須每次重新確認。【AI placeholder，待製作人撰寫】",
+            "sort_order": 1
+        },
+        {
+            "question_id": "g_q02",
+            "character_id": "Guard",
+            "unlock_affinity_stage": 0,
+            "question_text": "你在這裡待多久了？",
+            "response_text": "四年。我是在村子被徹底孤立之前來的。本來是過路，後來走不出去，就留下來做有用的事。【AI placeholder，待製作人撰寫】",
+            "sort_order": 2
+        },
+        {
+            "question_id": "g_q03",
+            "character_id": "Guard",
+            "unlock_affinity_stage": 0,
+            "question_text": "森林裡有哪些危險？",
+            "response_text": "魔物。種類不一，但大部分是受到森林魔力影響之後改變的生物。靠近邊界的比較小，越深入越不確定。【AI placeholder，待製作人撰寫】",
+            "sort_order": 3
+        },
+        {
+            "question_id": "g_q04",
+            "character_id": "Guard",
+            "unlock_affinity_stage": 0,
+            "question_text": "你是怎麼學劍的？",
+            "response_text": "從小在城市學的。技術還算紮實，只是從來沒想到會用在這種地方。……有需要的話，我可以教你基礎。【AI placeholder，待製作人撰寫】",
+            "sort_order": 4
+        },
+        {
+            "question_id": "g_q05",
+            "character_id": "Guard",
+            "unlock_affinity_stage": 1,
+            "question_text": "你一個人負責守衛，不累嗎？",
+            "response_text": "……累。但沒有人來替換我。所以我調整了巡邏時間表，在效率和體力之間找一個能維持的點。【AI placeholder，待製作人撰寫】",
+            "sort_order": 5
+        },
+        {
+            "question_id": "g_q06",
+            "character_id": "Guard",
+            "unlock_affinity_stage": 1,
+            "question_text": "你有沒有遇過嚴重的威脅？",
+            "response_text": "去年冬天，一隻比平常大三倍的東西試圖進入村子邊界。花了兩個小時才把它驅趕走。那次我受傷了，花了兩週才好。【AI placeholder，待製作人撰寫】",
+            "sort_order": 6
+        },
+        {
+            "question_id": "g_q07",
+            "character_id": "Guard",
+            "unlock_affinity_stage": 1,
+            "question_text": "你最在意的事是什麼？",
+            "response_text": "效率。做任何事，先想清楚目標，再想最短的路徑。時間和力氣都有限，不能浪費。【AI placeholder，待製作人撰寫】",
+            "sort_order": 7
+        },
+        {
+            "question_id": "g_q08",
+            "character_id": "Guard",
+            "unlock_affinity_stage": 2,
+            "question_text": "你有沒有想過放下守衛這個職責？",
+            "response_text": "……想過。如果有人能夠接替我，我可能早就不在這裡了。但現在沒有。所以我在這裡。【AI placeholder，待製作人撰寫】",
+            "sort_order": 8
+        },
+        {
+            "question_id": "g_q09",
+            "character_id": "Guard",
+            "unlock_affinity_stage": 2,
+            "question_text": "你想出去嗎？",
+            "response_text": "想。外面有我想回去的地方。如果有一天能夠穿越這片森林……那就是我完成任務的時候了。【AI placeholder，待製作人撰寫】",
+            "sort_order": 9
+        }
+    ]
+}

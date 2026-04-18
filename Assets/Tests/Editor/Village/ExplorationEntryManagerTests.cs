@@ -103,6 +103,59 @@ namespace ProjectDR.Tests.Village
             Assert.IsFalse(_sut.CanDepart());
         }
 
+        // ===== IExplorationDepartureInterceptor（V6 B10） =====
+
+        [Test]
+        public void Depart_WithInterceptorThatTriggers_ReturnsFalseAndDoesNotExplore()
+        {
+            FakeInterceptor interceptor = new FakeInterceptor { ShouldIntercept = true };
+            _sut.SetDepartureInterceptor(interceptor);
+
+            bool result = _sut.Depart();
+
+            Assert.IsFalse(result);
+            Assert.AreEqual(1, interceptor.InterceptCallCount);
+            // 攔截後仍可再次 Depart（未進入探索狀態）
+            Assert.IsTrue(_sut.CanDepart());
+        }
+
+        [Test]
+        public void Depart_WithInterceptorThatDoesNotTrigger_ContinuesNormally()
+        {
+            FakeInterceptor interceptor = new FakeInterceptor { ShouldIntercept = false };
+            _sut.SetDepartureInterceptor(interceptor);
+
+            bool result = _sut.Depart();
+
+            Assert.IsTrue(result);
+            Assert.AreEqual(1, interceptor.InterceptCallCount);
+            Assert.IsFalse(_sut.CanDepart()); // 已在探索中
+        }
+
+        [Test]
+        public void SetDepartureInterceptor_Null_RemovesInterceptor()
+        {
+            FakeInterceptor interceptor = new FakeInterceptor { ShouldIntercept = true };
+            _sut.SetDepartureInterceptor(interceptor);
+            _sut.SetDepartureInterceptor(null);
+
+            bool result = _sut.Depart();
+
+            Assert.IsTrue(result);
+            Assert.AreEqual(0, interceptor.InterceptCallCount);
+        }
+
+        private class FakeInterceptor : IExplorationDepartureInterceptor
+        {
+            public bool ShouldIntercept { get; set; }
+            public int InterceptCallCount { get; private set; }
+            public bool TryIntercept()
+            {
+                InterceptCallCount++;
+                return ShouldIntercept;
+            }
+        }
+
         // ===== SimulateReturn =====
 
         [Test]

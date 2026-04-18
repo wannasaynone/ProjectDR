@@ -1,8 +1,8 @@
 # Dark Room 照抄方向
 
 > **建立日期**: 2026-04-17
-> **狀態**: 🔄 討論中（範圍已釐清為「範圍 2 機制 + 範圍 3 節奏」，需釐清具體設計細節）
-> **相關主題**: alternate-dimension-random-encounters.md, game-concept.md, core-definition.md, exploration-system.md, base-management.md, characters.md
+> **狀態**: ⚠️ 已被部分取代 — 2026-04-17 製作人決定採「替代方案」，改走 `dark-room-mechanics-into-original.md` 的委託制路線。本文件第三輪澄清中的多項決策（5~8 角色、空村開局、主畫面大改、角色通用勞動力）已被推翻。仍保留作為設計演變紀錄。
+> **相關主題**: dark-room-mechanics-into-original.md（接替方向）, alternate-dimension-random-encounters.md, game-concept.md, core-definition.md, exploration-system.md, base-management.md, characters.md
 
 ## 內容
 

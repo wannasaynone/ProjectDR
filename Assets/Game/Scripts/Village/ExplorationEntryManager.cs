@@ -2,6 +2,7 @@
 // 管理玩家出發與返回探索的狀態轉換。
 // V2：戰利品進入背包而非直接進倉庫；出發時自動拍攝背包快照。
 // V5：監聽 ExplorationCompletedEvent 自動觸發 CompleteExploration。
+// V6（B10 Sprint 4）：新增 IDepartureInterceptor 機制，供守衛歸來事件攔截首次探索。
 
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,27 @@ using ProjectDR.Village.Exploration;
 namespace ProjectDR.Village
 {
     /// <summary>
+    /// 出發攔截器介面。
+    /// ExplorationEntryManager.Depart() 前會詢問攔截器是否「此次出發應先改為觸發劇情事件」。
+    /// 實作方（B10 GuardReturnEventController）判斷條件後，若要攔截則回傳 true 並觸發對應劇情。
+    /// </summary>
+    public interface IExplorationDepartureInterceptor
+    {
+        /// <summary>
+        /// 嘗試攔截一次「出發探索」呼叫。
+        /// 若回傳 true，ExplorationEntryManager 不會實際出發，呼叫端（UI）應等待該攔截流程完成後再重新呼叫 Depart()。
+        /// 若回傳 false，ExplorationEntryManager 繼續正常出發流程。
+        /// </summary>
+        bool TryIntercept();
+    }
+
+    /// <summary>
     /// 探索進入管理器。
     /// 管理玩家出發與返回探索的狀態轉換。
     /// 監聽 ExplorationCompletedEvent（由撤離完成或死亡觸發），
     /// 自動呼叫 CompleteExploration() 結束探索狀態並發布 ExplorationReturnedEvent。
     /// 出發時自動拍攝背包快照，供死亡回溯使用。
+    /// 支援單一 IExplorationDepartureInterceptor 攔截出發，供守衛歸來事件等劇情攔截首次探索。
     /// </summary>
     public class ExplorationEntryManager
     {
@@ -24,11 +41,25 @@ namespace ProjectDR.Village
         private BackpackSnapshot _departureSnapshot;
         private Action<ExplorationCompletedEvent> _onExplorationCompleted;
 
+        /// <summary>
+        /// 出發攔截器。由上層注入。預設為 null（無攔截）。
+        /// </summary>
+        private IExplorationDepartureInterceptor _interceptor;
+
         public ExplorationEntryManager(BackpackManager backpackManager)
         {
             _backpackManager = backpackManager;
             _onExplorationCompleted = OnExplorationCompleted;
             EventBus.Subscribe<ExplorationCompletedEvent>(_onExplorationCompleted);
+        }
+
+        /// <summary>
+        /// 設定出發攔截器。傳入 null 可移除攔截器。
+        /// 守衛歸來事件完成後，上層應呼叫 SetDepartureInterceptor(null) 移除。
+        /// </summary>
+        public void SetDepartureInterceptor(IExplorationDepartureInterceptor interceptor)
+        {
+            _interceptor = interceptor;
         }
 
         /// <summary>檢查目前是否可以出發探索（未在探索中即可出發）。</summary>
@@ -39,11 +70,18 @@ namespace ProjectDR.Village
 
         /// <summary>
         /// 出發探索。若已在探索中，回傳 false。
+        /// 若有攔截器且攔截成功，不實際出發、回傳 false。
         /// 成功出發時，拍攝背包快照並發布 ExplorationDepartedEvent。
         /// </summary>
         public bool Depart()
         {
             if (!CanDepart())
+            {
+                return false;
+            }
+
+            // 先給攔截器機會（守衛歸來事件）
+            if (_interceptor != null && _interceptor.TryIntercept())
             {
                 return false;
             }

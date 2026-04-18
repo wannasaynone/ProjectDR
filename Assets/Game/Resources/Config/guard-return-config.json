@@ -1,0 +1,254 @@
+{
+    "schema_version": 1,
+    "note": "📝 AI 填寫 placeholder，待製作人審閱。守衛歸來事件純劇情演出。phase_id: alert=警戒、clarify=澄清、sheathe=收劍、gift_sword=贈劍、closing=收尾返村。",
+    "guard_return_lines": [
+        {
+            "line_id": "gr_001",
+            "sequence": 1,
+            "speaker": "narrator",
+            "text": "你踏進森林的邊界，腳下的草比村子裡的更深，樹影也更密。霧氣在低處流動，光線從枝縫間碎裂落下。",
+            "line_type": "narration",
+            "phase_id": "alert"
+        },
+        {
+            "line_id": "gr_002",
+            "sequence": 2,
+            "speaker": "narrator",
+            "text": "然後一個聲音，從你左後方傳來——",
+            "line_type": "narration",
+            "phase_id": "alert"
+        },
+        {
+            "line_id": "gr_003",
+            "sequence": 3,
+            "speaker": "Guard",
+            "text": "停下。",
+            "line_type": "dialogue",
+            "phase_id": "alert"
+        },
+        {
+            "line_id": "gr_004",
+            "sequence": 4,
+            "speaker": "narrator",
+            "text": "她從樹木的陰影裡走出來，動作沉穩，鐵甲的輕微摩擦聲是她唯一發出過的聲音。金色馬尾綁得高，臉上的神情比刀鋒還要直接。右手握著劍柄，尚未拔出——但距離拔出只差一個決定。",
+            "line_type": "narration",
+            "phase_id": "alert"
+        },
+        {
+            "line_id": "gr_005",
+            "sequence": 5,
+            "speaker": "Guard",
+            "text": "你是誰。這裡不是你能進的地方。",
+            "line_type": "dialogue",
+            "phase_id": "alert"
+        },
+        {
+            "line_id": "gr_006",
+            "sequence": 6,
+            "speaker": "Guard",
+            "text": "回答。",
+            "line_type": "dialogue",
+            "phase_id": "alert"
+        },
+        {
+            "line_id": "gr_007",
+            "sequence": 7,
+            "speaker": "narrator",
+            "text": "她的眼神在你身上掃了一遍，快速而精確，像是在評估一個威脅的等級。她不是憤怒，而是完全進入了她的職責模式——任何不明來源的人，都是潛在的問題。",
+            "line_type": "narration",
+            "phase_id": "alert"
+        },
+        {
+            "line_id": "gr_008",
+            "sequence": 8,
+            "speaker": "VillageChiefWife",
+            "text": "卡塞拉。",
+            "line_type": "dialogue",
+            "phase_id": "clarify"
+        },
+        {
+            "line_id": "gr_009",
+            "sequence": 9,
+            "speaker": "narrator",
+            "text": "艾薇夫人從另一個方向走進樹影，步伐穩定，神情平靜。她在你們兩人之間停下。",
+            "line_type": "narration",
+            "phase_id": "clarify"
+        },
+        {
+            "line_id": "gr_010",
+            "sequence": 10,
+            "speaker": "Guard",
+            "text": "夫人？……你也在這裡？",
+            "line_type": "dialogue",
+            "phase_id": "clarify"
+        },
+        {
+            "line_id": "gr_011",
+            "sequence": 11,
+            "speaker": "VillageChiefWife",
+            "text": "我是趕過來的。早知道你今天會回來，就事先說清楚了。……他是村裡的人。在你出去執勤這段時間裡加入的。",
+            "line_type": "dialogue",
+            "phase_id": "clarify"
+        },
+        {
+            "line_id": "gr_012",
+            "sequence": 12,
+            "speaker": "Guard",
+            "text": "……村裡的人。",
+            "line_type": "dialogue",
+            "phase_id": "clarify"
+        },
+        {
+            "line_id": "gr_013",
+            "sequence": 13,
+            "speaker": "VillageChiefWife",
+            "text": "他是在森林邊界被我們發現的。能走進森林又平安回來——你知道這意味著什麼。",
+            "line_type": "dialogue",
+            "phase_id": "clarify"
+        },
+        {
+            "line_id": "gr_014",
+            "sequence": 14,
+            "speaker": "narrator",
+            "text": "守衛沉默了幾秒。她的手沒有立刻離開劍柄，眼神在你身上又停了一下——這一次，帶著不同的意味。不再是威脅評估，而是……某種比較接近重新定義的事。",
+            "line_type": "narration",
+            "phase_id": "clarify"
+        },
+        {
+            "line_id": "gr_015",
+            "sequence": 15,
+            "speaker": "Guard",
+            "text": "你在村子裡待了多久了。",
+            "line_type": "dialogue",
+            "phase_id": "clarify"
+        },
+        {
+            "line_id": "gr_016",
+            "sequence": 16,
+            "speaker": "VillageChiefWife",
+            "text": "一段時間了。我讓他去探索，是我的決定，你的疑慮可以直接問我。",
+            "line_type": "dialogue",
+            "phase_id": "clarify"
+        },
+        {
+            "line_id": "gr_017",
+            "sequence": 17,
+            "speaker": "Guard",
+            "text": "……收到。",
+            "line_type": "dialogue",
+            "phase_id": "sheathe"
+        },
+        {
+            "line_id": "gr_018",
+            "sequence": 18,
+            "speaker": "narrator",
+            "text": "她緩慢地把手從劍柄上移開，沒有就此放鬆，只是讓自己從「即將拔劍」的狀態退回「等待判斷」的狀態。對她來說，那已經是一種降低警戒的表示了。",
+            "line_type": "narration",
+            "phase_id": "sheathe"
+        },
+        {
+            "line_id": "gr_019",
+            "sequence": 19,
+            "speaker": "Guard",
+            "text": "我沒有收到通知，所以才攔你。這是職責範圍內的行為。但如果夫人擔保，我撤回。",
+            "line_type": "dialogue",
+            "phase_id": "sheathe"
+        },
+        {
+            "line_id": "gr_020",
+            "sequence": 20,
+            "speaker": "narrator",
+            "text": "她說這句話的方式很平靜，沒有尷尬，沒有愧色——就像是一個程序上的確認，完成了就翻篇。",
+            "line_type": "narration",
+            "phase_id": "sheathe"
+        },
+        {
+            "line_id": "gr_021",
+            "sequence": 21,
+            "speaker": "Guard",
+            "text": "……話雖如此，先前攔你的態度——",
+            "line_type": "dialogue",
+            "phase_id": "sheathe"
+        },
+        {
+            "line_id": "gr_022",
+            "sequence": 22,
+            "speaker": "Guard",
+            "text": "我道歉。那是誤判。",
+            "line_type": "dialogue",
+            "phase_id": "sheathe"
+        },
+        {
+            "line_id": "gr_023",
+            "sequence": 23,
+            "speaker": "narrator",
+            "text": "她從腰側的備用劍鞘裡取出一把短劍，把它平舉在你面前，柄朝向你。",
+            "line_type": "narration",
+            "phase_id": "gift_sword"
+        },
+        {
+            "line_id": "gr_024",
+            "sequence": 24,
+            "speaker": "Guard",
+            "text": "拿著。",
+            "line_type": "dialogue",
+            "phase_id": "gift_sword"
+        },
+        {
+            "line_id": "gr_025",
+            "sequence": 25,
+            "speaker": "Guard",
+            "text": "空手進森林是危험的。這不是我偏袒你——是外面確實有會傷人的東西，你不能沒有武器。",
+            "line_type": "dialogue",
+            "phase_id": "gift_sword"
+        },
+        {
+            "line_id": "gr_026",
+            "sequence": 26,
+            "speaker": "narrator",
+            "text": "你接過劍。它不重，但握在手心有份量。",
+            "line_type": "narration",
+            "phase_id": "gift_sword"
+        },
+        {
+            "line_id": "gr_027",
+            "sequence": 27,
+            "speaker": "Guard",
+            "text": "不會用的話，回去找我。我可以訓練你。村莊需要你能用這個。",
+            "line_type": "dialogue",
+            "phase_id": "gift_sword"
+        },
+        {
+            "line_id": "gr_028",
+            "sequence": 28,
+            "speaker": "narrator",
+            "text": "她說完，沒有再多說，轉身往村莊的方向走。艾薇夫人看著她的背影，輕輕呼了一口氣。",
+            "line_type": "narration",
+            "phase_id": "gift_sword"
+        },
+        {
+            "line_id": "gr_029",
+            "sequence": 29,
+            "speaker": "VillageChiefWife",
+            "text": "她就是我說的那個人——卡塞拉，我們的守衛。回來了就好。",
+            "line_type": "dialogue",
+            "phase_id": "closing"
+        },
+        {
+            "line_id": "gr_030",
+            "sequence": 30,
+            "speaker": "narrator",
+            "text": "你握著劍跟在夫人後面，走回村莊的方向。樹影在你們身後合攏，森林安靜如故。但今天多了一個人，回到村子裡。",
+            "line_type": "narration",
+            "phase_id": "closing"
+        },
+        {
+            "line_id": "gr_031",
+            "sequence": 31,
+            "speaker": "narrator",
+            "text": "守衛已加入村莊。Hub 上的按鈕開了。",
+            "line_type": "narration",
+            "phase_id": "closing"
+        }
+    ]
+}

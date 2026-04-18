@@ -1,0 +1,47 @@
+{
+    "schema_version": 1,
+    "max_expansion_level": 5,
+    "initial_capacity": 100,
+    "stages": [
+        {
+            "level": 1,
+            "capacity_before": 100,
+            "capacity_after": 150,
+            "required_items": "material_wood:10|material_cloth:5",
+            "duration_seconds": 90,
+            "description": "第 1 次擴建：木材 ×10 + 布料 ×5，90 秒。對應玩家首次感到背包壓力的時機。"
+        },
+        {
+            "level": 2,
+            "capacity_before": 150,
+            "capacity_after": 200,
+            "required_items": "material_wood:20|material_cloth:10|material_stone:5",
+            "duration_seconds": 120,
+            "description": "第 2 次擴建：成本翻倍 + 新增石材，120 秒。"
+        },
+        {
+            "level": 3,
+            "capacity_before": 200,
+            "capacity_after": 250,
+            "required_items": "material_wood:30|material_cloth:15|material_stone:15",
+            "duration_seconds": 180,
+            "description": "第 3 次擴建：整體物資 3 倍曲線，180 秒。"
+        },
+        {
+            "level": 4,
+            "capacity_before": 250,
+            "capacity_after": 300,
+            "required_items": "material_wood:50|material_cloth:25|material_stone:25|crystal_raw:3",
+            "duration_seconds": 240,
+            "description": "第 4 次擴建：新增稀有水晶，要求玩家深入探索累積，240 秒。"
+        },
+        {
+            "level": 5,
+            "capacity_before": 300,
+            "capacity_after": 350,
+            "required_items": "material_wood:80|material_cloth:40|material_stone:40|crystal_raw:8",
+            "duration_seconds": 300,
+            "description": "第 5 次擴建（當前上限）：長期目標，300 秒（約一次完整探索時間）。"
+        }
+    ]
+}

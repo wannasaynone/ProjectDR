@@ -48,15 +48,20 @@ namespace ProjectDR.Village
                 return 0;
             }
 
-            // 從背包移除（實際移除量可能少於要求）
-            int removed = _backpack.RemoveFromSlot(slotIndex, quantity);
+            // 從背包預計移除的量不可超過實際持有
+            int plannedRemove = quantity < slot.Quantity ? quantity : slot.Quantity;
 
-            if (removed > 0)
+            // 倉庫容量可能不足，僅能接受部分，實際轉移量以倉庫可容納為準
+            // 先嘗試加入倉庫，回傳實際加入量
+            int addedToWarehouse = _warehouse.TryAddItem(slot.ItemId, plannedRemove);
+
+            if (addedToWarehouse <= 0)
             {
-                // 加入倉庫（倉庫無容量上限，必定成功）
-                _warehouse.AddItem(slot.ItemId, removed);
+                return 0;
             }
 
+            // 自背包移除對應的實際加入量
+            int removed = _backpack.RemoveFromSlot(slotIndex, addedToWarehouse);
             return removed;
         }
 

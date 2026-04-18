@@ -1,0 +1,588 @@
+{
+    "schema_version": 1,
+    "note": "📝 AI 填寫 placeholder，待製作人審閱。登場 CG 短劇情。每個角色含場景描述（供美術 CG 參考）與對話行。",
+    "character_intros": [
+        {
+            "intro_id": "intro_village_chief_wife",
+            "character_id": "VillageChiefWife",
+            "cg_sprite_id": "cg_intro_village_chief_wife",
+            "scene_description": "室內臥房，柔和晨光從窗縫透入。村長夫人坐在床邊椅上，手裡端著一碗溫熱的藥湯，神情溫柔地看著剛醒來的玩家。她的深棕色髮絲被晨光映得略帶金色，米白長裙的下擺輕輕垂落。窗外傳來遠處雞鳴聲。",
+            "word_count_target": 800
+        },
+        {
+            "intro_id": "intro_farm_girl",
+            "character_id": "FarmGirl",
+            "cg_sprite_id": "cg_intro_farm_girl",
+            "scene_description": "村中田地，晴天午前。農女正蹲著整理剛翻開的土壟，橘棕短髮上沾了一點泥土。村長夫人帶著玩家走近田埂時，農女從作物間抬起頭，迎著光的笑容直接、爽朗，吊帶裙的一條帶子從肩頭滑落，她渾然不覺。",
+            "word_count_target": 700
+        },
+        {
+            "intro_id": "intro_witch",
+            "character_id": "Witch",
+            "cg_sprite_id": "cg_intro_witch",
+            "scene_description": "山邊小屋門口，下午斜陽。燭光與外光交疊在小屋半開的門框裡。魔女正背對門口攪拌一個微微冒泡的陶鍋，灰綠色的頭髮在煙霧中略顯蓬鬆。歪戴的魔法帽幾乎滑到耳邊。敲門聲響起時她緩慢地轉過身，半瞇著眼看向來客，右手仍懶散地握著攪拌棒。",
+            "word_count_target": 700
+        },
+        {
+            "intro_id": "intro_guard",
+            "character_id": "Guard",
+            "cg_sprite_id": "cg_intro_guard",
+            "scene_description": "森林邊界，清晨薄霧未散。樹木高大，光線從枝葉間碎裂落下。守衛身著鐵胸甲，金色高馬尾被晨風輕輕揚起，手握劍柄警戒地看著玩家。劍的刀鍔距出鞘還有兩寸——戒備，但尚未拔出。後段：誤會解除後，守衛收劍，目光由銳利轉為肅然，手中多了一把備用短劍。",
+            "word_count_target": 700
+        }
+    ],
+    "character_intro_lines": [
+        {
+            "line_id": "intro_vcw_001",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 1,
+            "speaker": "narrator",
+            "text": "沉重的黑暗退去了。你不知道睡了多久——只感覺身體很重，像是被什麼東西長時間壓著。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_002",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 2,
+            "speaker": "narrator",
+            "text": "眼睛慢慢睜開，第一個映入眼簾的是米白色的低矮天花板，以及一道從窗縫透進來的細長晨光。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_003",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 3,
+            "speaker": "narrator",
+            "text": "有人坐在你床邊。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_004",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 4,
+            "speaker": "VillageChiefWife",
+            "text": "……醒了。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_005",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 5,
+            "speaker": "narrator",
+            "text": "她的聲音很輕，像是怕把什麼東西驚走。棕色長髮鬆散地挽在腦後，手裡端著一個陶碗，碗裡還冒著細細的白煙。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_006",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 6,
+            "speaker": "VillageChiefWife",
+            "text": "先別急著起來。你已經昏睡兩天了——我剛好有藥湯，趁熱喝一點。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_007",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 7,
+            "speaker": "narrator",
+            "text": "她說話的語氣很平靜，不帶逼迫，像是在陳述一件已經安排好的事。你試著撐起身子，手臂輕微地顫抖。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_008",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 8,
+            "speaker": "VillageChiefWife",
+            "text": "慢一點。我扶你。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_009",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 9,
+            "speaker": "narrator",
+            "text": "她把碗放到床頭的小桌上，動作利落地把你扶起來，然後把枕頭墊在你背後。接著，她重新端起藥湯遞過來，看著你把它喝完。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_010",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 10,
+            "speaker": "VillageChiefWife",
+            "text": "好。喝完了。……你應該還有很多問題。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_011",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 11,
+            "speaker": "narrator",
+            "text": "她放下碗，手輕輕交疊放在膝上，看著你，等著你開口。你環顧四周——這是個簡樸的木造房間，窗外能看見院子和矮牆，矮牆外是一片深色的樹影。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_012",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 12,
+            "speaker": "VillageChiefWife",
+            "text": "我叫艾薇。這裡的人都叫我夫人。……村長夫人，以前是這樣叫。現在村長不在了，但稱呼還留著。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_013",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 13,
+            "speaker": "narrator",
+            "text": "她說「不在了」的時候，語氣沒有明顯的起伏，只是稍微短暫地停頓了一下，像是一個被翻過去的書頁。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_014",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 14,
+            "speaker": "VillageChiefWife",
+            "text": "這裡是霧鎖村。我知道你一定覺得奇怪——這個地方不在任何地圖上。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_015",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 15,
+            "speaker": "VillageChiefWife",
+            "text": "我們的村子四面都被森林圍著。不是普通的森林——每次有人試著走進去，路都會變。你出去，回不來的路比你來時的多。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_016",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 16,
+            "speaker": "VillageChiefWife",
+            "text": "所以我們已經很久沒有和外面聯絡了。住在這裡的，除了你，都是女性。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_017",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 17,
+            "speaker": "narrator",
+            "text": "她說這句話的時候，眼神沒有迴避，只是平靜地看著你，確認你聽進去了。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_018",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 18,
+            "speaker": "VillageChiefWife",
+            "text": "你是在森林邊界被發現的。意識不清，身上沒有攜帶任何能說明你是誰的東西。我們把你帶回來，做了能做的事。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_019",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 19,
+            "speaker": "VillageChiefWife",
+            "text": "你在這裡能醒過來，說明你比我們以為的要耐得住這片森林。這件事……很重要。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_020",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 20,
+            "speaker": "narrator",
+            "text": "她短暫地沉默了一下，像是在衡量接下來說什麼。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_021",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 21,
+            "speaker": "VillageChiefWife",
+            "text": "如果你願意的話，我希望你留下來。村子裡有很多地方需要人手，而能走進那片森林又回得來的人……我們等了很久了。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_022",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 22,
+            "speaker": "VillageChiefWife",
+            "text": "這段時間，有任何問題都可以來找我。村子裡的事，我都能告訴你。等你好些了，我再帶你認識村裡的其他人。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_vcw_023",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 23,
+            "speaker": "narrator",
+            "text": "她站起身，走向門邊，手指輕輕捏著門框，轉過頭來，微微一笑——那個笑容沉穩而溫暖，帶著某種說不清楚的疲憊，卻不讓疲憊跑到臉上來。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_vcw_024",
+            "intro_id": "intro_village_chief_wife",
+            "sequence": 24,
+            "speaker": "VillageChiefWife",
+            "text": "先休息吧。村子的事不急，明天再說。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_fg_001",
+            "intro_id": "intro_farm_girl",
+            "sequence": 1,
+            "speaker": "narrator",
+            "text": "田埂旁邊的小路不寬，艾薇夫人走在前面，腳步不緊不慢地帶著你往前。田地的邊界還沒到，遠遠的就已經能聞到翻開的泥土氣。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_fg_002",
+            "intro_id": "intro_farm_girl",
+            "sequence": 2,
+            "speaker": "VillageChiefWife",
+            "text": "這片田是她在管的。她做這個做很久了，有什麼農務上的事，你來找她就對了。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_fg_003",
+            "intro_id": "intro_farm_girl",
+            "sequence": 3,
+            "speaker": "narrator",
+            "text": "還沒走到田邊，就聽見有人在吆喝什麼。你繞過最後一排矮牆，看見她——橘棕色的短髮，皮革吊帶裙，蹲在一排剛翻好的土壟旁邊，正用力把一根卡住的鋤頭柄撬出來。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_fg_004",
+            "intro_id": "intro_farm_girl",
+            "sequence": 4,
+            "speaker": "FarmGirl",
+            "text": "嗯——！",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_fg_005",
+            "intro_id": "intro_farm_girl",
+            "sequence": 5,
+            "speaker": "narrator",
+            "text": "鋤頭柄鬆脫，她一個後仰差點坐倒，及時用手撐住地面，抬起頭——看見你們，愣了一秒。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_fg_006",
+            "intro_id": "intro_farm_girl",
+            "sequence": 6,
+            "speaker": "FarmGirl",
+            "text": "哦，夫人。還有……這是那個外來的人？",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_fg_007",
+            "intro_id": "intro_farm_girl",
+            "sequence": 7,
+            "speaker": "narrator",
+            "text": "她站起來，用袖子擦了一下額頭，也沒擦掉什麼，反而把臉颊的泥印越抹越大。她看見了自己的吊帶滑落，隨手把它拉回肩上，完全不在意你在看。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_fg_008",
+            "intro_id": "intro_farm_girl",
+            "sequence": 8,
+            "speaker": "FarmGirl",
+            "text": "嗯，你就是說能在森林裡走回來的那個。我聽夫人說了。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_fg_009",
+            "intro_id": "intro_farm_girl",
+            "sequence": 9,
+            "speaker": "FarmGirl",
+            "text": "我叫蘿，這一片田都是我在管。種的、收的、爛掉的，全都是我的事。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_fg_010",
+            "intro_id": "intro_farm_girl",
+            "sequence": 10,
+            "speaker": "narrator",
+            "text": "她一邊說一邊把鋤頭靠到田埂邊，手隨意地叉腰，打量了你一下——不是敵意，就是單純在評估。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_fg_011",
+            "intro_id": "intro_farm_girl",
+            "sequence": 11,
+            "speaker": "FarmGirl",
+            "text": "看起來還好，身板還行。欸，你會種東西嗎？就算不會也沒差，我教你。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_fg_012",
+            "intro_id": "intro_farm_girl",
+            "sequence": 12,
+            "speaker": "VillageChiefWife",
+            "text": "蘿，慢一點。他剛剛才能下床。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_fg_013",
+            "intro_id": "intro_farm_girl",
+            "sequence": 13,
+            "speaker": "FarmGirl",
+            "text": "喔，對。……那就先去看看種子庫，不用動手。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_fg_014",
+            "intro_id": "intro_farm_girl",
+            "sequence": 14,
+            "speaker": "narrator",
+            "text": "她說完，也沒等你答應，已經側過身去，抓起旁邊一籃種子，往工具棚的方向走。走了兩步，發現你沒跟上，她回頭看了你一眼。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_fg_015",
+            "intro_id": "intro_farm_girl",
+            "sequence": 15,
+            "speaker": "FarmGirl",
+            "text": "欸，走啦。種子不等人的。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_w_001",
+            "intro_id": "intro_witch",
+            "sequence": 1,
+            "speaker": "narrator",
+            "text": "山邊的路比村子裡的路窄，兩邊的草比人高，踩著偶爾冒出的碎石往上走。遠遠就能看見那間小屋了——煙囪上冒著淡淡的白煙，氣味不難聞，帶點草木混著礦物的東西。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_w_002",
+            "intro_id": "intro_witch",
+            "sequence": 2,
+            "speaker": "VillageChiefWife",
+            "text": "她有點……自己的節奏。你進去之後不用擔心，她不會惡意對待陌生人，只是有時候說話比較直接。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_w_003",
+            "intro_id": "intro_witch",
+            "sequence": 3,
+            "speaker": "narrator",
+            "text": "艾薇夫人說這句話的時候語氣很平靜，但你總覺得那個「比較直接」背後還有話。\n\n她上前敲門。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_w_004",
+            "intro_id": "intro_witch",
+            "sequence": 4,
+            "speaker": "Witch",
+            "text": "……開著。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_w_005",
+            "intro_id": "intro_witch",
+            "sequence": 5,
+            "speaker": "narrator",
+            "text": "聲音從門縫裡飄出來，懶洋洋的，帶著一點煙燻的混濁。艾薇夫人推門，你跟著進去。\n\n房間很亂——不是隨意扔置的亂，而是一種「每樣東西都有位置但位置跟別人不一樣」的亂。懸掛在木樑上的草藥束、排列在木架上的陶瓶玻璃瓶、地板上幾疊書和一塊看起來有很多公式的黑板。中央的爐子上放著一個深色陶鍋，正在緩慢地冒著泡。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_w_006",
+            "intro_id": "intro_witch",
+            "sequence": 6,
+            "speaker": "narrator",
+            "text": "她在爐邊的椅子上，用一根長攪拌棒懶散地攪著鍋子，灰綠色的頭髮蓬亂，眼鏡歪著，歪到快要滑落。她轉過身，用一種不是特別驚訝的眼神看著你。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_w_007",
+            "intro_id": "intro_witch",
+            "sequence": 7,
+            "speaker": "Witch",
+            "text": "夫人，還有……你就是那個人。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_w_008",
+            "intro_id": "intro_witch",
+            "sequence": 8,
+            "speaker": "narrator",
+            "text": "她把攪拌棒靠在爐邊，伸手把眼鏡扶正，打量了你兩秒鐘。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_w_009",
+            "intro_id": "intro_witch",
+            "sequence": 9,
+            "speaker": "Witch",
+            "text": "看起來還算健康。體溫正常，眼睛沒有霧光——沒有被森林氣感染的跡象。有意思。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_w_010",
+            "intro_id": "intro_witch",
+            "sequence": 10,
+            "speaker": "VillageChiefWife",
+            "text": "她是我們村子的魔藥學家。藥水、素材、煉製……有需要的話來找她。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_w_011",
+            "intro_id": "intro_witch",
+            "sequence": 11,
+            "speaker": "Witch",
+            "text": "想買藥的話，左邊架子上的是現貨。素材的話，自己帶來……我替你煉。費率隨行情，不打折。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_w_012",
+            "intro_id": "intro_witch",
+            "sequence": 12,
+            "speaker": "narrator",
+            "text": "她說完，轉回身去繼續看鍋子，語氣不是趕人，就是覺得重要的話已經說完了。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_w_013",
+            "intro_id": "intro_witch",
+            "sequence": 13,
+            "speaker": "Witch",
+            "text": "……哦，我叫席薇雅。帶著素材來就好，不用預約。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_g_001",
+            "intro_id": "intro_guard",
+            "sequence": 1,
+            "speaker": "narrator",
+            "text": "森林邊界的空氣不一樣——比村子裡的濕，樹影也比你預期的更深。你踩著薄霧沒散的草地往前走，腳下的露水把靴子浸濕了一點。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_g_002",
+            "intro_id": "intro_guard",
+            "sequence": 2,
+            "speaker": "narrator",
+            "text": "然後你聽見聲音。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_g_003",
+            "intro_id": "intro_guard",
+            "sequence": 3,
+            "speaker": "Guard",
+            "text": "站住。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_g_004",
+            "intro_id": "intro_guard",
+            "sequence": 4,
+            "speaker": "narrator",
+            "text": "她從樹影裡走出來，動作快，鐵甲在薄霧的光線中反著一點冷色。金色馬尾在肩後揚起，眼神直接鎖定你——不是好奇，是審查。右手已經落到了劍柄上。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_g_005",
+            "intro_id": "intro_guard",
+            "sequence": 5,
+            "speaker": "Guard",
+            "text": "你是誰。從哪來的。村子裡沒有你這個人。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_g_006",
+            "intro_id": "intro_guard",
+            "sequence": 6,
+            "speaker": "narrator",
+            "text": "她的句子沒有疑問號，是一種把問題說成指令的口氣。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_g_007",
+            "intro_id": "intro_guard",
+            "sequence": 7,
+            "speaker": "VillageChiefWife",
+            "text": "等一下。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_g_008",
+            "intro_id": "intro_guard",
+            "sequence": 8,
+            "speaker": "narrator",
+            "text": "艾薇夫人的聲音從你身後傳來，她走上前，站到你和那個女人之間。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_g_009",
+            "intro_id": "intro_guard",
+            "sequence": 9,
+            "speaker": "VillageChiefWife",
+            "text": "他是我們的人，不是入侵者。是我讓他來探索的——我應該先通知你的，我的失誤。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_g_010",
+            "intro_id": "intro_guard",
+            "sequence": 10,
+            "speaker": "narrator",
+            "text": "那個女人沉默了幾秒。她的手沒有立刻離開劍柄，眼神在你和夫人之間來回了一下，最後緩慢地放開了劍。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_g_011",
+            "intro_id": "intro_guard",
+            "sequence": 11,
+            "speaker": "Guard",
+            "text": "……了解。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_g_012",
+            "intro_id": "intro_guard",
+            "sequence": 12,
+            "speaker": "narrator",
+            "text": "她收回戒備，對你直視了一下，神情從刀鋒般的銳利轉回一種更平穩的嚴肅。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_g_013",
+            "intro_id": "intro_guard",
+            "sequence": 13,
+            "speaker": "Guard",
+            "text": "我叫卡塞拉，守衛。我在外面執勤，村子這邊有事我不一定知道。——先前的態度，我道歉。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_g_014",
+            "intro_id": "intro_guard",
+            "sequence": 14,
+            "speaker": "narrator",
+            "text": "她說道歉的方式非常直接，沒有多餘的愧色，就像在作出一個陳述。她從腰側解下一把備用短劍，朝你遞過來。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_g_015",
+            "intro_id": "intro_guard",
+            "sequence": 15,
+            "speaker": "Guard",
+            "text": "拿著。外面不安全，空手進來是你的問題，我不是在偏袒你。是外面確實危險。",
+            "line_type": "dialogue"
+        },
+        {
+            "line_id": "intro_g_016",
+            "intro_id": "intro_guard",
+            "sequence": 16,
+            "speaker": "narrator",
+            "text": "你接過劍。劍不重，但握在手裡有一種踏實的份量。",
+            "line_type": "narration"
+        },
+        {
+            "line_id": "intro_g_017",
+            "intro_id": "intro_guard",
+            "sequence": 17,
+            "speaker": "Guard",
+            "text": "如果你不會用，回去找我。我可以訓練你。",
+            "line_type": "dialogue"
+        }
+    ]
+}

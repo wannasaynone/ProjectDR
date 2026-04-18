@@ -1,0 +1,61 @@
+{
+    "schema_version": 1,
+    "note": "📝 AI 填寫 placeholder，待製作人審閱。前期主線任務 T0~T4。completion_condition_type: auto=自動完成, dialogue_end=對話序列結束, commission_count=完成N次委託, first_explore=首次探索。reward_grant_ids: 對應 initial-resources-config.json 的 grant_id，多值用 | 分隔。unlock_on_complete: 觸發的節點或系統解鎖狀態，多值用 | 分隔。",
+    "main_quests": [
+        {
+            "quest_id": "T0",
+            "display_name": "醒來的地方",
+            "description": "你在一個陌生的房間醒來。有人在床邊照顧著你。聽她說說這裡的事吧。",
+            "owner_character_id": "",
+            "completion_condition_type": "auto",
+            "completion_condition_value": "node0_dialogue_complete",
+            "reward_grant_ids": "",
+            "unlock_on_complete": "T1|node_0_complete",
+            "sort_order": 0
+        },
+        {
+            "quest_id": "T1",
+            "display_name": "先去認識她們",
+            "description": "村長夫人說，村裡還有幾個人你還沒見過。先去打個招呼，看看她們在做什麼吧。",
+            "owner_character_id": "",
+            "completion_condition_type": "dialogue_end",
+            "completion_condition_value": "first_char_intro_complete",
+            "reward_grant_ids": "unlock_farm_girl_seed|unlock_witch_herb",
+            "unlock_on_complete": "T2|choice1_complete",
+            "sort_order": 1
+        },
+        {
+            "quest_id": "T2",
+            "display_name": "幫她一次",
+            "description": "你認識了新朋友。去幫她做點事吧——委託她一次，看看她能做什麼，你能做什麼。",
+            "owner_character_id": "",
+            "completion_condition_type": "commission_count",
+            "completion_condition_value": "choice1_character|1",
+            "reward_grant_ids": "",
+            "unlock_on_complete": "T3|node_1_complete",
+            "sort_order": 2
+        },
+        {
+            "quest_id": "T3",
+            "display_name": "再去認識另一個人",
+            "description": "村長夫人說，還有一個人你還沒見過。去見見她，幫她做一次事吧。",
+            "owner_character_id": "",
+            "completion_condition_type": "commission_count",
+            "completion_condition_value": "choice2_character|1",
+            "reward_grant_ids": "",
+            "unlock_on_complete": "T4|node_2_complete|exploration_open",
+            "sort_order": 3
+        },
+        {
+            "quest_id": "T4",
+            "display_name": "出去看看外面",
+            "description": "探索入口開了。夫人說外面有東西，也有一個人一直在那邊等著……去看看吧。",
+            "owner_character_id": "",
+            "completion_condition_type": "first_explore",
+            "completion_condition_value": "guard_return_event_complete",
+            "reward_grant_ids": "unlock_guard_sword",
+            "unlock_on_complete": "guard_unlock|exploration_full_open",
+            "sort_order": 4
+        }
+    ]
+}

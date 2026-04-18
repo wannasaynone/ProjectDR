@@ -1,0 +1,15 @@
+{
+    "schema_version": 1,
+    "swords": [
+        {
+            "sword_id": "gift_sword_wooden",
+            "display_name": "木劍",
+            "atk_bonus": 3,
+            "cooldown_modifier_seconds": 0.0,
+            "range_modifier": 0.0,
+            "angle_modifier_degrees": 0.0,
+            "special_effect": "",
+            "description": "守衛贈劍：基礎木劍。基礎 ATK 5 + 劍 3 = 8，可一擊擊殺史萊姆（6 HP - 1 DEF = 5 傷害即足）；Bat 需 2 擊。"
+        }
+    ]
+}

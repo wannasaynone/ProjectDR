@@ -81,6 +81,38 @@ namespace ProjectDR.Village.UI
         private VillageNavigationManager _navigationManager;
         private AffinityManager _affinityManager;
 
+        // Sprint 5 B3：紅點下沉（L2 → 對話按鈕、L3 → 任務按鈕）
+        private RedDotManager _redDotManager;
+        private System.Action<RedDotUpdatedEvent> _onRedDotUpdated;
+
+        // Sprint 5 B17：招呼語系統
+        private GreetingPresenter _greetingPresenter;
+        /// <summary>
+        /// Sprint 5 B17：對每個角色，本 session 內的「當前招呼語等級」（placeholder = 1）。
+        /// 未來與 AffinityManager 整合後，由實際好感度等級計算取代。
+        /// </summary>
+        private int _greetingLevel = 1;
+
+        // 對話按鈕暫時隱藏條件（ex：女角解鎖後到村長夫人家回報前，隱藏該角色的對話按鈕與 L2 紅點）。
+        // 若為 null 或回傳 false，視為不隱藏（正常流程）。
+        private System.Func<bool> _dialogueSuppressionProvider;
+
+        // 訂閱主線事件用的委派快取
+        private System.Action<MainQuestCompletedEvent> _onMainQuestCompleted;
+        private System.Action<NodeDialogueCompletedEvent> _onNodeDialogueCompleted;
+
+        // 角色發問（a 路徑）inline 流程相依（Sprint 5 dialogue-flow-correction 第四輪修正）
+        private CharacterQuestionsManager _characterQuestionsManager;
+        private CharacterQuestionCountdownManager _characterQuestionCountdownManager;
+        private CharacterQuestionInfo _currentCharacterQuestion;
+        private int _characterQuestionLevel = 1;
+        // 延後 SubmitAnswer 用：選完答案後要等 response 播完才提交，
+        // 避免 SubmitAnswer → AddAffinity → AffinityThresholdReached → CGUnlockedEvent
+        // → HCGDialogueSetup.PlayCGScene 立刻把 UI 蓋掉，response 還沒播完就被搶走。
+        private bool _pendingCharacterQuestionSubmit;
+        private string _pendingSubmitQuestionId;
+        private string _pendingSubmitPersonality;
+
         /// <summary>取得當前顯示的角色 ID。若未設定角色資料則回傳 null。</summary>
         public string CurrentCharacterId => _characterData?.CharacterId;
 
@@ -146,9 +178,23 @@ namespace ProjectDR.Village.UI
             AffinityManager affinityManager,
             float typewriterCharsPerSecond)
         {
+            Initialize(dialogueManager, navigationManager, affinityManager, null, typewriterCharsPerSecond);
+        }
+
+        /// <summary>
+        /// Sprint 5 B3 擴充：加入 RedDotManager 注入以支援紅點下沉顯示。
+        /// </summary>
+        public void Initialize(
+            DialogueManager dialogueManager,
+            VillageNavigationManager navigationManager,
+            AffinityManager affinityManager,
+            RedDotManager redDotManager,
+            float typewriterCharsPerSecond)
+        {
             _dialogueManager = dialogueManager;
             _navigationManager = navigationManager;
             _affinityManager = affinityManager;
+            _redDotManager = redDotManager;
             _typewriterCharsPerSecond = typewriterCharsPerSecond;
 
             // 建立 TypewriterEffect 元件
@@ -161,6 +207,61 @@ namespace ProjectDR.Village.UI
                 }
                 _typewriterEffect.Initialize(_dialogueText);
             }
+        }
+
+        /// <summary>
+        /// Sprint 5 B17：注入招呼語表示器。
+        /// 進入 Normal 狀態時會以此產生招呼語取代既有硬編碼對話。
+        /// 若傳 null，行為退回 Sprint 4（使用 CharacterMenuData.Dialogue）。
+        /// </summary>
+        public void SetGreetingPresenter(GreetingPresenter presenter)
+        {
+            _greetingPresenter = presenter;
+        }
+
+        /// <summary>
+        /// Sprint 5 B17：設定當前招呼語等級（placeholder = 1）。
+        /// 未來與 AffinityManager 整合後由好感度計算取代。
+        /// </summary>
+        public void SetGreetingLevel(int level)
+        {
+            if (level > 0) _greetingLevel = level;
+        }
+
+        /// <summary>
+        /// 注入角色發問（a 路徑）所需相依，之後對話按鈕 L2 紅點觸發的流程就由本 View inline 呈現，
+        /// 不再開 overlay。流程：按對話 → 隱藏選單 → 主對話區播 prompt → 選項容器顯示 4 個選項 →
+        /// 選後清選項 → 主對話區播 response → 選單恢復。
+        /// </summary>
+        public void SetCharacterQuestionDependencies(
+            CharacterQuestionsManager questionsManager,
+            CharacterQuestionCountdownManager countdownManager)
+        {
+            _characterQuestionsManager = questionsManager;
+            _characterQuestionCountdownManager = countdownManager;
+        }
+
+        /// <summary>
+        /// 設定對話按鈕隱藏判定。回傳 true 時：
+        /// - RefreshMenu 不會建立「對話」按鈕（避免玩家在此時段進入角色發問 / 玩家發問）
+        /// - ApplyButtonRedDots 自動不會在對話按鈕上顯示 L2 紅點（因為按鈕不存在）
+        /// 典型用途：女角剛解鎖後，必須先回村長夫人家觸發下一個主線節點的期間，
+        /// 暫時關閉該角色的對話互動以引導玩家回到 VCW。
+        /// </summary>
+        public void SetDialogueSuppressionProvider(System.Func<bool> provider)
+        {
+            _dialogueSuppressionProvider = provider;
+            // 立刻套用（例如玩家剛從外部切入，或主線狀態剛變更）
+            if (gameObject.activeInHierarchy && _menuContainer != null
+                && _menuContainer.gameObject.activeSelf)
+            {
+                RefreshMenu();
+            }
+        }
+
+        private bool IsDialogueSuppressed()
+        {
+            return _dialogueSuppressionProvider != null && _dialogueSuppressionProvider();
         }
 
         /// <summary>
@@ -304,6 +405,16 @@ namespace ProjectDR.Village.UI
             // 訂閱 DialogueStartedEvent — 外部驅動模式下由此觸發打字機播放首行
             EventBus.Subscribe<DialogueStartedEvent>(OnExternalDialogueStarted);
 
+            // Sprint 5 B3：訂閱紅點更新事件，L2/L3 變化時重新套用按鈕紅點
+            if (_onRedDotUpdated == null) _onRedDotUpdated = OnRedDotUpdated;
+            EventBus.Subscribe(_onRedDotUpdated);
+
+            // 主線事件：完成主線任務或播放完節點對話時，重新評估對話按鈕隱藏條件
+            if (_onMainQuestCompleted == null) _onMainQuestCompleted = OnMainQuestCompletedRefreshMenu;
+            if (_onNodeDialogueCompleted == null) _onNodeDialogueCompleted = OnNodeDialogueCompletedRefreshMenu;
+            EventBus.Subscribe(_onMainQuestCompleted);
+            EventBus.Subscribe(_onNodeDialogueCompleted);
+
             // 初次套用狀態到 UI（Normal 為預設）
             ApplyStateToUI();
 
@@ -336,6 +447,17 @@ namespace ProjectDR.Village.UI
                 if (WorkingLines.TryGetValue(_characterData.CharacterId, out workingLinesForChar))
                 {
                     dialogueToPlay = new DialogueData(workingLinesForChar);
+                }
+            }
+            // Sprint 5 B17：Normal 狀態下用招呼語取代硬編碼對話（若 Presenter 可用且不被 L1/L4 壓制）
+            else if (_currentState == CharacterInteractionState.Normal
+                     && _greetingPresenter != null
+                     && _characterData != null)
+            {
+                GreetingInfo greeting = _greetingPresenter.TryGreet(_characterData.CharacterId, _greetingLevel);
+                if (greeting != null)
+                {
+                    dialogueToPlay = new DialogueData(new string[] { greeting.Text });
                 }
             }
 
@@ -439,6 +561,9 @@ namespace ProjectDR.Village.UI
             EventBus.Unsubscribe<GiftSuccessEvent>(OnGiftSuccess);
             EventBus.Unsubscribe<DialogueChoicePresentedEvent>(OnDialogueChoicePresented);
             EventBus.Unsubscribe<DialogueStartedEvent>(OnExternalDialogueStarted);
+            if (_onRedDotUpdated != null) EventBus.Unsubscribe(_onRedDotUpdated);
+            if (_onMainQuestCompleted != null) EventBus.Unsubscribe(_onMainQuestCompleted);
+            if (_onNodeDialogueCompleted != null) EventBus.Unsubscribe(_onNodeDialogueCompleted);
 
             if (_typewriterEffect != null)
             {
@@ -450,6 +575,9 @@ namespace ProjectDR.Village.UI
 
             // 清除選項容器
             ClearChoiceContainer();
+
+            // 若還有延後的角色發問答案，保險提交（例如玩家 response 沒播完就返回 Hub）
+            SubmitPendingCharacterQuestionAnswerIfAny();
         }
 
         private void OnDestroy()
@@ -520,6 +648,10 @@ namespace ProjectDR.Village.UI
             {
                 _fullScreenDialogueArea.gameObject.SetActive(false);
             }
+
+            // 先提交延後的角色發問答案（可能觸發 Affinity 門檻 → HCG 播放）。
+            // HCG 非同步接手 UI，完成後 UI 還原，此時選單已顯示（下方 SetMenuVisible(true) 先設定）。
+            SubmitPendingCharacterQuestionAnswerIfAny();
 
             // 對話結束後依據當前狀態呈現對應 UI
             // Normal / FirstEntry 完成 → 顯示功能選單
@@ -621,40 +753,47 @@ namespace ProjectDR.Village.UI
             if (_characterData == null || e.CharacterId != _characterData.CharacterId) return;
             if (!gameObject.activeInHierarchy) return;
 
-            // 關閉 overlay（GiftAreaView 可能已觸發 returnAction 關閉，此為保險）
-            CloseOverlay();
-
-            // 刷新好感度顯示
-            RefreshAffinityDisplay();
-
-            // 播放感謝對話
             string[] lines;
             if (!ThankYouLines.TryGetValue(e.CharacterId, out lines))
             {
                 lines = new[] { "謝謝你。" };
             }
 
-            DialogueData thankYouDialogue = new DialogueData(lines);
+            PlayDialogue(lines);
+        }
 
-            // 隱藏功能選單
+        /// <summary>
+        /// 由外部呼叫，於主角色互動畫面的對話區播放一段對話。
+        /// 會關閉當前 overlay、隱藏功能選單、啟用全螢幕點擊區，
+        /// 對話完成後由 OnDialogueCompleted 自然恢復選單。
+        /// </summary>
+        /// <param name="lines">要播放的對話行。空值或空陣列會被忽略。</param>
+        public void PlayDialogue(string[] lines)
+        {
+            if (lines == null || lines.Length == 0) return;
+            if (!gameObject.activeInHierarchy) return;
+            if (_dialogueManager == null) return;
+
+            CloseOverlay();
+
+            RefreshAffinityDisplay();
+
             SetMenuVisible(false);
 
-            // 啟用全螢幕對話點擊區域
             if (_fullScreenDialogueArea != null)
             {
                 _fullScreenDialogueArea.gameObject.SetActive(true);
             }
 
-            // 確保不重複訂閱
             EventBus.Unsubscribe<DialogueCompletedEvent>(OnDialogueCompleted);
             EventBus.Subscribe<DialogueCompletedEvent>(OnDialogueCompleted);
 
-            _dialogueManager.StartDialogue(thankYouDialogue);
+            _dialogueManager.StartDialogue(new DialogueData(lines));
 
-            // 播放打字機效果
             string firstLine = _dialogueManager.GetCurrentLine();
             if (firstLine != null && _typewriterEffect != null)
             {
+                _typewriterEffect.OnComplete -= OnTypewriterLineComplete;
                 _typewriterEffect.OnComplete += OnTypewriterLineComplete;
                 _typewriterEffect.Play(firstLine, _typewriterCharsPerSecond);
             }
@@ -767,15 +906,25 @@ namespace ProjectDR.Village.UI
         {
             if (_menuContainer == null || _characterData == null) return;
 
-            // 清除現有按鈕
+            // 清除現有按鈕（Destroy 為延遲銷毀，當幀結束才真正消失 → 下方 ApplyButtonRedDots
+            // 不可再以 _menuContainer.childCount 迭代，否則會同時看到舊+新按鈕，索引錯位導致
+            // 新按鈕拿不到紅點。改用 _visibleButtons 直接追蹤本輪 Instantiate 的 Button 實例。）
             for (int i = _menuContainer.childCount - 1; i >= 0; i--)
             {
                 Destroy(_menuContainer.GetChild(i).gameObject);
             }
 
+            bool dialogueSuppressed = IsDialogueSuppressed();
+
+            _visibleFunctionIds.Clear();
+            _visibleButtons.Clear();
             foreach (string functionId in _characterData.FunctionIds)
             {
+                // 對話按鈕在指定時段暫時隱藏（例：女角解鎖後回 VCW 報到前）
+                if (dialogueSuppressed && functionId == FunctionIds.Dialogue) continue;
+
                 string capturedId = functionId;
+
                 Button button = Instantiate(_menuButtonPrefab, _menuContainer);
                 button.gameObject.SetActive(true);
 
@@ -786,16 +935,104 @@ namespace ProjectDR.Village.UI
                 }
 
                 button.onClick.AddListener(() => OnFunctionClicked(capturedId));
+
+                _visibleFunctionIds.Add(capturedId);
+                _visibleButtons.Add(button);
             }
+
+            // Sprint 5 B3：套用紅點下沉顯示（L2 → 對話按鈕、L3 → 任務按鈕）
+            ApplyButtonRedDots();
+        }
+
+        // 保留當下實際生成的功能按鈕 ID 順序，供 ApplyButtonRedDots 依索引對應
+        private readonly List<string> _visibleFunctionIds = new List<string>();
+        // 對應的 Button 實例（不依賴 _menuContainer.childCount，避免 Destroy 延遲造成舊按鈕殘留干擾）
+        private readonly List<Button> _visibleButtons = new List<Button>();
+
+        /// <summary>
+        /// Sprint 5 B3：依當前角色的紅點層級，在「對話」/「任務」按鈕上顯示紅點子物件。
+        /// - L2（CharacterQuestion）→ 對話按鈕紅點
+        /// - L3（NewQuest）→ 任務按鈕紅點
+        /// 紅點子物件約定名稱為 "RedDot"，由 UI Prefab 預留。
+        /// </summary>
+        private void ApplyButtonRedDots()
+        {
+            if (_characterData == null) return;
+
+            bool hasL2 = false;
+            bool hasL3 = false;
+            if (_redDotManager != null)
+            {
+                // L2/L3 下沉顯示與當前最高層的優先序比較無關：即便 L1/L4 同時存在，
+                // 下沉到按鈕的紅點仍需顯示（GDD §8：L1/L4 播完後 L2/L3 保留）。
+                hasL2 = _redDotManager.IsLayerActive(_characterData.CharacterId, RedDotLayer.CharacterQuestion);
+                hasL3 = _redDotManager.IsLayerActive(_characterData.CharacterId, RedDotLayer.NewQuest);
+            }
+
+            // 直接迭代本輪 RefreshMenu 建立的 Button 實例，避免 Destroy 延遲造成索引錯位
+            for (int i = 0; i < _visibleButtons.Count; i++)
+            {
+                Button btn = _visibleButtons[i];
+                if (btn == null) continue; // Unity overload：若 GameObject 已銷毀，這裡會是 true
+                string functionId = _visibleFunctionIds[i];
+
+                Transform redDot = btn.transform.Find("RedDot");
+                if (redDot == null) continue;
+
+                bool shouldShow;
+                if (functionId == FunctionIds.Dialogue) shouldShow = hasL2;
+                else if (functionId == FunctionIds.Quest) shouldShow = hasL3;
+                else shouldShow = false;
+
+                redDot.gameObject.SetActive(shouldShow);
+            }
+        }
+
+        /// <summary>Sprint 5 B3：紅點狀態變更時重新套用按鈕紅點顯示。</summary>
+        private void OnRedDotUpdated(RedDotUpdatedEvent e)
+        {
+            if (!gameObject.activeInHierarchy) return;
+            if (_characterData == null || e == null) return;
+            if (e.CharacterId != _characterData.CharacterId) return;
+
+            ApplyButtonRedDots();
+        }
+
+        /// <summary>主線任務完成時重新評估對話按鈕顯示條件（例：T2 完成 → node_1 pending）。</summary>
+        private void OnMainQuestCompletedRefreshMenu(MainQuestCompletedEvent e)
+        {
+            if (!gameObject.activeInHierarchy) return;
+            if (_menuContainer == null || !_menuContainer.gameObject.activeSelf) return;
+            RefreshMenu();
+        }
+
+        /// <summary>節點對話完成時重新評估對話按鈕顯示條件（pending node 清除後恢復對話按鈕）。</summary>
+        private void OnNodeDialogueCompletedRefreshMenu(NodeDialogueCompletedEvent e)
+        {
+            if (!gameObject.activeInHierarchy) return;
+            if (_menuContainer == null || !_menuContainer.gameObject.activeSelf) return;
+            RefreshMenu();
         }
 
         private void OnFunctionClicked(string functionId)
         {
             if (functionId == FunctionIds.Dialogue)
             {
-                // B14：若有註冊 PlayerQuestionsView Prefab，以 overlay 開啟；
-                // 否則 fallback 至舊的「重新播放對話」行為。
-                if (_functionPrefabs.ContainsKey(FunctionIds.Dialogue))
+                // Sprint 5 B8 / dialogue-flow-correction 第四輪修正：
+                // - L2 紅點亮 → 角色發問（a 路徑，**inline 於本 View**，不再開 overlay）
+                // - 無紅點  → 玩家發問（b 路徑，PlayerQuestionsView overlay，消耗體力）
+                bool hasL2 = false;
+                if (_redDotManager != null && _characterData != null)
+                {
+                    hasL2 = _redDotManager.IsLayerActive(
+                        _characterData.CharacterId, RedDotLayer.CharacterQuestion);
+                }
+
+                if (hasL2 && _characterQuestionsManager != null)
+                {
+                    StartCharacterQuestionInline();
+                }
+                else if (_functionPrefabs.ContainsKey(FunctionIds.Dialogue))
                 {
                     OpenOverlay(FunctionIds.Dialogue);
                 }
@@ -858,6 +1095,163 @@ namespace ProjectDR.Village.UI
             {
                 StartDialoguePlayback();
             }
+        }
+
+        // ===== 角色發問 inline 流程（a 路徑，取代 overlay） =====
+
+        /// <summary>
+        /// 啟動角色發問的 inline 流程（dialogue-flow-correction 第四輪修正）：
+        /// 1. 隱藏選單
+        /// 2. 主對話區以打字機播放 prompt
+        /// 3. prompt 播完後於選項容器顯示 4 個選項
+        /// 4. 選擇後清選項、主對話區以打字機播放 response
+        /// 5. response 播完後 OnDialogueCompleted 路徑自然讓選單恢復
+        /// </summary>
+        private void StartCharacterQuestionInline()
+        {
+            if (_characterQuestionsManager == null || _characterData == null) return;
+            if (_typewriterEffect == null || _dialogueManager == null) return;
+
+            // 清 L2 + ClearReady（由 CharacterQuestionsView 原先行為移植）
+            if (_redDotManager != null)
+            {
+                _redDotManager.SetCharacterQuestionFlag(_characterData.CharacterId, false);
+            }
+            if (_characterQuestionCountdownManager != null)
+            {
+                _characterQuestionCountdownManager.ClearReady(_characterData.CharacterId);
+            }
+
+            CharacterQuestionInfo question = _characterQuestionsManager.PickNextQuestion(
+                _characterData.CharacterId, _characterQuestionLevel);
+
+            if (question == null)
+            {
+                // 題目池耗盡 fallback：播一行訊息，流程結束後 menu 自然恢復
+                PlayDialogue(new[] { "（目前沒有更多問題。）" });
+                // 倒數重啟
+                if (_characterQuestionCountdownManager != null)
+                {
+                    _characterQuestionCountdownManager.StartCountdown(_characterData.CharacterId);
+                }
+                return;
+            }
+
+            _currentCharacterQuestion = question;
+
+            // 1. 隱藏選單（右下關閉）
+            SetMenuVisible(false);
+
+            // 2. 主對話區準備播 prompt（右上顯示對話）
+            //   - 清除選項容器（防守）
+            //   - 禁用全螢幕對話點擊區域（prompt 播放中點擊會被當 Skip，打字機完成後自然進入選項階段，不讓玩家點擊跳過）
+            //   - 不透過 DialogueManager（避免 DialogueCompletedEvent 立刻把選單打開）
+            ClearChoiceContainer();
+            if (_fullScreenDialogueArea != null)
+            {
+                _fullScreenDialogueArea.gameObject.SetActive(false);
+            }
+
+            // 訂閱打字機完成事件以推進到選項階段
+            _typewriterEffect.OnComplete -= OnCharacterQuestionPromptComplete;
+            _typewriterEffect.OnComplete += OnCharacterQuestionPromptComplete;
+            _typewriterEffect.Play(question.Prompt ?? string.Empty, _typewriterCharsPerSecond);
+
+            // 3. 倒數重啟（本次角色發問觸發後重新計時 60s）
+            if (_characterQuestionCountdownManager != null)
+            {
+                _characterQuestionCountdownManager.StartCountdown(_characterData.CharacterId);
+            }
+        }
+
+        private void OnCharacterQuestionPromptComplete()
+        {
+            if (_typewriterEffect != null)
+            {
+                _typewriterEffect.OnComplete -= OnCharacterQuestionPromptComplete;
+            }
+            if (_currentCharacterQuestion == null) return;
+
+            // 4. prompt 播完 → 於選項容器顯示 4 個選項（右下顯示回答）
+            ShowCharacterQuestionChoices(_currentCharacterQuestion);
+        }
+
+        private void ShowCharacterQuestionChoices(CharacterQuestionInfo question)
+        {
+            if (_choiceContainer == null || _choiceButtonPrefab == null)
+            {
+                Debug.LogWarning("[CharacterInteractionView] 未設定選項容器或選項按鈕 Prefab，無法呈現角色發問選項。");
+                // 缺資源時仍讓流程完成：播 fallback 結束
+                PlayDialogue(new[] { "（選項無法顯示。）" });
+                _currentCharacterQuestion = null;
+                return;
+            }
+
+            ClearChoiceContainer();
+            _choiceContainer.gameObject.SetActive(true);
+
+            foreach (CharacterQuestionOption opt in question.Options)
+            {
+                string capturedPersonality = opt.Personality;
+                string capturedResponse = opt.Response ?? string.Empty;
+                string capturedText = opt.Text ?? string.Empty;
+
+                Button btn = Instantiate(_choiceButtonPrefab, _choiceContainer);
+                btn.gameObject.SetActive(true);
+
+                TMP_Text label = btn.GetComponentInChildren<TMP_Text>();
+                // 規則層：UI 只顯示選項文字，不顯示 +N 數值
+                if (label != null) label.text = capturedText;
+
+                btn.onClick.AddListener(() =>
+                    OnCharacterQuestionOptionSelected(capturedPersonality, capturedResponse));
+            }
+        }
+
+        private void OnCharacterQuestionOptionSelected(string personalityId, string response)
+        {
+            if (_currentCharacterQuestion == null || _characterQuestionsManager == null) return;
+            if (_characterData == null) return;
+
+            // 延後 SubmitAnswer（加好感度）到 response 播完後才執行，避免 AffinityThresholdReached →
+            // CGUnlockedEvent → HCG 立刻接手 UI 導致 response 沒播出來。
+            _pendingCharacterQuestionSubmit = true;
+            _pendingSubmitQuestionId = _currentCharacterQuestion.QuestionId;
+            _pendingSubmitPersonality = personalityId;
+
+            string responseText = response ?? string.Empty;
+            _currentCharacterQuestion = null;
+
+            // 5. 清選項（右下關閉）→ 主對話區播 response（右上顯示對話）
+            //    PlayDialogue 會負責恢復 _fullScreenDialogueArea、啟動 Dialogue 序列、
+            //    完成後觸發 OnDialogueCompleted → SubmitPendingCharacterQuestionAnswer → SetMenuVisible(true) + RefreshMenu
+            ClearChoiceContainer();
+            PlayDialogue(new[] { responseText });
+        }
+
+        /// <summary>
+        /// 將延後的角色發問答案提交至 CharacterQuestionsManager。
+        /// 於 OnDialogueCompleted（response 播完）與 OnHide（玩家中途離開）時呼叫以確保答案必被計入。
+        /// </summary>
+        private void SubmitPendingCharacterQuestionAnswerIfAny()
+        {
+            if (!_pendingCharacterQuestionSubmit) return;
+            _pendingCharacterQuestionSubmit = false;
+
+            if (_characterQuestionsManager == null || _characterData == null)
+            {
+                _pendingSubmitQuestionId = null;
+                _pendingSubmitPersonality = null;
+                return;
+            }
+
+            _characterQuestionsManager.SubmitAnswer(
+                _characterData.CharacterId,
+                _pendingSubmitQuestionId,
+                _pendingSubmitPersonality);
+
+            _pendingSubmitQuestionId = null;
+            _pendingSubmitPersonality = null;
         }
 
         private void OpenOverlay(string functionId)
@@ -981,6 +1375,15 @@ namespace ProjectDR.Village.UI
         public const string Dialogue = "Dialogue";
         public const string Gift = "Gift";
         public const string Gallery = "Gallery";
+
+        /// <summary>Sprint 5 B3：任務按鈕（L3 紅點下沉至此），功能連結至 main-quest-system。</summary>
+        public const string Quest = "Quest";
+
+        /// <summary>
+        /// Sprint 5 B8：角色發問路徑 ID（內部分流使用）。
+        /// 角色選單不暴露此 ID，由 OnFunctionClicked 針對「對話」按鈕依 L2 紅點狀態分流至此。
+        /// </summary>
+        public const string CharacterQuestion = "CharacterQuestion";
 
         // 委託功能 ID（B11/B12，對應委託型三角色的專業功能按鈕）
         // 依 character-interaction.md v2.2 § 3：耕種/煉製/探索周圍

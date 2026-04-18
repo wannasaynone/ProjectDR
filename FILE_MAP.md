@@ -97,12 +97,24 @@
 | `Assets/Game/Scripts/Village/HCGDialogueSetup.cs` | HCG 劇情播放整合層（KGC DialogueManager + GameStaticDataManager，IT 硬編碼 4 角色對話） |
 | `Assets/Game/Scripts/Village/CharacterIntroCGPlayer.cs` | ICGPlayer 真實實作（B13）：從 CharacterIntroConfig 取 intro → Resources.Load CG Sprite → Instantiate CharacterIntroCGView → 播放完成後銷毀 View + 發布 CompletedEvent；only-once 旗標由 VillageEntryPoint 以 session HashSet 管理 |
 | `Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs` | 玩家發問配置 JSON DTO（PlayerQuestionsConfigData/PlayerQuestionData）與不可變配置物件（PlayerQuestionsConfig/PlayerQuestionInfo）；API：GetQuestionsForCharacter / GetUnlockedQuestions(charId, stage) / GetQuestion(id)；B14 Sprint 4 |
+| `Assets/Game/Scripts/Village/CharacterIdSnakeCaseMapper.cs` | Sprint 5：JSON snake_case → CharacterIds 常數 (PascalCase) 映射器（內部使用） |
+| `Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs` | Sprint 5 B1：角色發問倒數管理器（純邏輯，60s 倒數/角色、工作中暫停、紅點上限 1、發布 CharacterQuestionCountdownReadyEvent） |
+| `Assets/Game/Scripts/Village/CharacterQuestionsConfigData.cs` | Sprint 5 B4：角色發問 280 題配置 JSON DTO 與不可變 Config（依 character/level 索引、個性 +0/+2/+5/+10 增量對應、snake_case/PascalCase 雙映射） |
+| `Assets/Game/Scripts/Village/CharacterQuestionsManager.cs` | Sprint 5 B5：角色發問純邏輯（抽未看過題、標記已看、SubmitAnswer 扣好感度、發布 Asked/Answered 事件） |
+| `Assets/Game/Scripts/Village/DialogueCooldownManager.cs` | Sprint 5 B10：玩家發問 CD 管理器（純邏輯，60s 基礎、工作中 ×2 規則層倍率、發布 Started/Completed 事件） |
+| `Assets/Game/Scripts/Village/IdleChatConfigData.cs` | Sprint 5 B12：閒聊問題池配置（4 角色 × 20 題 × 3 回答） |
+| `Assets/Game/Scripts/Village/IdleChatPresenter.cs` | Sprint 5 B12：閒聊觸發純邏輯（隨機題 + 隨機回答，不影響好感度/不累計已看、發布 IdleChatTriggeredEvent） |
+| `Assets/Game/Scripts/Village/PlayerQuestionsManager.cs` | Sprint 5 B11：玩家發問純邏輯（剩餘題目規則：≥4 抽 4 / 1~3 顯剩餘 / 0 IdleChatFallback，MarkSeen 標記） |
+| `Assets/Game/Scripts/Village/CharacterStaminaManager.cs` | Sprint 5 B13：角色體力管理器（純邏輯，扣/恢復，placeholder Max=10、每次發問扣 1） |
+| `Assets/Game/Scripts/Village/GreetingConfigData.cs` | Sprint 5 B15：招呼語配置（4 角色 × 7 級 × 10 句 = 280 句） |
+| `Assets/Game/Scripts/Village/GreetingPresenter.cs` | Sprint 5 B16：招呼語純邏輯（進入 Normal 狀態時抽句、L1/L4 紅點壓制、L2/L3 仍播，發布 GreetingPlayedEvent） |
 
 ### 村莊 UI（Assets/Game/Scripts/Village/UI）
 | 檔案 | 用途 |
 |------|------|
 | `Assets/Game/Scripts/Village/UI/CharacterIntroCGView.cs` | 登場 CG + 短劇情播放 View（全螢幕 overlay，上半 CG / 下半打字機對話框 / 點擊全螢幕推進）；B13 Sprint 4 |
-| `Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs` | 玩家主動發問 overlay View（右側 w=1600 / 題目清單依好感度解鎖 / 點題目→打字機播回答→返回清單）；B14 Sprint 4 |
+| `Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs` | 玩家主動發問 overlay View（右側 w=1600 / 題目清單依好感度解鎖 / 點題目→打字機播回答→返回清單）；Sprint 5 重寫：剩餘題目規則+[閒聊] fallback+體力接線+CD 接線+「現在好累了」 tired panel |
+| `Assets/Game/Scripts/Village/UI/CharacterQuestionsView.cs` | Sprint 5 B6：角色發問 overlay View（打字機 Prompt + 四選項 UI 只顯示文字不顯示 +N 數值 + 選後 response 打字機 + 清 L2 紅點與 ClearReady） |
 | `Assets/Game/Scripts/Village/UI/ViewBase.cs` | UGUI View 抽象基類（Show/Hide 管理） |
 | `Assets/Game/Scripts/Village/UI/ViewController.cs` | 管理 View 顯示切換的控制器（排他式，無歷史紀錄） |
 | `Assets/Game/Scripts/Village/UI/ViewStackController.cs` | 支援 Back 返回與 Prefab Clone 加載的 View 控制器 |
@@ -137,7 +149,7 @@
 | `Assets/Game/Prefabs/FarmAreaView.prefab` | 農場畫面 UGUI Prefab（Placeholder） |
 | `Assets/Game/Prefabs/GiftAreaView.prefab` | 送禮畫面 UGUI Prefab（物品清單、好感度顯示、門檻回饋） |
 | `Assets/Game/Prefabs/CGGalleryView.prefab` | CG 回憶圖鑑 UGUI Prefab |
-| `Assets/Game/Prefabs/AreaButton.prefab` | 區域導航按鈕模板（VillageHubView 動態生成用） |
+| `Assets/Game/Prefabs/AreaButton.prefab` | 區域導航按鈕模板（CharacterInteractionView 功能選單動態生成用；Sprint 5：新增 RedDot 子物件，預設隱藏，L2/L3 紅點下沉至對話/任務按鈕時 SetActive(true)） |
 | `Assets/Game/Prefabs/BackpackSlotRow.prefab` | 背包格子行模板（StorageAreaView 背包欄動態生成用） |
 | `Assets/Game/Prefabs/WarehouseItemRow.prefab` | 倉庫物品行模板（StorageAreaView 倉庫欄動態生成用） |
 | `Assets/Game/Prefabs/FarmPlotUI.prefab` | 農田格子 UI 模板（FarmAreaView 動態生成用） |
@@ -150,7 +162,8 @@
 | `Assets/Game/Prefabs/Village/UI/CraftItemSelectorView.prefab` | 物品選擇 Overlay UGUI Prefab（w=1280 h=1800，含 ScrollRect/ItemListContainer/TxtTitle/BtnClose） |
 | `Assets/Game/Prefabs/Village/UI/ItemRowPrefab.prefab` | 物品行按鈕模板（CraftItemSelectorView 動態生成用，w=1120 h=80） |
 | `Assets/Game/Prefabs/Village/UI/CharacterIntroCGView.prefab` | 登場 CG + 短劇情播放全螢幕 overlay Prefab（w=3840 h=2160 / PnlBackground+ImgCG+PnlDialogue+BtnFullScreen）；B13 Sprint 4 |
-| `Assets/Game/Prefabs/Village/UI/PlayerQuestionsView.prefab` | 玩家發問 overlay Prefab（右側 w=1600 / TxtTitle+ScrollRect+BtnClose+AnswerPanel）；B14 Sprint 4 |
+| `Assets/Game/Prefabs/Village/UI/PlayerQuestionsView.prefab` | 玩家發問 overlay Prefab（右側 w=1600 / TxtTitle+ScrollRect+BtnClose+AnswerPanel）；B14 Sprint 4；Sprint 5 新增 TiredPanel（預設隱藏，體力 0 時顯示「現在好累了」）+TiredLabel |
+| `Assets/Game/Prefabs/Village/UI/CharacterQuestionsView.prefab` | 角色發問 overlay Prefab（Sprint 5 B6 新建；w=1600 h=1800 中央 overlay；PnlBackground+TxtDialogue+OptionsContainer+OptionButtonPrefab+BtnClose；所有 SerializeField 已連接） |
 
 ### 探索模組（Assets/Game/Scripts/Village/Exploration）
 | 檔案 | 用途 |
@@ -223,6 +236,9 @@
 | `Assets/Game/Resources/Config/gift-sword-config.json` | 贈劍屬性表（A4-3 placeholder：木劍 ATK+3，守衛歸來事件贈送） |
 | `Assets/Game/Resources/Config/character-intro-config.json` | 角色登場 CG + 短劇情（A1 placeholder：4 位角色場景描述 + 對話行，village_chief_wife/farm_girl/witch/guard） |
 | `Assets/Game/Resources/Config/player-questions-config.json` | 玩家發問配置（B14 placeholder：37 題，VCW 12/農女 9/魔女 9/守衛 9，分 stage 0/1/2 三批解鎖，待製作人撰寫正式回答） |
+| `Assets/Game/Resources/Config/character-questions-config.json` | 角色發問配置（Sprint 5 A1~A3 placeholder：4 個性類型定義 personality_gentle/lively/calm/assertive、4 角色個性偏好對應、280 題角色發問 4 角色 × 7 級 × 10 題 × 4 個性選項；所有文字程式化 placeholder 待製作人後續撰寫） |
+| `Assets/Game/Resources/Config/greeting-config.json` | 招呼語配置（Sprint 5 A4 placeholder：280 句 4 角色 × 7 級 × 10 句；進入角色互動畫面自動播放、L1/L4 紅點亮時跳過、L2/L3 仍播放） |
+| `Assets/Game/Resources/Config/idle-chat-config.json` | [閒聊] 問題池配置（Sprint 5 A5 placeholder：4 角色 × 20 題 × 3 回答；玩家 40 題池耗盡後觸發的隨機問答 fallback） |
 | `Assets/Game/Resources/CG/` | 登場 CG Sprite 存放目錄（IT 階段空目錄，找不到 Sprite 時顯示深紫色 placeholder 色塊） |
 | `Assets/Game/Resources/Config/node-dialogue-config.json` | 節點 0/1/2 劇情對話（A2 placeholder：村長夫人三節點對話、VN 選項、選擇後回應；choice_branch 標記農女/魔女分支） |
 | `Assets/Game/Resources/Config/guard-return-config.json` | 守衛歸來事件劇情（A3 placeholder：純劇情演出 31 行，五 phase：alert/clarify/sheathe/gift_sword/closing） |
@@ -262,6 +278,16 @@
 | `Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs` | GuardReturnEventController 單元測試（12 個：建構驗證、一次性觸發、CG→對話→完成事件流程、空 config 立即完成、Dispose；使用 FakeCGPlayer）；B10 Sprint 4 |
 | `Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs` | CharacterIntroCGPlayer 單元測試（4 個：FakeCGPlayer 介面替換、PlaceholderCGPlayer 事件發布、空 characterId）；B13 Sprint 4 |
 | `Assets/Tests/Editor/Village/PlayerQuestionsConfigTests.cs` | PlayerQuestionsConfig 單元測試（14 個：null 建構、排序、stage 過濾、GetQuestion、多角色隔離、真實 JSON）；B14 Sprint 4 |
+| `Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs` | Sprint 5 B1：15 個測試（建構保護、StartCountdown、Tick 邊界、上限 1、ClearReady、工作中暫停恢復、Dispose） |
+| `Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs` | Sprint 5 B3：5 個測試（IsLayerActive 查詢、L1/L2 共存、L1 清後 L2 保留、null 保護） |
+| `Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs` | Sprint 5 B4：10 個測試（個性偏好、四檔線性 +0/+2/+5/+10、char×level 查詢、GetQuestion、真實 280 題 JSON） |
+| `Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs` | Sprint 5 B5：11 個測試（null 建構、抽題不重複、Seen 記憶、SubmitAnswer 加好感度、事件發布） |
+| `Assets/Tests/Editor/Village/DialogueCooldownManagerTests.cs` | Sprint 5 B10：12 個測試（建構邊界、Started/Completed 事件、Tick 扣時、工作中 ×2 倍率、運行中切換 Working、Dispose） |
+| `Assets/Tests/Editor/Village/IdleChatTests.cs` | Sprint 5 B12：9 個測試（Config null/empty/realJson 20 題×3 回答、Presenter 觸發 + 事件發布） |
+| `Assets/Tests/Editor/Village/PlayerQuestionsManagerTests.cs` | Sprint 5 B11：9 個測試（≥4 抽 4 / 3 全顯 / 0 閒聊 fallback、MarkSeen、多角色獨立、GetPresentation 不標記已看） |
+| `Assets/Tests/Editor/Village/CharacterStaminaManagerTests.cs` | Sprint 5 B13：9 個測試（預設滿、扣/恢復、上下限、自訂建構、多角色獨立） |
+| `Assets/Tests/Editor/Village/GreetingTests.cs` | Sprint 5 B15/B16：11 個測試（Config 建構/真實 JSON 280 句；Presenter L1/L4 壓制、L2 仍播、事件發布、null 保護） |
+| `Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs` | Sprint 5 C1~C7：11 個整合測試（紅點分流端到端、玩家發問端到端、閒聊模式、體力歸零、工作中 CD ×2、紅點上限 1、招呼語分流） |
 | `Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs` | C1 整合測試 TEST 1：開場流程（10 個：CG→節點 0→VN 選項→解鎖+資源→完成事件）；Sprint 4 C1 |
 | `Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs` | C1 整合測試 TEST 2/3：節點 1 流程 + 節點 2 + 探索解鎖（7 個：剩下那位解鎖、T1 完成訊號、T3→探索解鎖、序列驗證）；Sprint 4 C1 |
 | `Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs` | C1 整合測試 TEST 4：首次探索守衛歸來（7 個：攔截、CG+對話、守衛解鎖+贈劍、一次性觸發）；Sprint 4 C1 |
@@ -300,3 +326,5 @@
 | `dev-logs/2026-04-18-6.md` | Sprint 4 B13/B14（CharacterIntroCGPlayer + CharacterIntroCGView + PlayerQuestionsConfig + PlayerQuestionsView + placeholder JSON + Prefab 建立）實作細節 |
 | `dev-logs/2026-04-18-7.md` | Sprint 4 C1/C2 + Sprint 4 收尾（C2 移除強制解鎖、啟動 OpeningSequence、補 6 條事件訂閱、場景 6 個 SerializeField MCP 連接；C1 新增 4 份整合測試共 39 case；Sprint 4 三步收尾完成） |
 | `dev-logs/2026-04-18-8.md` | 開場劇情接線修正（CharacterInteractionView 新增外部驅動對話模式、VillageEntryPoint 在開場時 push VCW Forced 模式、OpeningSequenceCompletedEvent 收尾 VCW view） |
+| `dev-logs/2026-04-18-9.md` | Sprint 5 B+C（對話功能修正 B1~B21 實作 + C1~C7 整合測試；紅點 L2 倒數改造、角色發問 a 路徑、玩家發問 b 路徑重寫、招呼語系統、工作中 CD ×2、102 個新測試全通過） |
+| `dev-logs/2026-04-18-10.md` | 對話按鈕紅點視覺修正（AreaButton RedDot 白→紅、置中→右上角）+ 角色發問選答案後改由主畫面 PlayDialogue 播放 response（CharacterInteractionView 新增 PlayDialogue public API、CharacterQuestionsView responseAction 委外） |

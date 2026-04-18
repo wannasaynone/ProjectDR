@@ -1,0 +1,1686 @@
+{
+  "schema_version": 1,
+  "note": "Sprint 5 A4 placeholder。招呼語 280 句（4 角色 × 7 級 × 10 句）。進入角色互動畫面自動播放、不消耗體力/不影響好感度。L1/L4 紅點亮時跳過、L2/L3 紅點亮時仍播放。",
+  "greetings": [
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_01",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_02",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_03",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_04",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_05",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_06",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_07",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_08",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_09",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 1,
+      "greeting_id": "g_vcw_lv1_10",
+      "text": "（placeholder Greeting 村長夫人[Lv1][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_01",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_02",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_03",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_04",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_05",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_06",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_07",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_08",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_09",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 2,
+      "greeting_id": "g_vcw_lv2_10",
+      "text": "（placeholder Greeting 村長夫人[Lv2][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_01",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_02",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_03",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_04",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_05",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_06",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_07",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_08",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_09",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 3,
+      "greeting_id": "g_vcw_lv3_10",
+      "text": "（placeholder Greeting 村長夫人[Lv3][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_01",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_02",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_03",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_04",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_05",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_06",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_07",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_08",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_09",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 4,
+      "greeting_id": "g_vcw_lv4_10",
+      "text": "（placeholder Greeting 村長夫人[Lv4][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_01",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_02",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_03",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_04",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_05",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_06",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_07",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_08",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_09",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 5,
+      "greeting_id": "g_vcw_lv5_10",
+      "text": "（placeholder Greeting 村長夫人[Lv5][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_01",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_02",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_03",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_04",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_05",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_06",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_07",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_08",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_09",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 6,
+      "greeting_id": "g_vcw_lv6_10",
+      "text": "（placeholder Greeting 村長夫人[Lv6][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_01",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_02",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_03",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_04",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_05",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_06",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_07",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_08",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_09",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "village_chief_wife",
+      "level": 7,
+      "greeting_id": "g_vcw_lv7_10",
+      "text": "（placeholder Greeting 村長夫人[Lv7][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_01",
+      "text": "（placeholder Greeting 農女[Lv1][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_02",
+      "text": "（placeholder Greeting 農女[Lv1][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_03",
+      "text": "（placeholder Greeting 農女[Lv1][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_04",
+      "text": "（placeholder Greeting 農女[Lv1][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_05",
+      "text": "（placeholder Greeting 農女[Lv1][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_06",
+      "text": "（placeholder Greeting 農女[Lv1][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_07",
+      "text": "（placeholder Greeting 農女[Lv1][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_08",
+      "text": "（placeholder Greeting 農女[Lv1][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_09",
+      "text": "（placeholder Greeting 農女[Lv1][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 1,
+      "greeting_id": "g_fg_lv1_10",
+      "text": "（placeholder Greeting 農女[Lv1][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_01",
+      "text": "（placeholder Greeting 農女[Lv2][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_02",
+      "text": "（placeholder Greeting 農女[Lv2][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_03",
+      "text": "（placeholder Greeting 農女[Lv2][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_04",
+      "text": "（placeholder Greeting 農女[Lv2][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_05",
+      "text": "（placeholder Greeting 農女[Lv2][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_06",
+      "text": "（placeholder Greeting 農女[Lv2][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_07",
+      "text": "（placeholder Greeting 農女[Lv2][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_08",
+      "text": "（placeholder Greeting 農女[Lv2][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_09",
+      "text": "（placeholder Greeting 農女[Lv2][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 2,
+      "greeting_id": "g_fg_lv2_10",
+      "text": "（placeholder Greeting 農女[Lv2][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_01",
+      "text": "（placeholder Greeting 農女[Lv3][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_02",
+      "text": "（placeholder Greeting 農女[Lv3][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_03",
+      "text": "（placeholder Greeting 農女[Lv3][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_04",
+      "text": "（placeholder Greeting 農女[Lv3][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_05",
+      "text": "（placeholder Greeting 農女[Lv3][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_06",
+      "text": "（placeholder Greeting 農女[Lv3][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_07",
+      "text": "（placeholder Greeting 農女[Lv3][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_08",
+      "text": "（placeholder Greeting 農女[Lv3][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_09",
+      "text": "（placeholder Greeting 農女[Lv3][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 3,
+      "greeting_id": "g_fg_lv3_10",
+      "text": "（placeholder Greeting 農女[Lv3][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_01",
+      "text": "（placeholder Greeting 農女[Lv4][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_02",
+      "text": "（placeholder Greeting 農女[Lv4][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_03",
+      "text": "（placeholder Greeting 農女[Lv4][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_04",
+      "text": "（placeholder Greeting 農女[Lv4][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_05",
+      "text": "（placeholder Greeting 農女[Lv4][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_06",
+      "text": "（placeholder Greeting 農女[Lv4][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_07",
+      "text": "（placeholder Greeting 農女[Lv4][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_08",
+      "text": "（placeholder Greeting 農女[Lv4][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_09",
+      "text": "（placeholder Greeting 農女[Lv4][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 4,
+      "greeting_id": "g_fg_lv4_10",
+      "text": "（placeholder Greeting 農女[Lv4][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_01",
+      "text": "（placeholder Greeting 農女[Lv5][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_02",
+      "text": "（placeholder Greeting 農女[Lv5][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_03",
+      "text": "（placeholder Greeting 農女[Lv5][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_04",
+      "text": "（placeholder Greeting 農女[Lv5][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_05",
+      "text": "（placeholder Greeting 農女[Lv5][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_06",
+      "text": "（placeholder Greeting 農女[Lv5][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_07",
+      "text": "（placeholder Greeting 農女[Lv5][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_08",
+      "text": "（placeholder Greeting 農女[Lv5][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_09",
+      "text": "（placeholder Greeting 農女[Lv5][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 5,
+      "greeting_id": "g_fg_lv5_10",
+      "text": "（placeholder Greeting 農女[Lv5][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_01",
+      "text": "（placeholder Greeting 農女[Lv6][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_02",
+      "text": "（placeholder Greeting 農女[Lv6][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_03",
+      "text": "（placeholder Greeting 農女[Lv6][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_04",
+      "text": "（placeholder Greeting 農女[Lv6][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_05",
+      "text": "（placeholder Greeting 農女[Lv6][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_06",
+      "text": "（placeholder Greeting 農女[Lv6][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_07",
+      "text": "（placeholder Greeting 農女[Lv6][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_08",
+      "text": "（placeholder Greeting 農女[Lv6][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_09",
+      "text": "（placeholder Greeting 農女[Lv6][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 6,
+      "greeting_id": "g_fg_lv6_10",
+      "text": "（placeholder Greeting 農女[Lv6][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_01",
+      "text": "（placeholder Greeting 農女[Lv7][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_02",
+      "text": "（placeholder Greeting 農女[Lv7][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_03",
+      "text": "（placeholder Greeting 農女[Lv7][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_04",
+      "text": "（placeholder Greeting 農女[Lv7][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_05",
+      "text": "（placeholder Greeting 農女[Lv7][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_06",
+      "text": "（placeholder Greeting 農女[Lv7][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_07",
+      "text": "（placeholder Greeting 農女[Lv7][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_08",
+      "text": "（placeholder Greeting 農女[Lv7][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_09",
+      "text": "（placeholder Greeting 農女[Lv7][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "farm_girl",
+      "level": 7,
+      "greeting_id": "g_fg_lv7_10",
+      "text": "（placeholder Greeting 農女[Lv7][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_01",
+      "text": "（placeholder Greeting 魔女[Lv1][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_02",
+      "text": "（placeholder Greeting 魔女[Lv1][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_03",
+      "text": "（placeholder Greeting 魔女[Lv1][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_04",
+      "text": "（placeholder Greeting 魔女[Lv1][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_05",
+      "text": "（placeholder Greeting 魔女[Lv1][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_06",
+      "text": "（placeholder Greeting 魔女[Lv1][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_07",
+      "text": "（placeholder Greeting 魔女[Lv1][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_08",
+      "text": "（placeholder Greeting 魔女[Lv1][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_09",
+      "text": "（placeholder Greeting 魔女[Lv1][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 1,
+      "greeting_id": "g_w_lv1_10",
+      "text": "（placeholder Greeting 魔女[Lv1][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_01",
+      "text": "（placeholder Greeting 魔女[Lv2][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_02",
+      "text": "（placeholder Greeting 魔女[Lv2][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_03",
+      "text": "（placeholder Greeting 魔女[Lv2][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_04",
+      "text": "（placeholder Greeting 魔女[Lv2][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_05",
+      "text": "（placeholder Greeting 魔女[Lv2][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_06",
+      "text": "（placeholder Greeting 魔女[Lv2][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_07",
+      "text": "（placeholder Greeting 魔女[Lv2][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_08",
+      "text": "（placeholder Greeting 魔女[Lv2][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_09",
+      "text": "（placeholder Greeting 魔女[Lv2][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 2,
+      "greeting_id": "g_w_lv2_10",
+      "text": "（placeholder Greeting 魔女[Lv2][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_01",
+      "text": "（placeholder Greeting 魔女[Lv3][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_02",
+      "text": "（placeholder Greeting 魔女[Lv3][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_03",
+      "text": "（placeholder Greeting 魔女[Lv3][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_04",
+      "text": "（placeholder Greeting 魔女[Lv3][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_05",
+      "text": "（placeholder Greeting 魔女[Lv3][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_06",
+      "text": "（placeholder Greeting 魔女[Lv3][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_07",
+      "text": "（placeholder Greeting 魔女[Lv3][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_08",
+      "text": "（placeholder Greeting 魔女[Lv3][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_09",
+      "text": "（placeholder Greeting 魔女[Lv3][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 3,
+      "greeting_id": "g_w_lv3_10",
+      "text": "（placeholder Greeting 魔女[Lv3][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_01",
+      "text": "（placeholder Greeting 魔女[Lv4][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_02",
+      "text": "（placeholder Greeting 魔女[Lv4][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_03",
+      "text": "（placeholder Greeting 魔女[Lv4][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_04",
+      "text": "（placeholder Greeting 魔女[Lv4][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_05",
+      "text": "（placeholder Greeting 魔女[Lv4][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_06",
+      "text": "（placeholder Greeting 魔女[Lv4][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_07",
+      "text": "（placeholder Greeting 魔女[Lv4][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_08",
+      "text": "（placeholder Greeting 魔女[Lv4][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_09",
+      "text": "（placeholder Greeting 魔女[Lv4][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 4,
+      "greeting_id": "g_w_lv4_10",
+      "text": "（placeholder Greeting 魔女[Lv4][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_01",
+      "text": "（placeholder Greeting 魔女[Lv5][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_02",
+      "text": "（placeholder Greeting 魔女[Lv5][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_03",
+      "text": "（placeholder Greeting 魔女[Lv5][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_04",
+      "text": "（placeholder Greeting 魔女[Lv5][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_05",
+      "text": "（placeholder Greeting 魔女[Lv5][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_06",
+      "text": "（placeholder Greeting 魔女[Lv5][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_07",
+      "text": "（placeholder Greeting 魔女[Lv5][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_08",
+      "text": "（placeholder Greeting 魔女[Lv5][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_09",
+      "text": "（placeholder Greeting 魔女[Lv5][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 5,
+      "greeting_id": "g_w_lv5_10",
+      "text": "（placeholder Greeting 魔女[Lv5][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_01",
+      "text": "（placeholder Greeting 魔女[Lv6][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_02",
+      "text": "（placeholder Greeting 魔女[Lv6][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_03",
+      "text": "（placeholder Greeting 魔女[Lv6][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_04",
+      "text": "（placeholder Greeting 魔女[Lv6][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_05",
+      "text": "（placeholder Greeting 魔女[Lv6][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_06",
+      "text": "（placeholder Greeting 魔女[Lv6][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_07",
+      "text": "（placeholder Greeting 魔女[Lv6][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_08",
+      "text": "（placeholder Greeting 魔女[Lv6][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_09",
+      "text": "（placeholder Greeting 魔女[Lv6][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 6,
+      "greeting_id": "g_w_lv6_10",
+      "text": "（placeholder Greeting 魔女[Lv6][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_01",
+      "text": "（placeholder Greeting 魔女[Lv7][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_02",
+      "text": "（placeholder Greeting 魔女[Lv7][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_03",
+      "text": "（placeholder Greeting 魔女[Lv7][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_04",
+      "text": "（placeholder Greeting 魔女[Lv7][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_05",
+      "text": "（placeholder Greeting 魔女[Lv7][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_06",
+      "text": "（placeholder Greeting 魔女[Lv7][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_07",
+      "text": "（placeholder Greeting 魔女[Lv7][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_08",
+      "text": "（placeholder Greeting 魔女[Lv7][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_09",
+      "text": "（placeholder Greeting 魔女[Lv7][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "witch",
+      "level": 7,
+      "greeting_id": "g_w_lv7_10",
+      "text": "（placeholder Greeting 魔女[Lv7][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_01",
+      "text": "（placeholder Greeting 守衛[Lv1][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_02",
+      "text": "（placeholder Greeting 守衛[Lv1][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_03",
+      "text": "（placeholder Greeting 守衛[Lv1][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_04",
+      "text": "（placeholder Greeting 守衛[Lv1][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_05",
+      "text": "（placeholder Greeting 守衛[Lv1][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_06",
+      "text": "（placeholder Greeting 守衛[Lv1][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_07",
+      "text": "（placeholder Greeting 守衛[Lv1][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_08",
+      "text": "（placeholder Greeting 守衛[Lv1][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_09",
+      "text": "（placeholder Greeting 守衛[Lv1][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 1,
+      "greeting_id": "g_g_lv1_10",
+      "text": "（placeholder Greeting 守衛[Lv1][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_01",
+      "text": "（placeholder Greeting 守衛[Lv2][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_02",
+      "text": "（placeholder Greeting 守衛[Lv2][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_03",
+      "text": "（placeholder Greeting 守衛[Lv2][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_04",
+      "text": "（placeholder Greeting 守衛[Lv2][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_05",
+      "text": "（placeholder Greeting 守衛[Lv2][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_06",
+      "text": "（placeholder Greeting 守衛[Lv2][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_07",
+      "text": "（placeholder Greeting 守衛[Lv2][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_08",
+      "text": "（placeholder Greeting 守衛[Lv2][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_09",
+      "text": "（placeholder Greeting 守衛[Lv2][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 2,
+      "greeting_id": "g_g_lv2_10",
+      "text": "（placeholder Greeting 守衛[Lv2][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_01",
+      "text": "（placeholder Greeting 守衛[Lv3][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_02",
+      "text": "（placeholder Greeting 守衛[Lv3][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_03",
+      "text": "（placeholder Greeting 守衛[Lv3][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_04",
+      "text": "（placeholder Greeting 守衛[Lv3][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_05",
+      "text": "（placeholder Greeting 守衛[Lv3][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_06",
+      "text": "（placeholder Greeting 守衛[Lv3][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_07",
+      "text": "（placeholder Greeting 守衛[Lv3][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_08",
+      "text": "（placeholder Greeting 守衛[Lv3][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_09",
+      "text": "（placeholder Greeting 守衛[Lv3][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 3,
+      "greeting_id": "g_g_lv3_10",
+      "text": "（placeholder Greeting 守衛[Lv3][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_01",
+      "text": "（placeholder Greeting 守衛[Lv4][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_02",
+      "text": "（placeholder Greeting 守衛[Lv4][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_03",
+      "text": "（placeholder Greeting 守衛[Lv4][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_04",
+      "text": "（placeholder Greeting 守衛[Lv4][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_05",
+      "text": "（placeholder Greeting 守衛[Lv4][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_06",
+      "text": "（placeholder Greeting 守衛[Lv4][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_07",
+      "text": "（placeholder Greeting 守衛[Lv4][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_08",
+      "text": "（placeholder Greeting 守衛[Lv4][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_09",
+      "text": "（placeholder Greeting 守衛[Lv4][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 4,
+      "greeting_id": "g_g_lv4_10",
+      "text": "（placeholder Greeting 守衛[Lv4][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_01",
+      "text": "（placeholder Greeting 守衛[Lv5][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_02",
+      "text": "（placeholder Greeting 守衛[Lv5][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_03",
+      "text": "（placeholder Greeting 守衛[Lv5][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_04",
+      "text": "（placeholder Greeting 守衛[Lv5][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_05",
+      "text": "（placeholder Greeting 守衛[Lv5][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_06",
+      "text": "（placeholder Greeting 守衛[Lv5][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_07",
+      "text": "（placeholder Greeting 守衛[Lv5][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_08",
+      "text": "（placeholder Greeting 守衛[Lv5][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_09",
+      "text": "（placeholder Greeting 守衛[Lv5][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 5,
+      "greeting_id": "g_g_lv5_10",
+      "text": "（placeholder Greeting 守衛[Lv5][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_01",
+      "text": "（placeholder Greeting 守衛[Lv6][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_02",
+      "text": "（placeholder Greeting 守衛[Lv6][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_03",
+      "text": "（placeholder Greeting 守衛[Lv6][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_04",
+      "text": "（placeholder Greeting 守衛[Lv6][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_05",
+      "text": "（placeholder Greeting 守衛[Lv6][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_06",
+      "text": "（placeholder Greeting 守衛[Lv6][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_07",
+      "text": "（placeholder Greeting 守衛[Lv6][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_08",
+      "text": "（placeholder Greeting 守衛[Lv6][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_09",
+      "text": "（placeholder Greeting 守衛[Lv6][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 6,
+      "greeting_id": "g_g_lv6_10",
+      "text": "（placeholder Greeting 守衛[Lv6][G10] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_01",
+      "text": "（placeholder Greeting 守衛[Lv7][G01] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_02",
+      "text": "（placeholder Greeting 守衛[Lv7][G02] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_03",
+      "text": "（placeholder Greeting 守衛[Lv7][G03] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_04",
+      "text": "（placeholder Greeting 守衛[Lv7][G04] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_05",
+      "text": "（placeholder Greeting 守衛[Lv7][G05] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_06",
+      "text": "（placeholder Greeting 守衛[Lv7][G06] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_07",
+      "text": "（placeholder Greeting 守衛[Lv7][G07] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_08",
+      "text": "（placeholder Greeting 守衛[Lv7][G08] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_09",
+      "text": "（placeholder Greeting 守衛[Lv7][G09] 招呼語內容，待製作人撰寫）"
+    },
+    {
+      "character_id": "guard",
+      "level": 7,
+      "greeting_id": "g_g_lv7_10",
+      "text": "（placeholder Greeting 守衛[Lv7][G10] 招呼語內容，待製作人撰寫）"
+    }
+  ]
+}

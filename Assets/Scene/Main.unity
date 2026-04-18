@@ -1246,6 +1246,12 @@ MonoBehaviour:
   _characterIntroCGViewPrefab: {fileID: 8401461119991003136, guid: edaa4bad9e4c3634cb7af87642e91c56, type: 3}
   _playerQuestionsConfigJson: {fileID: 4900000, guid: 04fe571256b6fc6468b9033027655251, type: 3}
   _playerQuestionsViewPrefab: {fileID: 211561513315952322, guid: c2bc778498d0e464599c9b03238f4cc3, type: 3}
+  _characterQuestionsConfigJson: {fileID: 4900000, guid: ac1b745bae6b0fc419b8eb4afc748d68, type: 3}
+  _greetingConfigJson: {fileID: 4900000, guid: 7a25c0ac4eff85f4e907925ba96a6618, type: 3}
+  _idleChatConfigJson: {fileID: 4900000, guid: 955f604d8545e5741a0264d92a9adaf9, type: 3}
+  _characterQuestionsViewPrefab: {fileID: 919447067015384157, guid: 837ac129ec6b61b4fac7ff84cb2d6d17, type: 3}
+  _characterQuestionCountdownSeconds: 60
+  _dialogueCooldownBaseSeconds: 60
   _uiContainer: {fileID: 1456230930}
   _typewriterCharsPerSecond: 20
 --- !u!1 &1552563258

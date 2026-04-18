@@ -447,4 +447,103 @@ namespace ProjectDR.Village
         /// <summary>所屬角色 ID。</summary>
         public string CharacterId;
     }
+
+    // ----- Sprint 5 對話功能修正相關事件 -----
+
+    /// <summary>
+    /// 角色發問倒數完成事件（Sprint 5 B1/B19）。
+    /// CharacterQuestionCountdownManager 倒數至 0 時發布一次，L2 紅點由此觸發。
+    /// 由於紅點累積上限 = 1，紅點亮後再觸發的 Ready 不會再次累積。
+    /// </summary>
+    public class CharacterQuestionCountdownReadyEvent : GameEventBase
+    {
+        /// <summary>倒數完成的角色 ID。</summary>
+        public string CharacterId;
+    }
+
+    /// <summary>
+    /// 角色發問：題目呈現時發布的事件（Sprint 5 B5/B19）。
+    /// </summary>
+    public class CharacterQuestionAskedEvent : GameEventBase
+    {
+        /// <summary>角色 ID。</summary>
+        public string CharacterId;
+
+        /// <summary>該角色當前的好感度等級（1~7）。</summary>
+        public int Level;
+
+        /// <summary>題目 ID。</summary>
+        public string QuestionId;
+    }
+
+    /// <summary>
+    /// 角色發問：玩家選擇選項後發布的事件（Sprint 5 B5/B19）。
+    /// </summary>
+    public class CharacterQuestionAnsweredEvent : GameEventBase
+    {
+        /// <summary>角色 ID。</summary>
+        public string CharacterId;
+
+        /// <summary>題目 ID。</summary>
+        public string QuestionId;
+
+        /// <summary>選到的個性 ID（personality_gentle/lively/calm/assertive）。</summary>
+        public string SelectedPersonality;
+
+        /// <summary>該角色對此個性的好感度增量（+0/+2/+5/+10 placeholder）。</summary>
+        public int AffinityDelta;
+    }
+
+    /// <summary>
+    /// 玩家發問冷卻開始事件（Sprint 5 B10/B19）。
+    /// </summary>
+    public class DialogueCooldownStartedEvent : GameEventBase
+    {
+        /// <summary>進入 CD 的角色 ID。</summary>
+        public string CharacterId;
+
+        /// <summary>設定的冷卻秒數（已套用 ×2 倍率者為 120s）。</summary>
+        public float DurationSeconds;
+    }
+
+    /// <summary>
+    /// 玩家發問冷卻完成事件（Sprint 5 B10/B19）。
+    /// </summary>
+    public class DialogueCooldownCompletedEvent : GameEventBase
+    {
+        /// <summary>完成 CD 的角色 ID。</summary>
+        public string CharacterId;
+    }
+
+    /// <summary>
+    /// 招呼語播放事件（Sprint 5 B16/B19）。
+    /// GreetingPresenter 進入角色 Normal 狀態時發布。
+    /// </summary>
+    public class GreetingPlayedEvent : GameEventBase
+    {
+        /// <summary>角色 ID。</summary>
+        public string CharacterId;
+
+        /// <summary>好感度等級。</summary>
+        public int Level;
+
+        /// <summary>招呼語 ID。</summary>
+        public string GreetingId;
+    }
+
+    /// <summary>
+    /// [閒聊] 模式觸發事件（Sprint 5 B12/B19）。
+    /// 玩家發問 40 題池耗盡後，點擊 [閒聊] 時觸發。
+    /// </summary>
+    public class IdleChatTriggeredEvent : GameEventBase
+    {
+        /// <summary>角色 ID。</summary>
+        public string CharacterId;
+
+        /// <summary>抽到的問題 ID。</summary>
+        public string TopicId;
+
+        /// <summary>抽到的回答 ID。</summary>
+        public string AnswerId;
+    }
 }

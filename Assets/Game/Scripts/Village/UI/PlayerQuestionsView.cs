@@ -1,17 +1,15 @@
-// PlayerQuestionsView — 玩家主動發問 UI（B14）。
-// overlay 模式，顯示依好感度分批解鎖的問題清單。
+// PlayerQuestionsView — 玩家主動發問 UI（Sprint 5 B11/B13/B14 重寫）。
 //
-// 佈局驗證（3840x2160，中心 0,0，overlay 右側 w=1600）：
-//   PnlRoot      cx=800   cy=0      w=1600  h=2160   L=0    R=+1600
-//   TxtTitle     cx=800   cy=+928   w=880   h=72     L=360  R=1240  T=+964 B=+892
-//   ScrollRect   cx=800   cy=+8     w=1520  h=1600   L=40   R=1560  T=+808 B=-792
-//   BtnClose     cx=800   cy=-944   w=480   h=80     L=560  R=1040  T=-904 B=-984
-//
-//   TxtTitle.B=+892 vs ScrollRect.T=+808 → 間距 84px ✓
-//   ScrollRect.B=-792 vs BtnClose.T=-904 → 間距 112px ✓
-//   BtnClose.B=-984 ≥ -1080（全覆蓋 overlay 可接受）✓
+// 行為規格（依 character-content-template.md v1.4 §3.3、character-interaction.md v2.3 §5.2）：
+// - 開啟即依 PlayerQuestionsManager.GetPresentation 決定本次呈現
+//     - ≥4 題  → 顯示 4 題
+//     - 1~3 題 → 只顯示剩餘
+//     - 0 題   → 只顯示 [閒聊]（IdleChatPresenter 觸發隨機問題+隨機回答）
+// - 體力為 0 → 點開此 View 顯示「現在好累了」文字，不可操作
+// - 選題目 → 扣體力（B13）→ 播打字機回答 → 啟動 CD（B14）
+// - [閒聊] 項 → 呼叫 IdleChatPresenter.Trigger → 播放抽到的 prompt+answer（不扣體力）
+// - 選擇後標記已看（由 PlayerQuestionsManager）
 
-using System;
 using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using UnityEngine;
@@ -20,14 +18,9 @@ using TMPro;
 
 namespace ProjectDR.Village.UI
 {
-    /// <summary>
-    /// 玩家主動發問 overlay View（B14）。
-    /// 顯示依好感度分批解鎖的問題清單，
-    /// 點擊題目 → 打字機播放角色回答 → 返回清單。
-    /// </summary>
     public class PlayerQuestionsView : ViewBase
     {
-        // ── SerializeField ──────────────────────────────────────────────
+        // ===== SerializeField =====
 
         [Header("標題")]
         [SerializeField] private TMP_Text _titleLabel;
@@ -36,49 +29,59 @@ namespace ProjectDR.Village.UI
         [SerializeField] private Transform _questionListContainer;
         [SerializeField] private Button _questionRowPrefab;
 
-        [Header("回答區（問題被點擊後顯示）")]
+        [Header("回答區")]
         [SerializeField] private GameObject _answerPanel;
         [SerializeField] private TMP_Text _questionDisplayLabel;
         [SerializeField] private TMP_Text _answerText;
         [SerializeField] private Button _backToListButton;
 
+        [Header("體力不足提示")]
+        [SerializeField] private GameObject _tiredPanel;
+        [SerializeField] private TMP_Text _tiredLabel;
+
         [Header("導航")]
         [SerializeField] private Button _closeButton;
 
-        // ── 注入相依 ────────────────────────────────────────────────────
+        // ===== 注入相依 =====
 
+        private PlayerQuestionsManager _questionsManager;
         private PlayerQuestionsConfig _questionsConfig;
-        private AffinityManager _affinityManager;
-        private DialogueManager _dialogueManager;
-        private RedDotManager _redDotManager; // C2：清除 L2 紅點
+        private IdleChatPresenter _idleChatPresenter;
+        private CharacterStaminaManager _staminaManager;
+        private DialogueCooldownManager _cooldownManager;
+        private RedDotManager _redDotManager;
         private TypewriterEffect _typewriter;
         private string _characterId;
         private float _charsPerSecond;
 
         private System.Action _returnAction;
-
-        // ── 執行時狀態 ──────────────────────────────────────────────────
-
+        private System.Action<string> _responseAction;
         private bool _isShowingAnswer;
 
-        // ── 公開 API ────────────────────────────────────────────────────
+        // ===== 公開 API =====
 
-        /// <summary>
-        /// 由 VillageEntryPoint 注入相依。
-        /// </summary>
+        /// <summary>Sprint 5 新版：完整依賴注入。</summary>
         public void Initialize(
+            PlayerQuestionsManager questionsManager,
             PlayerQuestionsConfig questionsConfig,
-            AffinityManager affinityManager,
-            DialogueManager dialogueManager,
+            IdleChatPresenter idleChatPresenter,
+            CharacterStaminaManager staminaManager,
+            DialogueCooldownManager cooldownManager,
+            RedDotManager redDotManager,
             string characterId,
             float charsPerSecond)
         {
-            Initialize(questionsConfig, affinityManager, dialogueManager, null, characterId, charsPerSecond);
+            _questionsManager = questionsManager;
+            _questionsConfig = questionsConfig;
+            _idleChatPresenter = idleChatPresenter;
+            _staminaManager = staminaManager;
+            _cooldownManager = cooldownManager;
+            _redDotManager = redDotManager;
+            _characterId = characterId;
+            _charsPerSecond = charsPerSecond > 0f ? charsPerSecond : 20f;
         }
 
-        /// <summary>
-        /// C2（Sprint 4）擴充：支援 RedDotManager 注入，打開發問清單即清除 L2 紅點。
-        /// </summary>
+        /// <summary>Sprint 4 向下相容建構子（保留舊簽名防止編譯破壞）。</summary>
         public void Initialize(
             PlayerQuestionsConfig questionsConfig,
             AffinityManager affinityManager,
@@ -87,25 +90,30 @@ namespace ProjectDR.Village.UI
             string characterId,
             float charsPerSecond)
         {
+            // 舊簽名：建立預設 Manager（測試友善）
             _questionsConfig = questionsConfig;
-            _affinityManager = affinityManager;
-            _dialogueManager = dialogueManager;
-            _redDotManager   = redDotManager;
-            _characterId     = characterId;
-            _charsPerSecond  = charsPerSecond > 0f ? charsPerSecond : 20f;
+            _questionsManager = questionsConfig != null ? new PlayerQuestionsManager(questionsConfig) : null;
+            _idleChatPresenter = null;
+            _staminaManager = null;
+            _cooldownManager = null;
+            _redDotManager = redDotManager;
+            _characterId = characterId;
+            _charsPerSecond = charsPerSecond > 0f ? charsPerSecond : 20f;
         }
 
-        /// <summary>設定關閉按鈕的回呼（overlay 模式）。</summary>
-        public void SetReturnAction(System.Action action)
-        {
-            _returnAction = action;
-        }
+        public void SetReturnAction(System.Action action) { _returnAction = action; }
 
-        // ── ViewBase 生命週期 ────────────────────────────────────────────
+        /// <summary>
+        /// 設定「選擇題目 / 閒聊」後的回應處理回呼。
+        /// 注入時：選題 / 閒聊後關閉 overlay，由主角色互動畫面播放回應，避免 overlay 呈現類似 CG 的對話。
+        /// 不注入時：保留舊行為（於 overlay 內以打字機播放 answer + 返回清單按鈕）。
+        /// </summary>
+        public void SetResponseAction(System.Action<string> action) { _responseAction = action; }
+
+        // ===== 生命週期 =====
 
         protected override void OnShow()
         {
-            // 建立打字機（用於回答區）
             if (_answerText != null)
             {
                 _typewriter = _answerText.GetComponent<TypewriterEffect>();
@@ -114,83 +122,73 @@ namespace ProjectDR.Village.UI
                 _typewriter.Initialize(_answerText);
             }
 
-            if (_closeButton != null)
-                _closeButton.onClick.AddListener(OnCloseClicked);
+            if (_closeButton != null) _closeButton.onClick.AddListener(OnCloseClicked);
+            if (_backToListButton != null) _backToListButton.onClick.AddListener(OnBackToList);
 
-            if (_backToListButton != null)
-                _backToListButton.onClick.AddListener(OnBackToList);
+            if (_titleLabel != null) _titleLabel.text = "發問";
 
-            // 設定標題
-            if (_titleLabel != null)
-                _titleLabel.text = "發問";
-
-            // 初始狀態：顯示清單，隱藏回答面板
+            _isShowingAnswer = false;
             ShowListPanel();
-            RefreshQuestionList();
 
-            // C2（Sprint 4）：打開發問清單 → 清除該角色 L2 角色發問紅點
-            if (_redDotManager != null && !string.IsNullOrEmpty(_characterId))
+            // B13：體力 = 0 → 顯示「現在好累了」
+            if (_staminaManager != null && !_staminaManager.HasEnoughForDialogue(_characterId))
             {
-                _redDotManager.SetCharacterQuestionFlag(_characterId, false);
+                ShowTiredState();
+                return;
             }
+
+            HideTiredState();
+            RefreshQuestionList();
         }
 
         protected override void OnHide()
         {
-            if (_closeButton != null)
-                _closeButton.onClick.RemoveListener(OnCloseClicked);
-
-            if (_backToListButton != null)
-                _backToListButton.onClick.RemoveListener(OnBackToList);
-
+            if (_closeButton != null) _closeButton.onClick.RemoveListener(OnCloseClicked);
+            if (_backToListButton != null) _backToListButton.onClick.RemoveListener(OnBackToList);
             ClearQuestionList();
         }
 
-        // ── 清單邏輯 ────────────────────────────────────────────────────
+        // ===== 清單 =====
 
         private void RefreshQuestionList()
         {
             ClearQuestionList();
+            if (_questionsManager == null || _questionListContainer == null) return;
 
-            if (_questionsConfig == null || _questionListContainer == null) return;
+            PlayerQuestionsPresentation pres = _questionsManager.GetPresentation(_characterId);
 
-            // 計算當前好感度階段
-            int affinityValue = _affinityManager != null ? _affinityManager.GetAffinity(_characterId) : 0;
-            int currentStage  = CalculateAffinityStage(affinityValue);
-
-            IReadOnlyList<PlayerQuestionInfo> questions =
-                _questionsConfig.GetQuestionsForCharacter(_characterId);
-
-            foreach (PlayerQuestionInfo q in questions)
+            if (pres.IsIdleChatFallback)
             {
-                CreateQuestionRow(q, currentStage);
+                CreateIdleChatRow();
+            }
+            else
+            {
+                foreach (PlayerQuestionInfo q in pres.Questions)
+                {
+                    CreateQuestionRow(q);
+                }
             }
         }
 
-        private void CreateQuestionRow(PlayerQuestionInfo question, int currentStage)
+        private void CreateQuestionRow(PlayerQuestionInfo question)
         {
             if (_questionRowPrefab == null) return;
-
             Button row = Instantiate(_questionRowPrefab, _questionListContainer);
             row.gameObject.SetActive(true);
-
             TMP_Text label = row.GetComponentInChildren<TMP_Text>();
-            bool unlocked = question.UnlockAffinityStage <= currentStage;
+            if (label != null) label.text = question.QuestionText;
+            PlayerQuestionInfo captured = question;
+            row.onClick.AddListener(() => OnQuestionSelected(captured));
+        }
 
-            if (label != null)
-            {
-                label.text = unlocked
-                    ? question.QuestionText
-                    : $"[好感度階段 {question.UnlockAffinityStage} 解鎖] {question.QuestionText}";
-                label.color = unlocked ? Color.white : new Color(0.6f, 0.6f, 0.6f, 1f);
-            }
-
-            row.interactable = unlocked;
-            if (unlocked)
-            {
-                PlayerQuestionInfo captured = question;
-                row.onClick.AddListener(() => OnQuestionSelected(captured));
-            }
+        private void CreateIdleChatRow()
+        {
+            if (_questionRowPrefab == null) return;
+            Button row = Instantiate(_questionRowPrefab, _questionListContainer);
+            row.gameObject.SetActive(true);
+            TMP_Text label = row.GetComponentInChildren<TMP_Text>();
+            if (label != null) label.text = "[閒聊]";
+            row.onClick.AddListener(OnIdleChatSelected);
         }
 
         private void ClearQuestionList()
@@ -200,71 +198,135 @@ namespace ProjectDR.Village.UI
                 Destroy(_questionListContainer.GetChild(i).gameObject);
         }
 
-        // ── 回答邏輯 ────────────────────────────────────────────────────
+        // ===== 選題（b 路徑 1 對 1）=====
 
         private void OnQuestionSelected(PlayerQuestionInfo question)
         {
             if (_isShowingAnswer) return;
 
-            _isShowingAnswer = true;
-            ShowAnswerPanel(question);
+            // B13：扣體力（失敗則顯示 tired panel）
+            if (_staminaManager != null && !_staminaManager.TryConsumeForDialogue(_characterId))
+            {
+                ShowTiredState();
+                return;
+            }
+
+            // 標記已看
+            if (_questionsManager != null)
+                _questionsManager.MarkSeen(_characterId, question.QuestionId);
+
+            // B14：啟動 CD
+            if (_cooldownManager != null)
+                _cooldownManager.StartCooldown(_characterId);
+
+            // 優先交由主角色互動畫面播放回應（不在此 overlay 內以 CG 式呈現）。
+            // 未注入 responseAction 時維持舊行為（overlay 內 ShowAnswerPanel）。
+            if (_responseAction != null)
+            {
+                _isShowingAnswer = true;
+                _responseAction.Invoke(question.ResponseText ?? string.Empty);
+            }
+            else
+            {
+                _isShowingAnswer = true;
+                ShowAnswerPanel(question.QuestionText, question.ResponseText);
+            }
         }
 
-        private void ShowAnswerPanel(PlayerQuestionInfo question)
+        // ===== 閒聊 =====
+
+        private void OnIdleChatSelected()
         {
-            // 隱藏清單，顯示回答區
-            if (_questionListContainer != null)
-                _questionListContainer.gameObject.SetActive(false);
+            if (_isShowingAnswer) return;
 
-            if (_answerPanel != null)
-                _answerPanel.SetActive(true);
+            string prompt;
+            string answer;
 
-            if (_questionDisplayLabel != null)
-                _questionDisplayLabel.text = question.QuestionText;
-
-            // 打字機播放回答
-            if (_typewriter != null && !string.IsNullOrEmpty(question.ResponseText))
+            // 閒聊不扣體力（GDD）— 但仍啟動 CD（GDD：CD 處理與一般發問一致）
+            if (_idleChatPresenter == null)
             {
-                _typewriter.Play(question.ResponseText, _charsPerSecond);
+                prompt = "[閒聊]";
+                answer = "（沒有可用的閒聊內容。）";
             }
+            else
+            {
+                IdleChatResult r = _idleChatPresenter.Trigger(_characterId);
+                if (r == null)
+                {
+                    prompt = "[閒聊]";
+                    answer = "（這個角色沒有閒聊內容。）";
+                }
+                else
+                {
+                    prompt = r.Prompt;
+                    answer = r.Answer;
+                }
+            }
+
+            _isShowingAnswer = true;
+
+            if (_cooldownManager != null)
+                _cooldownManager.StartCooldown(_characterId);
+
+            // 優先交由主角色互動畫面播放回應
+            if (_responseAction != null)
+            {
+                _responseAction.Invoke(answer ?? string.Empty);
+            }
+            else
+            {
+                ShowAnswerPanel(prompt, answer);
+            }
+        }
+
+        // ===== 顯示 =====
+
+        private void ShowAnswerPanel(string questionText, string answerText)
+        {
+            if (_questionListContainer != null) _questionListContainer.gameObject.SetActive(false);
+            if (_answerPanel != null) _answerPanel.SetActive(true);
+            if (_questionDisplayLabel != null) _questionDisplayLabel.text = questionText ?? string.Empty;
+
+            if (_typewriter != null && !string.IsNullOrEmpty(answerText))
+                _typewriter.Play(answerText, _charsPerSecond);
             else if (_answerText != null)
-            {
-                _answerText.text = question.ResponseText;
-            }
+                _answerText.text = answerText ?? string.Empty;
         }
 
         private void OnBackToList()
         {
             _isShowingAnswer = false;
             ShowListPanel();
+            // 回清單時，CD 已啟動，只能靠重新 Open 才能再次取用
+            // （若剩餘題目為 0 會自動顯示 [閒聊]；若還有題目，會顯示新抽的 4 題）
+            RefreshQuestionList();
         }
 
         private void ShowListPanel()
         {
-            if (_answerPanel != null)
-                _answerPanel.SetActive(false);
-
-            if (_questionListContainer != null)
-                _questionListContainer.gameObject.SetActive(true);
+            if (_answerPanel != null) _answerPanel.SetActive(false);
+            if (_questionListContainer != null) _questionListContainer.gameObject.SetActive(true);
         }
 
-        // ── 導航 ────────────────────────────────────────────────────────
+        private void ShowTiredState()
+        {
+            ClearQuestionList();
+            if (_questionListContainer != null) _questionListContainer.gameObject.SetActive(false);
+            if (_answerPanel != null) _answerPanel.SetActive(false);
+            if (_tiredPanel != null) _tiredPanel.SetActive(true);
+            if (_tiredLabel != null) _tiredLabel.text = "現在好累了";
+        }
+
+        private void HideTiredState()
+        {
+            if (_tiredPanel != null) _tiredPanel.SetActive(false);
+        }
+
+        // ===== 導航 =====
 
         private void OnCloseClicked()
         {
             _returnAction?.Invoke();
-        }
-
-        // ── 工具 ────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// 依好感度數值計算當前所屬的好感度門檻索引（階段）。
-        /// IT 階段簡化：每 5 點好感度算一個階段（stage 0 = 0-4, stage 1 = 5-9, …）。
-        /// </summary>
-        private static int CalculateAffinityStage(int affinityValue)
-        {
-            if (affinityValue < 0) return 0;
-            return affinityValue / 5;
         }
     }
 }

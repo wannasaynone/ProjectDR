@@ -67,6 +67,22 @@ namespace ProjectDR.Village
         [SerializeField] private TextAsset _playerQuestionsConfigJson;
         [SerializeField] private UI.PlayerQuestionsView _playerQuestionsViewPrefab;
 
+        [Header("Dialogue Flow Correction (Sprint 5 B4/B15/B18/B20)")]
+        [Tooltip("角色發問 280 題 + 個性對應配置（character-questions-config.json）")]
+        [SerializeField] private TextAsset _characterQuestionsConfigJson;
+        [Tooltip("招呼語 280 句配置（greeting-config.json）")]
+        [SerializeField] private TextAsset _greetingConfigJson;
+        [Tooltip("[閒聊] 問題池配置（idle-chat-config.json）")]
+        [SerializeField] private TextAsset _idleChatConfigJson;
+        [Tooltip("Sprint 5 B6：角色發問 overlay View Prefab")]
+        [SerializeField] private UI.CharacterQuestionsView _characterQuestionsViewPrefab;
+
+        [Header("Dialogue Flow Timings (Sprint 5 placeholder)")]
+        [Tooltip("角色發問倒數秒數（60s placeholder，數值設計師可調）")]
+        [SerializeField] private float _characterQuestionCountdownSeconds = 60f;
+        [Tooltip("玩家發問 CD 基礎秒數（60s placeholder，工作中 ×2 為規則層）")]
+        [SerializeField] private float _dialogueCooldownBaseSeconds = 60f;
+
         [Header("UI Container")]
         [SerializeField] private Transform _uiContainer;
 
@@ -131,6 +147,18 @@ namespace ProjectDR.Village
         // Sprint 4 B14 玩家發問系統
         private PlayerQuestionsConfig _playerQuestionsConfig;
 
+        // ===== Sprint 5 對話功能修正 =====
+        private CharacterQuestionsConfig _characterQuestionsConfig;
+        private CharacterQuestionsManager _characterQuestionsManager;
+        private CharacterQuestionCountdownManager _characterQuestionCountdownManager;
+        private GreetingConfig _greetingConfig;
+        private GreetingPresenter _greetingPresenter;
+        private IdleChatConfig _idleChatConfig;
+        private IdleChatPresenter _idleChatPresenter;
+        private PlayerQuestionsManager _playerQuestionsManager;
+        private DialogueCooldownManager _dialogueCooldownManager;
+        private CharacterStaminaManager _staminaManager;
+
         private ViewStackController _stackController;
         private readonly HashSet<string> _initializedViews = new HashSet<string>();
 
@@ -159,6 +187,15 @@ namespace ProjectDR.Village
             {
                 _mainQuestManager.TryAutoCompleteFirstAutoQuest();
             }
+
+            // Sprint 5：每個角色啟動初始角色發問倒數（60s placeholder）
+            if (_characterQuestionCountdownManager != null && _characters != null)
+            {
+                foreach (CharacterMenuData ch in _characters)
+                {
+                    _characterQuestionCountdownManager.StartCountdown(ch.CharacterId);
+                }
+            }
         }
 
         private void Update()
@@ -168,6 +205,12 @@ namespace ProjectDR.Village
             {
                 _commissionManager.Tick(Time.unscaledDeltaTime);
             }
+
+            // Sprint 5：角色發問倒數 + 玩家發問 CD Tick
+            if (_characterQuestionCountdownManager != null)
+                _characterQuestionCountdownManager.Tick(Time.unscaledDeltaTime);
+            if (_dialogueCooldownManager != null)
+                _dialogueCooldownManager.Tick(Time.unscaledDeltaTime);
         }
 
         private void OnDestroy()
@@ -177,8 +220,24 @@ namespace ProjectDR.Village
             EventBus.Unsubscribe<CGUnlockedEvent>(OnCGUnlocked);
             EventBus.Unsubscribe<CommissionClaimedEvent>(OnCommissionClaimedForMainQuest);
 
+            // Sprint 5 B21 取消訂閱
+            EventBus.Unsubscribe<CommissionStartedEvent>(OnCommissionStartedForDialogue);
+            EventBus.Unsubscribe<CommissionClaimedEvent>(OnCommissionClaimedForDialogue);
+
+            if (_characterQuestionCountdownManager != null)
+            {
+                _characterQuestionCountdownManager.Dispose();
+                _characterQuestionCountdownManager = null;
+            }
+            if (_dialogueCooldownManager != null)
+            {
+                _dialogueCooldownManager.Dispose();
+                _dialogueCooldownManager = null;
+            }
+
             // C2（Sprint 4）：取消訂閱
             EventBus.Unsubscribe<CharacterUnlockedEvent>(OnCharacterUnlockedForProgression);
+            EventBus.Unsubscribe<CharacterUnlockedEvent>(OnCharacterUnlockedForDialogueRedDot);
             EventBus.Unsubscribe<NodeDialogueCompletedEvent>(OnNodeDialogueCompletedForMainQuest);
             EventBus.Unsubscribe<ExplorationDepartedEvent>(OnExplorationDepartedForMainQuest);
             EventBus.Unsubscribe<GuardReturnEventCompletedEvent>(OnGuardReturnForMainQuest);
@@ -367,6 +426,10 @@ namespace ProjectDR.Village
             // 讓漸進解鎖的角色同時能通過 NavigationManager 的 IsAreaUnlocked 檢查。
             EventBus.Subscribe<CharacterUnlockedEvent>(OnCharacterUnlockedForProgression);
 
+            // 女角（農女/魔女）解鎖時，立刻在對話按鈕上亮 L2 紅點，
+            // 讓玩家進入她的畫面即看到「可以對話」的提示，不需等 60s 倒數。
+            EventBus.Subscribe<CharacterUnlockedEvent>(OnCharacterUnlockedForDialogueRedDot);
+
             // C2：連線節點劇情完成 → MainQuest 訊號（T1 首次角色 intro 完成；
             // 實際節點 1 / 2 由主線任務完成事件觸發播放）。
             EventBus.Subscribe<NodeDialogueCompletedEvent>(OnNodeDialogueCompletedForMainQuest);
@@ -436,6 +499,83 @@ namespace ProjectDR.Village
                 ? JsonUtility.FromJson<PlayerQuestionsConfigData>(_playerQuestionsConfigJson.text)
                 : new PlayerQuestionsConfigData { questions = new PlayerQuestionData[0] };
             _playerQuestionsConfig = new PlayerQuestionsConfig(questionsData);
+
+            // ===== Sprint 5 對話功能修正 =====
+
+            // 角色發問
+            CharacterQuestionsConfigData cqData = _characterQuestionsConfigJson != null
+                ? JsonUtility.FromJson<CharacterQuestionsConfigData>(_characterQuestionsConfigJson.text)
+                : new CharacterQuestionsConfigData { questions = new CharacterQuestionEntryData[0] };
+            _characterQuestionsConfig = new CharacterQuestionsConfig(cqData);
+            _characterQuestionsManager = new CharacterQuestionsManager(_characterQuestionsConfig, _affinityManager);
+
+            // 角色發問倒數
+            _characterQuestionCountdownManager =
+                new CharacterQuestionCountdownManager(_characterQuestionCountdownSeconds);
+
+            // 招呼語
+            GreetingConfigData gData = _greetingConfigJson != null
+                ? JsonUtility.FromJson<GreetingConfigData>(_greetingConfigJson.text)
+                : new GreetingConfigData { greetings = new GreetingEntryData[0] };
+            _greetingConfig = new GreetingConfig(gData);
+            _greetingPresenter = new GreetingPresenter(_greetingConfig, _redDotManager);
+
+            // 閒聊
+            IdleChatConfigData icData = _idleChatConfigJson != null
+                ? JsonUtility.FromJson<IdleChatConfigData>(_idleChatConfigJson.text)
+                : new IdleChatConfigData { topics = new IdleChatTopicData[0] };
+            _idleChatConfig = new IdleChatConfig(icData);
+            _idleChatPresenter = new IdleChatPresenter(_idleChatConfig);
+
+            // 玩家發問（剩餘題目規則）
+            _playerQuestionsManager = new PlayerQuestionsManager(_playerQuestionsConfig);
+
+            // 玩家發問 CD
+            _dialogueCooldownManager = new DialogueCooldownManager(_dialogueCooldownBaseSeconds);
+
+            // 角色體力
+            _staminaManager = new CharacterStaminaManager();
+
+            // 每角色預啟動倒數（進入場景即開始第一輪 60s 倒數）
+            foreach (CharacterMenuData ch in new CharacterMenuData[]
+            {
+                // Use hardcoded character IDs rather than iterate _characters (not yet initialised here)
+                null
+            })
+            {
+                // noop, handled below in Start() after InitializeCharacterData
+            }
+
+            // B21：CommissionStarted / Claimed → 切換 Countdown + Cooldown 的 Working 狀態
+            EventBus.Subscribe<CommissionStartedEvent>(OnCommissionStartedForDialogue);
+            EventBus.Subscribe<CommissionClaimedEvent>(OnCommissionClaimedForDialogue);
+        }
+
+        /// <summary>
+        /// Sprint 5 B21：委託開始 → 切換該角色為工作中
+        /// （CharacterQuestionCountdownManager 暫停倒數、DialogueCooldownManager 啟用 ×2 倍率）。
+        /// </summary>
+        private void OnCommissionStartedForDialogue(CommissionStartedEvent e)
+        {
+            if (e == null || string.IsNullOrEmpty(e.CharacterId)) return;
+            if (_characterQuestionCountdownManager != null)
+                _characterQuestionCountdownManager.SetWorking(e.CharacterId, true);
+            if (_dialogueCooldownManager != null)
+                _dialogueCooldownManager.SetWorking(e.CharacterId, true);
+        }
+
+        /// <summary>
+        /// Sprint 5 B21：委託領取（工作完成）→ 恢復該角色為非工作中。
+        /// 依 GDD §1.2：工作完成領取的當下，若 L2 倒數已到則立刻亮紅點（由 Countdown Tick 自然處理）。
+        /// </summary>
+        private void OnCommissionClaimedForDialogue(CommissionClaimedEvent e)
+        {
+            if (e == null || string.IsNullOrEmpty(e.CharacterId)) return;
+
+            if (_characterQuestionCountdownManager != null)
+                _characterQuestionCountdownManager.SetWorking(e.CharacterId, false);
+            if (_dialogueCooldownManager != null)
+                _dialogueCooldownManager.SetWorking(e.CharacterId, false);
         }
 
         /// <summary>
@@ -488,6 +628,19 @@ namespace ProjectDR.Village
         {
             if (_progressionManager == null || e == null || string.IsNullOrEmpty(e.CharacterId)) return;
             _progressionManager.ForceUnlock(e.CharacterId);
+        }
+
+        /// <summary>
+        /// 女角（農女/魔女）解鎖時，立刻在該角色的對話按鈕亮 L2 紅點，
+        /// 讓玩家進入互動畫面即看到「可以對話」提示，不需等 60s 倒數。
+        /// 守衛不在此範圍（守衛由歸來事件觸發，另行流程）。
+        /// </summary>
+        private void OnCharacterUnlockedForDialogueRedDot(CharacterUnlockedEvent e)
+        {
+            if (_redDotManager == null || e == null || string.IsNullOrEmpty(e.CharacterId)) return;
+            if (e.CharacterId != CharacterIds.FarmGirl && e.CharacterId != CharacterIds.Witch) return;
+
+            _redDotManager.SetCharacterQuestionFlag(e.CharacterId, true);
         }
 
         /// <summary>
@@ -778,7 +931,33 @@ namespace ProjectDR.Village
             CharacterInteractionView interactionView = view as CharacterInteractionView;
             if (interactionView == null) return;
 
-            interactionView.Initialize(_dialogueManager, _navigationManager, _affinityManager, _typewriterCharsPerSecond);
+            // Sprint 5 B3/B17：注入 RedDotManager（紅點下沉）與 GreetingPresenter（招呼語）
+            interactionView.Initialize(
+                _dialogueManager, _navigationManager, _affinityManager,
+                _redDotManager, _typewriterCharsPerSecond);
+            if (_greetingPresenter != null)
+            {
+                interactionView.SetGreetingPresenter(_greetingPresenter);
+            }
+
+            // dialogue-flow-correction 第四輪：注入角色發問 a 路徑相依，改為 inline 流程
+            // （取代 CharacterQuestionsView overlay）
+            if (_characterQuestionsManager != null)
+            {
+                interactionView.SetCharacterQuestionDependencies(
+                    _characterQuestionsManager,
+                    _characterQuestionCountdownManager);
+            }
+
+            // 前期解鎖流程結束前（node_1 與 node_2 皆尚未播放）：
+            // - VCW 的對話按鈕隱藏（節點劇情由 OnNavigatedToArea 自動以強制模式播放，
+            //   避免玩家在此期間誤觸 VCW 的一般發問路徑）
+            // - 農女/魔女的對話按鈕保留且立刻亮 L2 紅點（於 OnCharacterUnlockedForDialogueRedDot 設定）
+            // 兩個節點都播放完畢後（= 前期解鎖流程完成、探索功能開放），VCW 對話按鈕恢復
+            string capturedCharacterId = characterId;
+            interactionView.SetDialogueSuppressionProvider(() =>
+                capturedCharacterId == CharacterIds.VillageChiefWife
+                && !HasPlayedAllUnlockNodes());
 
             // 註冊功能 View Prefab 與初始化回呼
             RegisterFunctionPrefabs(interactionView);
@@ -978,7 +1157,7 @@ namespace ProjectDR.Village
                 RegisterCraftWorkbenchForFunction(interactionView, FunctionIds.CommissionScout);
             }
 
-            // B14 玩家發問（[對話] 按鈕 → PlayerQuestionsView overlay）
+            // Sprint 5 B11/B13/B14：玩家發問（b 路徑 — 無 L2 紅點時的「對話」按鈕）
             if (_playerQuestionsViewPrefab != null && _playerQuestionsConfig != null)
             {
                 interactionView.RegisterFunctionPrefab(
@@ -991,13 +1170,49 @@ namespace ProjectDR.Village
                         {
                             string charId = interactionView.CurrentCharacterId;
                             questionsView.Initialize(
+                                _playerQuestionsManager,
                                 _playerQuestionsConfig,
-                                _affinityManager,
-                                _dialogueManager,
+                                _idleChatPresenter,
+                                _staminaManager,
+                                _dialogueCooldownManager,
                                 _redDotManager,
                                 charId,
                                 _typewriterCharsPerSecond);
                             questionsView.SetReturnAction(() => interactionView.CloseOverlay());
+                            // 選題/閒聊 → 關閉 overlay 並在主角色互動畫面播放回答（PlayDialogue 內部會先 CloseOverlay）
+                            questionsView.SetResponseAction(response =>
+                                interactionView.PlayDialogue(new string[] { response }));
+                        }
+                    }
+                );
+            }
+
+            // Sprint 5 B6/B8：角色發問（a 路徑 — L2 紅點亮時的「對話」按鈕）
+            if (_characterQuestionsViewPrefab != null && _characterQuestionsConfig != null)
+            {
+                interactionView.RegisterFunctionPrefab(
+                    FunctionIds.CharacterQuestion,
+                    _characterQuestionsViewPrefab,
+                    (ViewBase view) =>
+                    {
+                        UI.CharacterQuestionsView cqView = view as UI.CharacterQuestionsView;
+                        if (cqView != null)
+                        {
+                            string charId = interactionView.CurrentCharacterId;
+                            // placeholder：等級 = 1（未來由 AffinityManager 計算）
+                            cqView.Initialize(
+                                _characterQuestionsManager,
+                                _characterQuestionsConfig,
+                                _affinityManager,
+                                _characterQuestionCountdownManager,
+                                _redDotManager,
+                                charId,
+                                level: 1,
+                                _typewriterCharsPerSecond);
+                            cqView.SetReturnAction(() => interactionView.CloseOverlay());
+                            // 選擇答案 → 關閉 overlay 並在主角色互動畫面播放 response（PlayDialogue 內部會先 CloseOverlay）
+                            cqView.SetResponseAction(response =>
+                                interactionView.PlayDialogue(new string[] { response }));
                         }
                     }
                 );
@@ -1091,6 +1306,16 @@ namespace ProjectDR.Village
                     Debug.LogWarning($"[VillageEntryPoint] 節點 {pendingNode} 播放失敗：{ex.Message}");
                 }
             }
+        }
+
+        /// <summary>
+        /// 前期解鎖流程是否已全部播完（node_1 與 node_2 皆已播放）。
+        /// 用於 VCW 對話按鈕暫時隱藏的恢復條件。
+        /// </summary>
+        private bool HasPlayedAllUnlockNodes()
+        {
+            return _playedMainQuestNodes.Contains(NodeDialogueController.NodeIdNode1)
+                && _playedMainQuestNodes.Contains(NodeDialogueController.NodeIdNode2);
         }
 
         /// <summary>

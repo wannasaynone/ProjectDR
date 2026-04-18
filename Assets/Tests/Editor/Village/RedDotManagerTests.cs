@@ -113,14 +113,13 @@ namespace ProjectDR.Tests.Village
         // ===== L2 角色發問層 =====
 
         [Test]
-        public void AffinityThresholdReached_EnablesL2()
+        public void CharacterQuestionCountdownReady_EnablesL2()
         {
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                EventBus.Publish(new AffinityThresholdReachedEvent
+                EventBus.Publish(new CharacterQuestionCountdownReadyEvent
                 {
                     CharacterId = CharacterIds.FarmGirl,
-                    ThresholdValue = 5,
                 });
                 Assert.AreEqual(RedDotLayer.CharacterQuestion,
                     sut.GetHubRedDot(CharacterIds.FarmGirl).HighestLayer);
@@ -132,10 +131,9 @@ namespace ProjectDR.Tests.Village
         {
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                EventBus.Publish(new AffinityThresholdReachedEvent
+                EventBus.Publish(new CharacterQuestionCountdownReadyEvent
                 {
                     CharacterId = CharacterIds.FarmGirl,
-                    ThresholdValue = 5,
                 });
                 sut.SetCharacterQuestionFlag(CharacterIds.FarmGirl, false);
                 Assert.AreEqual(RedDotLayer.None,
@@ -236,10 +234,9 @@ namespace ProjectDR.Tests.Village
                 _questManager.CompleteQuest("T1"); // L4 亮
 
                 // 加上 L2
-                EventBus.Publish(new AffinityThresholdReachedEvent
+                EventBus.Publish(new CharacterQuestionCountdownReadyEvent
                 {
                     CharacterId = CharacterIds.VillageChiefWife,
-                    ThresholdValue = 5,
                 });
 
                 // 加上 L1
@@ -259,10 +256,9 @@ namespace ProjectDR.Tests.Village
         {
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                EventBus.Publish(new AffinityThresholdReachedEvent
+                EventBus.Publish(new CharacterQuestionCountdownReadyEvent
                 {
                     CharacterId = CharacterIds.FarmGirl,
-                    ThresholdValue = 5,
                 });
                 Assert.AreEqual(RedDotLayer.CharacterQuestion,
                     sut.GetHubRedDot(CharacterIds.FarmGirl).HighestLayer);
@@ -284,10 +280,9 @@ namespace ProjectDR.Tests.Village
         {
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                EventBus.Publish(new AffinityThresholdReachedEvent
+                EventBus.Publish(new CharacterQuestionCountdownReadyEvent
                 {
                     CharacterId = CharacterIds.Witch,
-                    ThresholdValue = 5,
                 });
                 Assert.AreEqual(RedDotLayer.CharacterQuestion,
                     sut.GetHubRedDot(CharacterIds.Witch).HighestLayer);
@@ -349,10 +344,9 @@ namespace ProjectDR.Tests.Village
                 try
                 {
                     // 再加 L2 — 不影響 HighestLayer
-                    EventBus.Publish(new AffinityThresholdReachedEvent
+                    EventBus.Publish(new CharacterQuestionCountdownReadyEvent
                     {
                         CharacterId = CharacterIds.FarmGirl,
-                        ThresholdValue = 5,
                     });
                 }
                 finally

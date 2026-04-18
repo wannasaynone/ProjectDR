@@ -67,8 +67,10 @@ namespace ProjectDR.Village
         private readonly Action<MainQuestAvailableEvent> _onMainQuestAvailable;
         private readonly Action<MainQuestStartedEvent> _onMainQuestStarted;
         private readonly Action<MainQuestCompletedEvent> _onMainQuestCompleted;
-        private readonly Action<AffinityThresholdReachedEvent> _onAffinityThresholdReached;
         private readonly Action<CharacterUnlockedEvent> _onCharacterUnlocked;
+        // Sprint 5 B2：L2 觸發改為監聽 CharacterQuestionCountdownReadyEvent，
+        // 不再以 AffinityThresholdReached 作為 L2 觸發（保留事件供其他用途如 CG 解鎖）。
+        private readonly Action<CharacterQuestionCountdownReadyEvent> _onCharacterQuestionCountdownReady;
 
         private bool _disposed;
 
@@ -92,16 +94,16 @@ namespace ProjectDR.Village
             _onMainQuestAvailable = OnMainQuestAvailable;
             _onMainQuestStarted = OnMainQuestStarted;
             _onMainQuestCompleted = OnMainQuestCompleted;
-            _onAffinityThresholdReached = OnAffinityThresholdReached;
             _onCharacterUnlocked = OnCharacterUnlocked;
+            _onCharacterQuestionCountdownReady = OnCharacterQuestionCountdownReady;
 
             EventBus.Subscribe(_onCommissionCompleted);
             EventBus.Subscribe(_onCommissionClaimed);
             EventBus.Subscribe(_onMainQuestAvailable);
             EventBus.Subscribe(_onMainQuestStarted);
             EventBus.Subscribe(_onMainQuestCompleted);
-            EventBus.Subscribe(_onAffinityThresholdReached);
             EventBus.Subscribe(_onCharacterUnlocked);
+            EventBus.Subscribe(_onCharacterQuestionCountdownReady);
 
             // 建構時掃描 MainQuestManager 現有 Available 任務以同步初始狀態
             // （MainQuestManager 建構時的 Available 事件可能早於 RedDotManager 建構）
@@ -127,6 +129,18 @@ namespace ProjectDR.Village
         public bool HasAnyRedDot(string characterId)
         {
             return GetHubRedDot(characterId).ShouldShow;
+        }
+
+        /// <summary>
+        /// Sprint 5 B3：查詢指定角色的指定紅點層是否啟用。
+        /// 用於 UI 層判斷紅點下沉顯示（如對話按鈕紅點顯示 L2 狀態）。
+        /// 即使 HighestLayer 被 L1/L4 覆蓋，個別層的啟用狀態仍可獨立查詢。
+        /// </summary>
+        public bool IsLayerActive(string characterId, RedDotLayer layer)
+        {
+            if (string.IsNullOrEmpty(characterId)) return false;
+            if (!_statesByCharacter.TryGetValue(characterId, out CharacterRedDotState state)) return false;
+            return state.GetLayer(layer);
         }
 
         /// <summary>取得所有目前有紅點的角色 ID 清單（不保證排序）。</summary>
@@ -185,8 +199,8 @@ namespace ProjectDR.Village
             EventBus.Unsubscribe(_onMainQuestAvailable);
             EventBus.Unsubscribe(_onMainQuestStarted);
             EventBus.Unsubscribe(_onMainQuestCompleted);
-            EventBus.Unsubscribe(_onAffinityThresholdReached);
             EventBus.Unsubscribe(_onCharacterUnlocked);
+            EventBus.Unsubscribe(_onCharacterQuestionCountdownReady);
         }
 
         // ===== 事件處理 =====
@@ -261,8 +275,12 @@ namespace ProjectDR.Village
             }
         }
 
-        /// <summary>L2 角色發問：好感度門檻達成 → 該角色 L2 亮起（placeholder）。</summary>
-        private void OnAffinityThresholdReached(AffinityThresholdReachedEvent e)
+        /// <summary>
+        /// L2 角色發問（Sprint 5 B2）：CharacterQuestionCountdownManager 倒數完成時
+        /// 發布 CharacterQuestionCountdownReadyEvent → 該角色 L2 亮起。
+        /// 紅點累積上限 1 由 CharacterQuestionCountdownManager 內部保證（Ready 後不再發事件）。
+        /// </summary>
+        private void OnCharacterQuestionCountdownReady(CharacterQuestionCountdownReadyEvent e)
         {
             if (e == null || string.IsNullOrEmpty(e.CharacterId)) return;
             UpdateLayer(e.CharacterId, RedDotLayer.CharacterQuestion, true);

@@ -1,0 +1,1526 @@
+{
+  "schema_version": 1,
+  "note": "Sprint 5 A5 placeholder。[閒聊] 問題池（4 角色 × 20 題，每題 3 種隨機回答）。玩家發問 40 題池耗盡後觸發；角色隨機發問 + 隨機回答；不影響好感度、不累計已看。",
+  "topics": [
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_01",
+      "prompt": "（placeholder IdleChat 村長夫人[Q01] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_01_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q01][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_01_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q01][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_01_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q01][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_02",
+      "prompt": "（placeholder IdleChat 村長夫人[Q02] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_02_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q02][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_02_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q02][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_02_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q02][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_03",
+      "prompt": "（placeholder IdleChat 村長夫人[Q03] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_03_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q03][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_03_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q03][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_03_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q03][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_04",
+      "prompt": "（placeholder IdleChat 村長夫人[Q04] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_04_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q04][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_04_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q04][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_04_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q04][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_05",
+      "prompt": "（placeholder IdleChat 村長夫人[Q05] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_05_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q05][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_05_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q05][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_05_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q05][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_06",
+      "prompt": "（placeholder IdleChat 村長夫人[Q06] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_06_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q06][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_06_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q06][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_06_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q06][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_07",
+      "prompt": "（placeholder IdleChat 村長夫人[Q07] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_07_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q07][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_07_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q07][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_07_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q07][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_08",
+      "prompt": "（placeholder IdleChat 村長夫人[Q08] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_08_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q08][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_08_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q08][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_08_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q08][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_09",
+      "prompt": "（placeholder IdleChat 村長夫人[Q09] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_09_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q09][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_09_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q09][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_09_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q09][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_10",
+      "prompt": "（placeholder IdleChat 村長夫人[Q10] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_10_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q10][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_10_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q10][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_10_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q10][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_11",
+      "prompt": "（placeholder IdleChat 村長夫人[Q11] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_11_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q11][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_11_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q11][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_11_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q11][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_12",
+      "prompt": "（placeholder IdleChat 村長夫人[Q12] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_12_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q12][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_12_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q12][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_12_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q12][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_13",
+      "prompt": "（placeholder IdleChat 村長夫人[Q13] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_13_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q13][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_13_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q13][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_13_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q13][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_14",
+      "prompt": "（placeholder IdleChat 村長夫人[Q14] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_14_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q14][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_14_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q14][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_14_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q14][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_15",
+      "prompt": "（placeholder IdleChat 村長夫人[Q15] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_15_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q15][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_15_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q15][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_15_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q15][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_16",
+      "prompt": "（placeholder IdleChat 村長夫人[Q16] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_16_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q16][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_16_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q16][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_16_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q16][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_17",
+      "prompt": "（placeholder IdleChat 村長夫人[Q17] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_17_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q17][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_17_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q17][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_17_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q17][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_18",
+      "prompt": "（placeholder IdleChat 村長夫人[Q18] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_18_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q18][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_18_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q18][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_18_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q18][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_19",
+      "prompt": "（placeholder IdleChat 村長夫人[Q19] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_19_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q19][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_19_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q19][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_19_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q19][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "village_chief_wife",
+      "topic_id": "idle_vcw_20",
+      "prompt": "（placeholder IdleChat 村長夫人[Q20] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_vcw_20_a1",
+          "text": "（placeholder IdleChat 村長夫人[Q20][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_20_a2",
+          "text": "（placeholder IdleChat 村長夫人[Q20][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_vcw_20_a3",
+          "text": "（placeholder IdleChat 村長夫人[Q20][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_01",
+      "prompt": "（placeholder IdleChat 農女[Q01] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_01_a1",
+          "text": "（placeholder IdleChat 農女[Q01][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_01_a2",
+          "text": "（placeholder IdleChat 農女[Q01][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_01_a3",
+          "text": "（placeholder IdleChat 農女[Q01][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_02",
+      "prompt": "（placeholder IdleChat 農女[Q02] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_02_a1",
+          "text": "（placeholder IdleChat 農女[Q02][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_02_a2",
+          "text": "（placeholder IdleChat 農女[Q02][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_02_a3",
+          "text": "（placeholder IdleChat 農女[Q02][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_03",
+      "prompt": "（placeholder IdleChat 農女[Q03] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_03_a1",
+          "text": "（placeholder IdleChat 農女[Q03][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_03_a2",
+          "text": "（placeholder IdleChat 農女[Q03][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_03_a3",
+          "text": "（placeholder IdleChat 農女[Q03][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_04",
+      "prompt": "（placeholder IdleChat 農女[Q04] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_04_a1",
+          "text": "（placeholder IdleChat 農女[Q04][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_04_a2",
+          "text": "（placeholder IdleChat 農女[Q04][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_04_a3",
+          "text": "（placeholder IdleChat 農女[Q04][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_05",
+      "prompt": "（placeholder IdleChat 農女[Q05] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_05_a1",
+          "text": "（placeholder IdleChat 農女[Q05][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_05_a2",
+          "text": "（placeholder IdleChat 農女[Q05][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_05_a3",
+          "text": "（placeholder IdleChat 農女[Q05][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_06",
+      "prompt": "（placeholder IdleChat 農女[Q06] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_06_a1",
+          "text": "（placeholder IdleChat 農女[Q06][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_06_a2",
+          "text": "（placeholder IdleChat 農女[Q06][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_06_a3",
+          "text": "（placeholder IdleChat 農女[Q06][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_07",
+      "prompt": "（placeholder IdleChat 農女[Q07] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_07_a1",
+          "text": "（placeholder IdleChat 農女[Q07][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_07_a2",
+          "text": "（placeholder IdleChat 農女[Q07][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_07_a3",
+          "text": "（placeholder IdleChat 農女[Q07][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_08",
+      "prompt": "（placeholder IdleChat 農女[Q08] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_08_a1",
+          "text": "（placeholder IdleChat 農女[Q08][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_08_a2",
+          "text": "（placeholder IdleChat 農女[Q08][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_08_a3",
+          "text": "（placeholder IdleChat 農女[Q08][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_09",
+      "prompt": "（placeholder IdleChat 農女[Q09] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_09_a1",
+          "text": "（placeholder IdleChat 農女[Q09][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_09_a2",
+          "text": "（placeholder IdleChat 農女[Q09][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_09_a3",
+          "text": "（placeholder IdleChat 農女[Q09][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_10",
+      "prompt": "（placeholder IdleChat 農女[Q10] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_10_a1",
+          "text": "（placeholder IdleChat 農女[Q10][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_10_a2",
+          "text": "（placeholder IdleChat 農女[Q10][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_10_a3",
+          "text": "（placeholder IdleChat 農女[Q10][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_11",
+      "prompt": "（placeholder IdleChat 農女[Q11] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_11_a1",
+          "text": "（placeholder IdleChat 農女[Q11][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_11_a2",
+          "text": "（placeholder IdleChat 農女[Q11][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_11_a3",
+          "text": "（placeholder IdleChat 農女[Q11][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_12",
+      "prompt": "（placeholder IdleChat 農女[Q12] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_12_a1",
+          "text": "（placeholder IdleChat 農女[Q12][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_12_a2",
+          "text": "（placeholder IdleChat 農女[Q12][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_12_a3",
+          "text": "（placeholder IdleChat 農女[Q12][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_13",
+      "prompt": "（placeholder IdleChat 農女[Q13] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_13_a1",
+          "text": "（placeholder IdleChat 農女[Q13][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_13_a2",
+          "text": "（placeholder IdleChat 農女[Q13][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_13_a3",
+          "text": "（placeholder IdleChat 農女[Q13][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_14",
+      "prompt": "（placeholder IdleChat 農女[Q14] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_14_a1",
+          "text": "（placeholder IdleChat 農女[Q14][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_14_a2",
+          "text": "（placeholder IdleChat 農女[Q14][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_14_a3",
+          "text": "（placeholder IdleChat 農女[Q14][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_15",
+      "prompt": "（placeholder IdleChat 農女[Q15] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_15_a1",
+          "text": "（placeholder IdleChat 農女[Q15][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_15_a2",
+          "text": "（placeholder IdleChat 農女[Q15][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_15_a3",
+          "text": "（placeholder IdleChat 農女[Q15][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_16",
+      "prompt": "（placeholder IdleChat 農女[Q16] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_16_a1",
+          "text": "（placeholder IdleChat 農女[Q16][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_16_a2",
+          "text": "（placeholder IdleChat 農女[Q16][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_16_a3",
+          "text": "（placeholder IdleChat 農女[Q16][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_17",
+      "prompt": "（placeholder IdleChat 農女[Q17] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_17_a1",
+          "text": "（placeholder IdleChat 農女[Q17][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_17_a2",
+          "text": "（placeholder IdleChat 農女[Q17][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_17_a3",
+          "text": "（placeholder IdleChat 農女[Q17][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_18",
+      "prompt": "（placeholder IdleChat 農女[Q18] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_18_a1",
+          "text": "（placeholder IdleChat 農女[Q18][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_18_a2",
+          "text": "（placeholder IdleChat 農女[Q18][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_18_a3",
+          "text": "（placeholder IdleChat 農女[Q18][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_19",
+      "prompt": "（placeholder IdleChat 農女[Q19] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_19_a1",
+          "text": "（placeholder IdleChat 農女[Q19][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_19_a2",
+          "text": "（placeholder IdleChat 農女[Q19][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_19_a3",
+          "text": "（placeholder IdleChat 農女[Q19][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "farm_girl",
+      "topic_id": "idle_fg_20",
+      "prompt": "（placeholder IdleChat 農女[Q20] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_fg_20_a1",
+          "text": "（placeholder IdleChat 農女[Q20][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_20_a2",
+          "text": "（placeholder IdleChat 農女[Q20][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_fg_20_a3",
+          "text": "（placeholder IdleChat 農女[Q20][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_01",
+      "prompt": "（placeholder IdleChat 魔女[Q01] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_01_a1",
+          "text": "（placeholder IdleChat 魔女[Q01][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_01_a2",
+          "text": "（placeholder IdleChat 魔女[Q01][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_01_a3",
+          "text": "（placeholder IdleChat 魔女[Q01][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_02",
+      "prompt": "（placeholder IdleChat 魔女[Q02] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_02_a1",
+          "text": "（placeholder IdleChat 魔女[Q02][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_02_a2",
+          "text": "（placeholder IdleChat 魔女[Q02][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_02_a3",
+          "text": "（placeholder IdleChat 魔女[Q02][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_03",
+      "prompt": "（placeholder IdleChat 魔女[Q03] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_03_a1",
+          "text": "（placeholder IdleChat 魔女[Q03][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_03_a2",
+          "text": "（placeholder IdleChat 魔女[Q03][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_03_a3",
+          "text": "（placeholder IdleChat 魔女[Q03][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_04",
+      "prompt": "（placeholder IdleChat 魔女[Q04] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_04_a1",
+          "text": "（placeholder IdleChat 魔女[Q04][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_04_a2",
+          "text": "（placeholder IdleChat 魔女[Q04][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_04_a3",
+          "text": "（placeholder IdleChat 魔女[Q04][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_05",
+      "prompt": "（placeholder IdleChat 魔女[Q05] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_05_a1",
+          "text": "（placeholder IdleChat 魔女[Q05][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_05_a2",
+          "text": "（placeholder IdleChat 魔女[Q05][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_05_a3",
+          "text": "（placeholder IdleChat 魔女[Q05][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_06",
+      "prompt": "（placeholder IdleChat 魔女[Q06] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_06_a1",
+          "text": "（placeholder IdleChat 魔女[Q06][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_06_a2",
+          "text": "（placeholder IdleChat 魔女[Q06][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_06_a3",
+          "text": "（placeholder IdleChat 魔女[Q06][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_07",
+      "prompt": "（placeholder IdleChat 魔女[Q07] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_07_a1",
+          "text": "（placeholder IdleChat 魔女[Q07][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_07_a2",
+          "text": "（placeholder IdleChat 魔女[Q07][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_07_a3",
+          "text": "（placeholder IdleChat 魔女[Q07][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_08",
+      "prompt": "（placeholder IdleChat 魔女[Q08] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_08_a1",
+          "text": "（placeholder IdleChat 魔女[Q08][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_08_a2",
+          "text": "（placeholder IdleChat 魔女[Q08][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_08_a3",
+          "text": "（placeholder IdleChat 魔女[Q08][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_09",
+      "prompt": "（placeholder IdleChat 魔女[Q09] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_09_a1",
+          "text": "（placeholder IdleChat 魔女[Q09][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_09_a2",
+          "text": "（placeholder IdleChat 魔女[Q09][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_09_a3",
+          "text": "（placeholder IdleChat 魔女[Q09][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_10",
+      "prompt": "（placeholder IdleChat 魔女[Q10] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_10_a1",
+          "text": "（placeholder IdleChat 魔女[Q10][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_10_a2",
+          "text": "（placeholder IdleChat 魔女[Q10][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_10_a3",
+          "text": "（placeholder IdleChat 魔女[Q10][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_11",
+      "prompt": "（placeholder IdleChat 魔女[Q11] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_11_a1",
+          "text": "（placeholder IdleChat 魔女[Q11][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_11_a2",
+          "text": "（placeholder IdleChat 魔女[Q11][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_11_a3",
+          "text": "（placeholder IdleChat 魔女[Q11][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_12",
+      "prompt": "（placeholder IdleChat 魔女[Q12] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_12_a1",
+          "text": "（placeholder IdleChat 魔女[Q12][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_12_a2",
+          "text": "（placeholder IdleChat 魔女[Q12][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_12_a3",
+          "text": "（placeholder IdleChat 魔女[Q12][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_13",
+      "prompt": "（placeholder IdleChat 魔女[Q13] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_13_a1",
+          "text": "（placeholder IdleChat 魔女[Q13][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_13_a2",
+          "text": "（placeholder IdleChat 魔女[Q13][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_13_a3",
+          "text": "（placeholder IdleChat 魔女[Q13][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_14",
+      "prompt": "（placeholder IdleChat 魔女[Q14] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_14_a1",
+          "text": "（placeholder IdleChat 魔女[Q14][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_14_a2",
+          "text": "（placeholder IdleChat 魔女[Q14][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_14_a3",
+          "text": "（placeholder IdleChat 魔女[Q14][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_15",
+      "prompt": "（placeholder IdleChat 魔女[Q15] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_15_a1",
+          "text": "（placeholder IdleChat 魔女[Q15][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_15_a2",
+          "text": "（placeholder IdleChat 魔女[Q15][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_15_a3",
+          "text": "（placeholder IdleChat 魔女[Q15][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_16",
+      "prompt": "（placeholder IdleChat 魔女[Q16] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_16_a1",
+          "text": "（placeholder IdleChat 魔女[Q16][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_16_a2",
+          "text": "（placeholder IdleChat 魔女[Q16][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_16_a3",
+          "text": "（placeholder IdleChat 魔女[Q16][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_17",
+      "prompt": "（placeholder IdleChat 魔女[Q17] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_17_a1",
+          "text": "（placeholder IdleChat 魔女[Q17][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_17_a2",
+          "text": "（placeholder IdleChat 魔女[Q17][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_17_a3",
+          "text": "（placeholder IdleChat 魔女[Q17][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_18",
+      "prompt": "（placeholder IdleChat 魔女[Q18] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_18_a1",
+          "text": "（placeholder IdleChat 魔女[Q18][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_18_a2",
+          "text": "（placeholder IdleChat 魔女[Q18][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_18_a3",
+          "text": "（placeholder IdleChat 魔女[Q18][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_19",
+      "prompt": "（placeholder IdleChat 魔女[Q19] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_19_a1",
+          "text": "（placeholder IdleChat 魔女[Q19][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_19_a2",
+          "text": "（placeholder IdleChat 魔女[Q19][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_19_a3",
+          "text": "（placeholder IdleChat 魔女[Q19][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "witch",
+      "topic_id": "idle_w_20",
+      "prompt": "（placeholder IdleChat 魔女[Q20] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_w_20_a1",
+          "text": "（placeholder IdleChat 魔女[Q20][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_20_a2",
+          "text": "（placeholder IdleChat 魔女[Q20][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_w_20_a3",
+          "text": "（placeholder IdleChat 魔女[Q20][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_01",
+      "prompt": "（placeholder IdleChat 守衛[Q01] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_01_a1",
+          "text": "（placeholder IdleChat 守衛[Q01][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_01_a2",
+          "text": "（placeholder IdleChat 守衛[Q01][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_01_a3",
+          "text": "（placeholder IdleChat 守衛[Q01][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_02",
+      "prompt": "（placeholder IdleChat 守衛[Q02] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_02_a1",
+          "text": "（placeholder IdleChat 守衛[Q02][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_02_a2",
+          "text": "（placeholder IdleChat 守衛[Q02][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_02_a3",
+          "text": "（placeholder IdleChat 守衛[Q02][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_03",
+      "prompt": "（placeholder IdleChat 守衛[Q03] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_03_a1",
+          "text": "（placeholder IdleChat 守衛[Q03][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_03_a2",
+          "text": "（placeholder IdleChat 守衛[Q03][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_03_a3",
+          "text": "（placeholder IdleChat 守衛[Q03][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_04",
+      "prompt": "（placeholder IdleChat 守衛[Q04] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_04_a1",
+          "text": "（placeholder IdleChat 守衛[Q04][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_04_a2",
+          "text": "（placeholder IdleChat 守衛[Q04][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_04_a3",
+          "text": "（placeholder IdleChat 守衛[Q04][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_05",
+      "prompt": "（placeholder IdleChat 守衛[Q05] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_05_a1",
+          "text": "（placeholder IdleChat 守衛[Q05][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_05_a2",
+          "text": "（placeholder IdleChat 守衛[Q05][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_05_a3",
+          "text": "（placeholder IdleChat 守衛[Q05][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_06",
+      "prompt": "（placeholder IdleChat 守衛[Q06] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_06_a1",
+          "text": "（placeholder IdleChat 守衛[Q06][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_06_a2",
+          "text": "（placeholder IdleChat 守衛[Q06][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_06_a3",
+          "text": "（placeholder IdleChat 守衛[Q06][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_07",
+      "prompt": "（placeholder IdleChat 守衛[Q07] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_07_a1",
+          "text": "（placeholder IdleChat 守衛[Q07][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_07_a2",
+          "text": "（placeholder IdleChat 守衛[Q07][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_07_a3",
+          "text": "（placeholder IdleChat 守衛[Q07][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_08",
+      "prompt": "（placeholder IdleChat 守衛[Q08] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_08_a1",
+          "text": "（placeholder IdleChat 守衛[Q08][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_08_a2",
+          "text": "（placeholder IdleChat 守衛[Q08][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_08_a3",
+          "text": "（placeholder IdleChat 守衛[Q08][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_09",
+      "prompt": "（placeholder IdleChat 守衛[Q09] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_09_a1",
+          "text": "（placeholder IdleChat 守衛[Q09][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_09_a2",
+          "text": "（placeholder IdleChat 守衛[Q09][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_09_a3",
+          "text": "（placeholder IdleChat 守衛[Q09][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_10",
+      "prompt": "（placeholder IdleChat 守衛[Q10] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_10_a1",
+          "text": "（placeholder IdleChat 守衛[Q10][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_10_a2",
+          "text": "（placeholder IdleChat 守衛[Q10][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_10_a3",
+          "text": "（placeholder IdleChat 守衛[Q10][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_11",
+      "prompt": "（placeholder IdleChat 守衛[Q11] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_11_a1",
+          "text": "（placeholder IdleChat 守衛[Q11][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_11_a2",
+          "text": "（placeholder IdleChat 守衛[Q11][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_11_a3",
+          "text": "（placeholder IdleChat 守衛[Q11][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_12",
+      "prompt": "（placeholder IdleChat 守衛[Q12] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_12_a1",
+          "text": "（placeholder IdleChat 守衛[Q12][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_12_a2",
+          "text": "（placeholder IdleChat 守衛[Q12][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_12_a3",
+          "text": "（placeholder IdleChat 守衛[Q12][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_13",
+      "prompt": "（placeholder IdleChat 守衛[Q13] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_13_a1",
+          "text": "（placeholder IdleChat 守衛[Q13][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_13_a2",
+          "text": "（placeholder IdleChat 守衛[Q13][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_13_a3",
+          "text": "（placeholder IdleChat 守衛[Q13][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_14",
+      "prompt": "（placeholder IdleChat 守衛[Q14] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_14_a1",
+          "text": "（placeholder IdleChat 守衛[Q14][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_14_a2",
+          "text": "（placeholder IdleChat 守衛[Q14][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_14_a3",
+          "text": "（placeholder IdleChat 守衛[Q14][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_15",
+      "prompt": "（placeholder IdleChat 守衛[Q15] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_15_a1",
+          "text": "（placeholder IdleChat 守衛[Q15][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_15_a2",
+          "text": "（placeholder IdleChat 守衛[Q15][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_15_a3",
+          "text": "（placeholder IdleChat 守衛[Q15][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_16",
+      "prompt": "（placeholder IdleChat 守衛[Q16] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_16_a1",
+          "text": "（placeholder IdleChat 守衛[Q16][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_16_a2",
+          "text": "（placeholder IdleChat 守衛[Q16][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_16_a3",
+          "text": "（placeholder IdleChat 守衛[Q16][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_17",
+      "prompt": "（placeholder IdleChat 守衛[Q17] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_17_a1",
+          "text": "（placeholder IdleChat 守衛[Q17][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_17_a2",
+          "text": "（placeholder IdleChat 守衛[Q17][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_17_a3",
+          "text": "（placeholder IdleChat 守衛[Q17][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_18",
+      "prompt": "（placeholder IdleChat 守衛[Q18] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_18_a1",
+          "text": "（placeholder IdleChat 守衛[Q18][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_18_a2",
+          "text": "（placeholder IdleChat 守衛[Q18][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_18_a3",
+          "text": "（placeholder IdleChat 守衛[Q18][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_19",
+      "prompt": "（placeholder IdleChat 守衛[Q19] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_19_a1",
+          "text": "（placeholder IdleChat 守衛[Q19][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_19_a2",
+          "text": "（placeholder IdleChat 守衛[Q19][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_19_a3",
+          "text": "（placeholder IdleChat 守衛[Q19][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    },
+    {
+      "character_id": "guard",
+      "topic_id": "idle_g_20",
+      "prompt": "（placeholder IdleChat 守衛[Q20] 角色發問內容，待製作人撰寫）",
+      "answers": [
+        {
+          "answer_id": "idle_g_20_a1",
+          "text": "（placeholder IdleChat 守衛[Q20][A1] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_20_a2",
+          "text": "（placeholder IdleChat 守衛[Q20][A2] 角色回答，待製作人撰寫）"
+        },
+        {
+          "answer_id": "idle_g_20_a3",
+          "text": "（placeholder IdleChat 守衛[Q20][A3] 角色回答，待製作人撰寫）"
+        }
+      ]
+    }
+  ]
+}

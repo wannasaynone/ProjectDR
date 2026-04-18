@@ -493,10 +493,13 @@ namespace ProjectDR.Village.UI
             // 清除選項容器（重新對話前清除）
             ClearChoiceContainer();
 
-            // 啟用全螢幕對話點擊區域
+            // 啟用全螢幕對話點擊區域，並強制放到 root 最後一個 sibling，
+            // 確保 raycast 順序高於 ChoiceContainer / CommissionCountdownText 等可能殘留的 sibling，
+            // 點擊任何位置都能命中，打字機播放時可立即 Skip。
             if (_fullScreenDialogueArea != null)
             {
                 _fullScreenDialogueArea.gameObject.SetActive(true);
+                _fullScreenDialogueArea.transform.SetAsLastSibling();
             }
 
             // 關閉任何 overlay
@@ -774,19 +777,9 @@ namespace ProjectDR.Village.UI
             if (!gameObject.activeInHierarchy) return;
             if (_dialogueManager == null) return;
 
-            CloseOverlay();
-
-            RefreshAffinityDisplay();
-
-            SetMenuVisible(false);
-
-            if (_fullScreenDialogueArea != null)
-            {
-                _fullScreenDialogueArea.gameObject.SetActive(true);
-            }
-
-            EventBus.Unsubscribe<DialogueCompletedEvent>(OnDialogueCompleted);
-            EventBus.Subscribe<DialogueCompletedEvent>(OnDialogueCompleted);
+            // 走統一的 UI 準備流程：隱藏選單/委託元件、清選項、啟用 FullScreenDialogueArea
+            // 並放到 sibling 最上層（確保 raycast 能接到點擊，打字機可被 Skip）、訂閱 Completed。
+            PrepareDialogueUI();
 
             _dialogueManager.StartDialogue(new DialogueData(lines));
 
@@ -1144,12 +1137,14 @@ namespace ProjectDR.Village.UI
 
             // 2. 主對話區準備播 prompt（右上顯示對話）
             //   - 清除選項容器（防守）
-            //   - 禁用全螢幕對話點擊區域（prompt 播放中點擊會被當 Skip，打字機完成後自然進入選項階段，不讓玩家點擊跳過）
+            //   - 啟用全螢幕對話點擊區域並放到 sibling 最上層，讓玩家點擊可 Skip 打字機（與一般對話行為一致）
+            //     skip 觸發 typewriter.OnComplete → OnCharacterQuestionPromptComplete → 進入選項階段
             //   - 不透過 DialogueManager（避免 DialogueCompletedEvent 立刻把選單打開）
             ClearChoiceContainer();
             if (_fullScreenDialogueArea != null)
             {
-                _fullScreenDialogueArea.gameObject.SetActive(false);
+                _fullScreenDialogueArea.gameObject.SetActive(true);
+                _fullScreenDialogueArea.transform.SetAsLastSibling();
             }
 
             // 訂閱打字機完成事件以推進到選項階段
@@ -1187,8 +1182,15 @@ namespace ProjectDR.Village.UI
                 return;
             }
 
+            // 進入選項階段：禁用 FullScreenDialogueArea，避免其 SetAsLastSibling 後遮住 ChoiceContainer 的點擊
+            if (_fullScreenDialogueArea != null)
+            {
+                _fullScreenDialogueArea.gameObject.SetActive(false);
+            }
+
             ClearChoiceContainer();
             _choiceContainer.gameObject.SetActive(true);
+            _choiceContainer.SetAsLastSibling();
 
             foreach (CharacterQuestionOption opt in question.Options)
             {

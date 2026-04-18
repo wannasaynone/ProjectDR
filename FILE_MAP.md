@@ -328,3 +328,4 @@
 | `dev-logs/2026-04-18-8.md` | 開場劇情接線修正（CharacterInteractionView 新增外部驅動對話模式、VillageEntryPoint 在開場時 push VCW Forced 模式、OpeningSequenceCompletedEvent 收尾 VCW view） |
 | `dev-logs/2026-04-18-9.md` | Sprint 5 B+C（對話功能修正 B1~B21 實作 + C1~C7 整合測試；紅點 L2 倒數改造、角色發問 a 路徑、玩家發問 b 路徑重寫、招呼語系統、工作中 CD ×2、102 個新測試全通過） |
 | `dev-logs/2026-04-18-10.md` | 對話按鈕紅點視覺修正（AreaButton RedDot 白→紅、置中→右上角）+ 角色發問選答案後改由主畫面 PlayDialogue 播放 response（CharacterInteractionView 新增 PlayDialogue public API、CharacterQuestionsView responseAction 委外） |
+| `dev-logs/2026-04-18-11.md` | 角色 response 打字機 click-to-skip 修正（PrepareDialogueUI 啟用 FullScreenDialogueArea 時強制 SetAsLastSibling；PlayDialogue 改為呼叫 PrepareDialogueUI 統一流程） |

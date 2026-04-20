@@ -227,5 +227,95 @@ namespace ProjectDR.Village.Tests
             Assert.DoesNotThrow(() => m.Tick(60f));
             Assert.AreEqual(0, _receivedReady.Count);
         }
+
+        // ===== BlockCountdown / UnblockCountdown（Sprint 6 F8 bugfix）=====
+
+        [Test]
+        public void BlockCountdown_PreventsStartCountdownFromActivating()
+        {
+            // Arrange：先封鎖守衛
+            const string GUARD = "guard";
+            CharacterQuestionCountdownManager m = new CharacterQuestionCountdownManager(CountdownSeconds);
+            m.BlockCountdown(GUARD);
+
+            // Act：呼叫 StartCountdown → 應被封鎖，Tick 後不發 Ready 事件
+            m.StartCountdown(GUARD);
+            m.Tick(60f);
+
+            // Assert
+            Assert.AreEqual(0, _receivedReady.Count, "封鎖中的角色呼叫 StartCountdown 後 Tick 不應發 Ready 事件");
+            Assert.IsFalse(m.IsReady(GUARD));
+            Assert.IsFalse(m.IsCountingDown(GUARD));
+        }
+
+        [Test]
+        public void UnblockCountdown_AllowsSubsequentStartCountdown()
+        {
+            // Arrange：先封鎖再解封
+            const string GUARD = "guard";
+            CharacterQuestionCountdownManager m = new CharacterQuestionCountdownManager(CountdownSeconds);
+            m.BlockCountdown(GUARD);
+            m.StartCountdown(GUARD); // 封鎖中，不啟動
+
+            m.UnblockCountdown(GUARD);
+            m.StartCountdown(GUARD); // 解封後重新啟動
+            m.Tick(60f);
+
+            Assert.AreEqual(1, _receivedReady.Count, "解封後 StartCountdown + Tick 應發 Ready 事件");
+            Assert.AreEqual(GUARD, _receivedReady[0].CharacterId);
+        }
+
+        [Test]
+        public void BlockCountdown_DoesNotAffectOtherCharacters()
+        {
+            // 封鎖守衛不影響農女
+            const string GUARD = "guard";
+            CharacterQuestionCountdownManager m = new CharacterQuestionCountdownManager(CountdownSeconds);
+            m.BlockCountdown(GUARD);
+
+            m.StartCountdown(VCW);   // 其他角色不受影響
+            m.StartCountdown(GUARD); // 被封鎖
+
+            m.Tick(60f);
+
+            Assert.AreEqual(1, _receivedReady.Count, "只有未封鎖角色應發 Ready 事件");
+            Assert.AreEqual(VCW, _receivedReady[0].CharacterId);
+        }
+
+        [Test]
+        public void BlockCountdown_AlreadyCountingDown_StopsCounting()
+        {
+            // 若角色正在倒數中才被封鎖，後續 Tick 不再發事件
+            const string GUARD = "guard";
+            CharacterQuestionCountdownManager m = new CharacterQuestionCountdownManager(CountdownSeconds);
+            m.StartCountdown(GUARD);
+            m.Tick(30f); // 倒數進行中
+
+            m.BlockCountdown(GUARD); // 途中封鎖
+            m.Tick(60f);             // 超過 duration，但已封鎖
+
+            Assert.AreEqual(0, _receivedReady.Count, "途中封鎖後繼續 Tick 不應發 Ready 事件");
+        }
+
+        [Test]
+        public void UnblockCountdown_UnknownCharacter_DoesNotThrow()
+        {
+            CharacterQuestionCountdownManager m = new CharacterQuestionCountdownManager(CountdownSeconds);
+            Assert.DoesNotThrow(() => m.UnblockCountdown("not_exist"));
+        }
+
+        [Test]
+        public void BlockCountdown_Idempotent_NoDoubleBlock()
+        {
+            const string GUARD = "guard";
+            CharacterQuestionCountdownManager m = new CharacterQuestionCountdownManager(CountdownSeconds);
+            m.BlockCountdown(GUARD);
+            m.BlockCountdown(GUARD); // 重複呼叫不應有副作用
+            m.UnblockCountdown(GUARD);
+            m.StartCountdown(GUARD);
+            m.Tick(60f);
+
+            Assert.AreEqual(1, _receivedReady.Count, "Unblock 後應正常啟動");
+        }
     }
 }

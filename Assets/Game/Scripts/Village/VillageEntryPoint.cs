@@ -67,6 +67,10 @@ namespace ProjectDR.Village
         [SerializeField] private TextAsset _playerQuestionsConfigJson;
         [SerializeField] private UI.PlayerQuestionsView _playerQuestionsViewPrefab;
 
+        [Header("Guard First Meet Dialogue (Sprint 6 決策 6-13)")]
+        [Tooltip("守衛首次進入互動畫面時自動觸發的取劍對白（guard-first-meet-dialogue-config.json）")]
+        [SerializeField] private TextAsset _guardFirstMeetDialogueConfigJson;
+
         [Header("Dialogue Flow Correction (Sprint 5 B4/B15/B18/B20)")]
         [Tooltip("角色發問 280 題 + 個性對應配置（character-questions-config.json）")]
         [SerializeField] private TextAsset _characterQuestionsConfigJson;
@@ -147,6 +151,13 @@ namespace ProjectDR.Village
         // Sprint 4 B14 玩家發問系統
         private PlayerQuestionsConfig _playerQuestionsConfig;
 
+        // Sprint 6 決策 6-13：守衛首次進入取劍對白配置
+        private GuardFirstMeetDialogueConfig _guardFirstMeetDialogueConfig;
+
+        // 守衛首次進入取劍對白「是否已觸發完成」旗標（session 內，不持久化）
+        // 確保取劍對白只播一次：取劍對白完成後設為 true，後續進入守衛走正常招呼語流程
+        private bool _guardFirstMeetDialogueCompleted;
+
         // ===== Sprint 5 對話功能修正 =====
         private CharacterQuestionsConfig _characterQuestionsConfig;
         private CharacterQuestionsManager _characterQuestionsManager;
@@ -188,9 +199,13 @@ namespace ProjectDR.Village
                 _mainQuestManager.TryAutoCompleteFirstAutoQuest();
             }
 
-            // Sprint 5：每個角色啟動初始角色發問倒數（60s placeholder）
+            // Sprint 5：每個角色啟動初始角色發問倒數（60s placeholder）。
+            // Sprint 6 F8 bugfix：守衛的 L2 倒數需等取劍對白完成後才啟動。
+            // Sprint 6 決策 6-13：取劍對白改為首次進入自動觸發，觸發點由「要拿劍」特殊題改為對白完成。
+            // 先 BlockCountdown(Guard) 封鎖，待 ExplorationGateReopenedEvent（對白完成）後再解封並啟動。
             if (_characterQuestionCountdownManager != null && _characters != null)
             {
+                _characterQuestionCountdownManager.BlockCountdown(CharacterIds.Guard);
                 foreach (CharacterMenuData ch in _characters)
                 {
                     _characterQuestionCountdownManager.StartCountdown(ch.CharacterId);
@@ -240,9 +255,12 @@ namespace ProjectDR.Village
             EventBus.Unsubscribe<CharacterUnlockedEvent>(OnCharacterUnlockedForDialogueRedDot);
             EventBus.Unsubscribe<NodeDialogueCompletedEvent>(OnNodeDialogueCompletedForMainQuest);
             EventBus.Unsubscribe<ExplorationDepartedEvent>(OnExplorationDepartedForMainQuest);
-            EventBus.Unsubscribe<GuardReturnEventCompletedEvent>(OnGuardReturnForMainQuest);
             EventBus.Unsubscribe<MainQuestCompletedEvent>(OnMainQuestCompletedForNodeDialogue);
             EventBus.Unsubscribe<StorageExpansionCompletedEvent>(OnStorageExpansionCompletedForMainQuest);
+
+            // Sprint 6 C12：取消訂閱
+            EventBus.Unsubscribe<GuardReturnEventCompletedEvent>(OnGuardReturnLockExploration);
+            EventBus.Unsubscribe<ExplorationGateReopenedEvent>(OnExplorationGateReopenedForT2);
 
             if (_explorationManager != null)
             {
@@ -434,9 +452,15 @@ namespace ProjectDR.Village
             // 實際節點 1 / 2 由主線任務完成事件觸發播放）。
             EventBus.Subscribe<NodeDialogueCompletedEvent>(OnNodeDialogueCompletedForMainQuest);
 
-            // C2：連線探索出發 → MainQuest first_explore；守衛歸來完成另行訊號。
+            // C2：連線探索出發 → MainQuest first_explore。
+            // 注意：守衛歸來完成後的 T2 訊號由 OnExplorationGateReopenedForT2 發送（玩家主動發問取劍後觸發），
+            // 不再由 GuardReturnEventCompletedEvent 直接送 T2 訊號（已移除 OnGuardReturnForMainQuest）。
             EventBus.Subscribe<ExplorationDepartedEvent>(OnExplorationDepartedForMainQuest);
-            EventBus.Subscribe<GuardReturnEventCompletedEvent>(OnGuardReturnForMainQuest);
+
+            // Sprint 6 C12：守衛歸來完成 → 鎖定探索入口（玩家需先找守衛發問取劍才能探索）。
+            EventBus.Subscribe<GuardReturnEventCompletedEvent>(OnGuardReturnLockExploration);
+            // Sprint 6 C12：玩家取劍後（ExplorationGateReopenedEvent）→ 解鎖探索入口 + 推進 T2。
+            EventBus.Subscribe<ExplorationGateReopenedEvent>(OnExplorationGateReopenedForT2);
 
             // C2：連線 MainQuestCompletedEvent → 節點 1/2 播放（T1 → node_1、T3 → node_2）
             EventBus.Subscribe<MainQuestCompletedEvent>(OnMainQuestCompletedForNodeDialogue);
@@ -480,14 +504,10 @@ namespace ProjectDR.Village
             _nodeDialogueController = new NodeDialogueController(_dialogueManager, _nodeDialogueConfig);
             _openingSequenceController = new OpeningSequenceController(_cgPlayer, _nodeDialogueController);
 
-            // ===== Sprint 4 B10 守衛歸來事件系統 =====
-            GuardReturnConfigData guardData = _guardReturnConfigJson != null
-                ? JsonUtility.FromJson<GuardReturnConfigData>(_guardReturnConfigJson.text)
-                : new GuardReturnConfigData { guard_return_lines = new GuardReturnLineData[0] };
-            _guardReturnConfig = new GuardReturnConfig(guardData);
-
-            _guardReturnEventController = new GuardReturnEventController(
-                _cgPlayer, _dialogueManager, _guardReturnConfig);
+            // ===== Sprint 4 B10 守衛歸來事件系統（F7 bugfix：移除 DialogueManager 依賴）=====
+            // guard-return-config.json 台詞已整合於 character-intro-config.json 的 intro_guard lines，
+            // CG 播放期間由 CharacterIntroCGView 展示，CG 完成後直接發布 GuardReturnEventCompletedEvent。
+            _guardReturnEventController = new GuardReturnEventController(_cgPlayer);
 
             // 注入探索出發攔截器：當探索功能已解鎖 + 守衛未解鎖 + 事件未觸發過 → 攔截首次探索
             _explorationInterceptor = new ExplorationDepartureInterceptorAdapter(
@@ -499,6 +519,12 @@ namespace ProjectDR.Village
                 ? JsonUtility.FromJson<PlayerQuestionsConfigData>(_playerQuestionsConfigJson.text)
                 : new PlayerQuestionsConfigData { questions = new PlayerQuestionData[0] };
             _playerQuestionsConfig = new PlayerQuestionsConfig(questionsData);
+
+            // ===== Sprint 6 決策 6-13：守衛首次進入取劍對白配置 =====
+            GuardFirstMeetDialogueConfigData guardFirstMeetData = _guardFirstMeetDialogueConfigJson != null
+                ? JsonUtility.FromJson<GuardFirstMeetDialogueConfigData>(_guardFirstMeetDialogueConfigJson.text)
+                : new GuardFirstMeetDialogueConfigData { dialogue_lines = new string[0] };
+            _guardFirstMeetDialogueConfig = new GuardFirstMeetDialogueConfig(guardFirstMeetData);
 
             // ===== Sprint 5 對話功能修正 =====
 
@@ -646,37 +672,21 @@ namespace ProjectDR.Village
         /// <summary>
         /// 節點劇情完成 → 對 MainQuestManager 發送對應訊號：
         /// - node_0 完成：無動作（T0 為 auto 已自動完成）
-        /// - node_1 完成：dialogue_end + first_char_intro_complete（推進 T1）
-        /// - node_2 完成：無動作（T2/T3 由委託完成訊號推進）
-        /// 注意：此處採簡化策略，將節點 1 視為「首次角色引導完成」訊號。
+        /// - node_1 完成：剩下那位的解鎖由 CharacterUnlockManager.OnNodeDialogueCompleted 處理（C7 新路徑），
+        ///               此處僅收尾 VCW view（切回 Normal）並清除 L4 紅點
+        /// - node_2 完成：送 dialogue_end + node_2_dialogue_complete → 完成新 T1（開放探索）
+        /// Sprint 6 架構：新 T1 完成條件 = 節點 2 對話結束（魔女登場 CG + 對話結束瞬間）。
         /// </summary>
         private void OnNodeDialogueCompletedForMainQuest(NodeDialogueCompletedEvent e)
         {
             if (e == null) return;
 
-            // 節點 1 完成：解鎖剩下那位角色（由 Node0ChosenBranch 判斷對側）。
-            // 說明：node-dialogue-config.json 的節點 1 單一確認型選項 branch 為空字串，
-            // CharacterUnlockManager 的 OnDialogueChoiceSelected 無法用 branch 判斷，
-            // 故在此以節點 1 完成事件為觸發點補上解鎖邏輯。
-            if (e.NodeId == NodeDialogueController.NodeIdNode1 && _characterUnlockManager != null)
+            // 節點 2 完成：送 node_2_dialogue_complete 訊號推進新 T1 → 開放探索功能
+            if (e.NodeId == NodeDialogueController.NodeIdNode2 && _mainQuestManager != null)
             {
-                string chosen = _characterUnlockManager.Node0ChosenBranch;
-                string remainingBranch = null;
-                if (chosen == NodeDialogueBranchIds.FarmGirl) remainingBranch = NodeDialogueBranchIds.Witch;
-                else if (chosen == NodeDialogueBranchIds.Witch) remainingBranch = NodeDialogueBranchIds.FarmGirl;
-
-                if (remainingBranch == NodeDialogueBranchIds.FarmGirl
-                    && !_characterUnlockManager.IsUnlocked(CharacterIds.FarmGirl))
-                {
-                    _characterUnlockManager.ForceUnlock(CharacterIds.FarmGirl);
-                    DispatchInitialResourceGrants(InitialResourcesTriggerIds.UnlockFarmGirl);
-                }
-                else if (remainingBranch == NodeDialogueBranchIds.Witch
-                    && !_characterUnlockManager.IsUnlocked(CharacterIds.Witch))
-                {
-                    _characterUnlockManager.ForceUnlock(CharacterIds.Witch);
-                    DispatchInitialResourceGrants(InitialResourcesTriggerIds.UnlockWitch);
-                }
+                _mainQuestManager.NotifyCompletionSignal(
+                    MainQuestCompletionTypes.DialogueEnd,
+                    MainQuestSignalValues.Node2DialogueComplete);
             }
 
             // 節點 1/2 播完後將 VCW view 從 Forced 切回 Normal 並顯示選單/返回按鈕
@@ -685,7 +695,7 @@ namespace ProjectDR.Village
             {
                 RevertVCWFromExternalNodeMode();
 
-                // 清除 L4 主線事件紅點（此節點已播完）
+                // 清除 L4 主線事件紅點（此節點已播完，引導任務完成）
                 if (_redDotManager != null)
                 {
                     _redDotManager.SetMainQuestEventFlag(CharacterIds.VillageChiefWife, false);
@@ -710,25 +720,9 @@ namespace ProjectDR.Village
         }
 
         /// <summary>
-        /// 依 trigger_id 派發初始資源 grant（呼叫 InitialResourceDispatcher）。
-        /// 用於節點 1 補發解鎖角色對應的物資（因 CharacterUnlockManager 的 node_1 分支判斷失效）。
-        /// </summary>
-        private void DispatchInitialResourceGrants(string triggerId)
-        {
-            if (_initialResourcesConfig == null || _initialResourceDispatcher == null) return;
-            System.Collections.Generic.IReadOnlyList<InitialResourceGrant> grants
-                = _initialResourcesConfig.GetGrantsByTrigger(triggerId);
-            foreach (InitialResourceGrant grant in grants)
-            {
-                _initialResourceDispatcher.Dispatch(grant);
-            }
-        }
-
-        /// <summary>
-        /// 玩家出發探索時發送 first_explore 訊號推進 T4。
-        /// T4 的 completion_condition_value 為 "guard_return_event_complete"，
-        /// 仍會在守衛歸來事件完成時透過 OnGuardReturnForMainQuest 另送一次，
-        /// 兩訊號擇一匹配即可完成（MainQuestManager 僅完成匹配者）。
+        /// 玩家出發探索時發送 first_explore 訊號。
+        /// Sprint 6 後此方法不再負責 T2 推進；T2 由玩家主動發問「要拿劍」後
+        /// 透過 OnExplorationGateReopenedForT2 送出 guard_return_event_complete 訊號完成。
         /// </summary>
         private void OnExplorationDepartedForMainQuest(ExplorationDepartedEvent e)
         {
@@ -737,29 +731,84 @@ namespace ProjectDR.Village
                 MainQuestCompletionTypes.FirstExplore, null);
         }
 
-        /// <summary>守衛歸來事件完成 → 傳送「guard_return_event_complete」匹配 T4。</summary>
-        private void OnGuardReturnForMainQuest(GuardReturnEventCompletedEvent e)
+        /// <summary>
+        /// Sprint 6 C12：守衛歸來事件完成 → 鎖定探索入口。
+        /// 玩家此時需前往守衛互動畫面，選「要拿劍」發問取劍，才能解鎖探索。
+        ///
+        /// Sprint 6 F8 bugfix（Bug 1）：補標記守衛 CG 已播放。
+        /// 守衛歸來事件透過 GuardReturnEventController._cgPlayer.PlayIntroCG 播放 CG，
+        /// 不會經過 InitializeCharacterView 的 MarkIntroCGPlayed 路徑，
+        /// 導致玩家首次進入守衛 interact view 時再播一次相同 CG。
+        /// 修復：在此 handler 中補呼叫 MarkIntroCGPlayed(Guard)，確保 only-once 旗標已設。
+        ///
+        /// F9 revert（Sprint 6 F10 根因分析）：
+        /// F9 曾在此補呼叫 SetFirstMeetFlag(Guard, false)，但方向錯誤。
+        /// FirstMeet 的語義是「玩家首次點擊進入該角色互動畫面」時才清除，
+        /// 而非守衛歸來完成瞬間。F9 的修法讓 Hub 按鈕在守衛歸來後就沒有紅點，
+        /// 導致玩家無法靠紅點引導找到守衛發問取劍（F10 bug 根因）。
+        /// FirstMeet 清除改由 OnCharacterEnteredAndCGDone 在玩家進入時執行。
+        /// </summary>
+        private void OnGuardReturnLockExploration(GuardReturnEventCompletedEvent e)
         {
-            if (_mainQuestManager == null) return;
-            _mainQuestManager.NotifyCompletionSignal(
-                MainQuestCompletionTypes.FirstExplore,
-                MainQuestSignalValues.GuardReturnEventComplete);
+            // F8 bugfix（Bug 1）：守衛歸來 CG 播完後標記守衛 only-once 旗標
+            MarkIntroCGPlayed(CharacterIds.Guard);
+
+            // F9 revert：不在此清除 FirstMeet 紅點。
+            // FirstMeet 應在玩家首次點擊進入守衛互動畫面時清除（見 OnCharacterEnteredAndCGDone）。
+
+            if (_explorationManager == null) return;
+            _explorationManager.SetExplorationLocked(true);
+            EventBus.Publish(new ExplorationGateLockedEvent());
         }
 
         /// <summary>
-        /// 主線任務完成 → 若為 T1（觸發節點 1）或 T3（觸發節點 2），播放對應節點對話。
-        /// 節點播放必須等 DialogueManager 空閒（T1 完成時 node_1 對話剛好播完 completed，此時已空閒）。
+        /// Sprint 6 C12：取劍對白完成後（ExplorationGateReopenedEvent）→ 解鎖探索入口 + 推進 T2。
+        ///
+        /// Sprint 6 決策 6-13（變更訂閱點）：
+        /// 原本由 PlayerQuestionsManager.TriggerSingleUseQuestion（grant_guard_sword 特殊題）發布此事件，
+        /// 現改由 OnGuardFirstMeetDialogueCompleted（守衛首次進入自動對白完成）發布。
+        /// 訂閱邏輯不變，僅事件來源不同。
+        ///
+        /// Sprint 6 F8 bugfix（Bug 2）：解封守衛倒數並啟動。
+        /// 守衛「要拿劍」完成前，守衛的 L2 角色發問倒數處於封鎖狀態（BlockCountdown）。
+        /// 取劍完成後解封並啟動，讓守衛從此時開始累積 60s 倒數。
+        /// </summary>
+        private void OnExplorationGateReopenedForT2(ExplorationGateReopenedEvent e)
+        {
+            if (_explorationManager != null)
+            {
+                _explorationManager.SetExplorationLocked(false);
+            }
+            if (_mainQuestManager != null)
+            {
+                _mainQuestManager.NotifyCompletionSignal(
+                    MainQuestCompletionTypes.FirstExplore,
+                    MainQuestSignalValues.GuardReturnEventComplete);
+            }
+
+            // F8 bugfix（Bug 2）：取劍完成 → 解封守衛 L2 倒數並啟動
+            if (_characterQuestionCountdownManager != null)
+            {
+                _characterQuestionCountdownManager.UnblockCountdown(CharacterIds.Guard);
+                _characterQuestionCountdownManager.StartCountdown(CharacterIds.Guard);
+            }
+        }
+
+        /// <summary>
+        /// 主線任務完成事件 hook（保留供擴展）。
+        /// Sprint 6 新架構：
+        /// - 節點 1 播放時機 = 玩家進入 VCW 且 _node1TriggerReady（由第一位角色 CG 播完設定）
+        /// - 節點 2 播放時機 = 玩家進入 VCW 且 _node2TriggerReady（由第二位角色 CG 播完設定）
+        /// - T1 完成訊號 = 節點 2 對話結束（node_2_dialogue_complete）由 OnNodeDialogueCompletedForMainQuest 發送
+        /// Sprint 6 D4 bugfix：節點 1/2 的觸發不再依賴 IsQuestCompleted("T1/T3")，
+        /// 改以 _node1TriggerReady / _node2TriggerReady 旗標（在 InitializeCharacterView 的 CG 播完 callback 設定）。
+        /// 本方法保留但目前無需在此處設定節點觸發旗標，由 RedDotManager 處理 L4 紅點通知（QuestIdsTriggersNode2 = "T1"）。
         /// </summary>
         private void OnMainQuestCompletedForNodeDialogue(MainQuestCompletedEvent e)
         {
-            if (_nodeDialogueController == null || e == null) return;
-            // 注意：T1 完成 = 節點 1 劇情已經播完（T1 由 node_1 完成觸發），
-            // 所以這裡僅在 T2 完成時播放 node_2（GDD 第十八輪 QC-D：節點 2 由 T3 觸發；
-            // 本實作採 T2 完成觸發 node_2，因為 T3 的 commission_count 訊號是由委託直接推進）。
-            // 最終：何時觸發節點 1 / 2 在 main-quest-config.json 的 completion_condition 之外，
-            // 透過「T1 完成 = 節點 1 結束」「T3 完成 = 節點 2 結束」推導。本方法不主動播放節點，
-            // 節點播放的時機完全由上層驅動（OpeningSequenceController 播 node_0、
-            // 玩家互動觸發 node_1/2 由後續版本決定）。本處保留 hook 供擴展。
+            // 節點觸發旗標已由 InitializeCharacterView CG 播完 callback 依時機設定，
+            // 此處無需額外處理。
+            // RedDotManager.OnMainQuestCompleted 已在 T1 完成時設定 VCW L4（QuestIdsTriggersNode2 = "T1"）。
         }
 
         /// <summary>
@@ -802,6 +851,15 @@ namespace ProjectDR.Village
 
         // 已播過的主線節點集合，用於 GetPendingMainQuestNodeId 判斷。
         private readonly HashSet<string> _playedMainQuestNodes = new HashSet<string>();
+
+        // Sprint 6 D4 bugfix：節點 1/2 觸發旗標（與 MainQuest T1 語義解耦）。
+        // _node1TriggerReady：第一位角色 CG 播完後設定（節點 1 尚未播過時），觸發節點 1 對話。
+        // _node2TriggerReady：第二位角色 CG 播完後設定（節點 1 已播過時），觸發節點 2 對話。
+        // 原本 GetPendingMainQuestNodeId 以 IsQuestCompleted("T1/T3") 判斷節點 1/2，
+        // 但 Sprint 6 後 T1 語義改為「認識所有人」（需等節點 2 播完才完成），T3 已刪除，
+        // 導致節點 1/2 永遠無法觸發，故改用獨立旗標分離觸發時機。
+        private bool _node1TriggerReady;
+        private bool _node2TriggerReady;
 
         private void OnOpeningSequenceCompletedMarkPlayed(OpeningSequenceCompletedEvent e)
         {
@@ -899,10 +957,11 @@ namespace ProjectDR.Village
         {
             // 取得已建立的 Hub 實例並注入相依
             // B8：新增 _characterUnlockManager 注入，支援漸進解鎖顯示
+            // C8（Sprint 6 D4 bugfix 3）：新增 _explorationManager 注入，Hub 探索按鈕 onClick 才能正確觸發 Depart()
             VillageHubView hubView = _stackController.GetOrCreateInstance(AreaIds.Hub) as VillageHubView;
             if (hubView != null)
             {
-                hubView.Initialize(_navigationManager, _characters.AsReadOnly(), _characterUnlockManager, _redDotManager);
+                hubView.Initialize(_navigationManager, _characters.AsReadOnly(), _characterUnlockManager, _redDotManager, _explorationManager);
             }
         }
 
@@ -979,7 +1038,7 @@ namespace ProjectDR.Village
             else
             {
                 // B13：首次進入流程（GDD § 1.5）
-                // 若此角色尚未播放過登場 CG → 設定 FirstEntry 狀態 → 播放 CG → 播完後切回 Normal
+                // 若此角色尚未播放過登場 CG → 設定 FirstEntry 狀態 → 播放 CG → 播完後執行進入完成流程
                 if (!HasPlayedIntroCG(characterId) && _cgPlayer != null)
                 {
                     interactionView.SetState(CharacterInteractionState.FirstEntry);
@@ -987,27 +1046,16 @@ namespace ProjectDR.Village
                     CharacterInteractionView capturedView = interactionView;
                     _cgPlayer.PlayIntroCG(characterId, () =>
                     {
+                        // 路徑 A：CG 播放完成 → 標記 only-once 旗標 → 執行進入完成副作用（含 SetState Normal）
                         MarkIntroCGPlayed(capturedCharId);
-                        // CG 播放完成後切回 Normal 狀態
-                        if (capturedView != null && capturedView.gameObject != null)
-                        {
-                            capturedView.SetState(CharacterInteractionState.Normal);
-                        }
-
-                        // 清除 FirstMeet 紅點（玩家已完成首次登場 CG）
-                        if (_redDotManager != null)
-                        {
-                            _redDotManager.SetFirstMeetFlag(capturedCharId, false);
-                        }
-
-                        // C2（Sprint 4）：若此首次進入的是非村長夫人（農女/魔女/守衛）→ 推進 T1 dialogue_end 訊號
-                        if (capturedCharId != CharacterIds.VillageChiefWife && _mainQuestManager != null)
-                        {
-                            _mainQuestManager.NotifyCompletionSignal(
-                                MainQuestCompletionTypes.DialogueEnd,
-                                MainQuestSignalValues.FirstCharIntroComplete);
-                        }
+                        OnCharacterEnteredAndCGDone(capturedCharId, capturedView);
                     });
+                }
+                else
+                {
+                    // 路徑 B：intro CG 已播過（守衛特例：由守衛歸來事件提前標記）
+                    // 跳過 CG，但仍執行進入完成副作用（保持兩條路徑語義對等，含 SetState Normal）
+                    OnCharacterEnteredAndCGDone(characterId, interactionView);
                 }
                 // 節點 1/2 的播放已移至 OnNavigatedToArea（配合 openingMode 進入 Forced+External），
                 // 此處不再處理 VCW 待播節點。
@@ -1024,6 +1072,97 @@ namespace ProjectDR.Village
                 }
                 _commissionPresenter.OnEnterCharacter(characterId, interactionView);
             }
+        }
+
+        /// <summary>
+        /// 玩家首次進入某角色互動畫面且 CG 已完成（或跳過）後的統一副作用執行點。
+        ///
+        /// Sprint 6 F10 重構：將原本散落在 PlayIntroCG callback 中的 (b)/(c) 類 side effects
+        /// 抽出為獨立方法，供兩條路徑共用：
+        ///
+        /// 路徑 A（標準）：CG 未播過 → 播 CG → callback → MarkIntroCGPlayed → 本方法
+        /// 路徑 B（守衛特例）：CG 已由守衛歸來事件提前播過 → 跳過 CG → 直接呼叫本方法
+        ///
+        /// Sprint 6 F11 bugfix：SetState(Normal) 從路徑 A callback 移至此共用方法。
+        /// 原分類為 (a) CG 播放本身，實際效果是「進入 interact view 後的顯示模式切換」，
+        /// 兩條路徑都必須執行，屬於共用流程。
+        ///
+        /// 副作用清單：
+        /// (display) 切換 CharacterInteractionView 至 Normal 顯示模式（讓 greeting 等正常流程可執行）
+        /// (b) 清除 FirstMeet 紅點（玩家已首次進入，Hub 按鈕不再需要引導）
+        /// (c) 若為非 VCW 角色，設定主線節點觸發旗標，引導玩家回村長夫人繼續主線
+        ///     （守衛歸來路徑不觸發此 c 類，因守衛不是「選擇 1/2 角色」的角色）
+        /// </summary>
+        private void OnCharacterEnteredAndCGDone(string characterId, CharacterInteractionView view)
+        {
+            // (display) 切換至 Normal 顯示模式
+            // F11 bugfix：原本只在路徑 A callback 中執行，路徑 B 未執行導致 view 狀態不一致。
+            // SetState(Normal) 是「進入 interact view 後的常規顯示流程」，兩條路徑共用。
+            if (view != null && view.gameObject != null)
+            {
+                view.SetState(CharacterInteractionState.Normal);
+            }
+
+            // (b) 清除 FirstMeet 紅點（玩家已完成首次進入）
+            if (_redDotManager != null)
+            {
+                _redDotManager.SetFirstMeetFlag(characterId, false);
+            }
+
+            // (c) 農女/魔女 CG 播完後：設定主線節點觸發旗標 + 點亮 VCW L4 紅點
+            // 守衛不在此範圍（守衛不觸發節點 1/2）
+            if (characterId != CharacterIds.VillageChiefWife
+                && characterId != CharacterIds.Guard
+                && _redDotManager != null)
+            {
+                _redDotManager.SetMainQuestEventFlag(CharacterIds.VillageChiefWife, true);
+                // Sprint 6 D4 bugfix：依節點 1 是否已播決定設定哪個旗標
+                if (_playedMainQuestNodes.Contains(NodeDialogueController.NodeIdNode1))
+                {
+                    _node2TriggerReady = true;
+                }
+                else
+                {
+                    _node1TriggerReady = true;
+                }
+            }
+
+            // Sprint 6 決策 6-13：守衛首次進入取劍對白觸發
+            // 條件：守衛 + 首次進入（對白尚未完成）+ 守衛歸來已完成（守衛已解鎖）
+            // 在此設置 override 對白，PushView → OnShow → StartDialoguePlayback 時自動播放
+            if (characterId == CharacterIds.Guard
+                && !_guardFirstMeetDialogueCompleted
+                && _characterUnlockManager != null
+                && _characterUnlockManager.IsUnlocked(CharacterIds.Guard)
+                && view != null)
+            {
+                string[] lines = System.Linq.Enumerable.ToArray(_guardFirstMeetDialogueConfig.DialogueLines);
+                view.SetFirstMeetOverrideDialogue(lines, OnGuardFirstMeetDialogueCompleted);
+            }
+        }
+
+        /// <summary>
+        /// Sprint 6 決策 6-13：守衛首次進入取劍對白完成 callback。
+        /// 執行：標記對白已完成 → 發劍 → 發布 ExplorationGateReopenedEvent。
+        /// VillageEntryPoint.OnExplorationGateReopenedForT2 訂閱後：解鎖探索 + 推進 T2 + 解封守衛倒數。
+        /// </summary>
+        private void OnGuardFirstMeetDialogueCompleted()
+        {
+            _guardFirstMeetDialogueCompleted = true;
+
+            // 發劍（透過 InitialResourceDispatcher 查 guard_sword_asked trigger_id）
+            if (_initialResourceDispatcher != null && _initialResourcesConfig != null)
+            {
+                System.Collections.Generic.IReadOnlyList<InitialResourceGrant> grants =
+                    _initialResourcesConfig.GetGrantsByTrigger(InitialResourcesTriggerIds.GuardSwordAsked);
+                foreach (InitialResourceGrant grant in grants)
+                {
+                    _initialResourceDispatcher.Dispatch(grant);
+                }
+            }
+
+            // 發布探索重新開啟事件（OnExplorationGateReopenedForT2 訂閱處理解鎖探索 + T2 + 守衛倒數）
+            EventBus.Publish(new ExplorationGateReopenedEvent());
         }
 
         /// <summary>
@@ -1182,6 +1321,9 @@ namespace ProjectDR.Village
                             // 選題/閒聊 → 關閉 overlay 並在主角色互動畫面播放回答（PlayDialogue 內部會先 CloseOverlay）
                             questionsView.SetResponseAction(response =>
                                 interactionView.PlayDialogue(new string[] { response }));
+                            // Sprint 6 C11：注入單次特殊題觸發用相依（grant_guard_sword 等）
+                            questionsView.SetSingleUseQuestionDependencies(
+                                _initialResourceDispatcher, _initialResourcesConfig);
                         }
                     }
                 );
@@ -1321,19 +1463,25 @@ namespace ProjectDR.Village
         /// <summary>
         /// 取得目前等待播放的 VCW 主線節點 ID（node_1 或 node_2）。
         /// 未有待播節點時回傳 null。
+        ///
+        /// Sprint 6 D4 bugfix：觸發條件從 IsQuestCompleted("T1/T3") 改為獨立旗標：
+        /// - 節點 1：_node1TriggerReady（由第一位角色 CG 播完設定，此時節點 1 尚未播過）
+        /// - 節點 2：_node2TriggerReady（由第二位角色 CG 播完設定，此時節點 1 已播過）
+        /// 原本依賴 IsQuestCompleted("T1") 判斷節點 1，但 Sprint 6 後 T1 語義已改
+        /// 為「認識所有人」（需節點 2 播完後才完成），T3 已刪除；兩者均無法觸發。
         /// </summary>
         private string GetPendingMainQuestNodeId()
         {
-            if (_nodeDialogueController == null || _mainQuestManager == null) return null;
+            if (_nodeDialogueController == null) return null;
             if (_dialogueManager != null && _dialogueManager.IsActive) return null;
 
             if (!_playedMainQuestNodes.Contains(NodeDialogueController.NodeIdNode1)
-                && _mainQuestManager.IsQuestCompleted("T1"))
+                && _node1TriggerReady)
             {
                 return NodeDialogueController.NodeIdNode1;
             }
             if (!_playedMainQuestNodes.Contains(NodeDialogueController.NodeIdNode2)
-                && _mainQuestManager.IsQuestCompleted("T3"))
+                && _node2TriggerReady)
             {
                 return NodeDialogueController.NodeIdNode2;
             }

@@ -2,8 +2,8 @@
 
 > **當前階段**: GDD 完善
 > **核心驗證問題**: 設計文件是否完整且自洽到足以支撐 Vertical Slice 開發？
-> **階段焦點**: 更新與補齊設計文件，反映 4/16 設計轉向
-> **活躍 Sprint**: 無
+> **階段焦點**: 更新與補齊設計文件，反映 4/16 設計轉向；Sprint 6 進行「探索開放前流程重構 + 守衛歸來流程重構」（2026-04-20 範圍擴張）
+> **活躍 Sprint**: sprint-6-explore-gate-rework（2026-04-20 建立，2026-04-20 擴張，🔄 進行中）
 
 ## ✅ 已解決的核心設計問題
 
@@ -86,6 +86,11 @@
 - 混合解鎖條件的可預測性 — 可透過 UI 提示改善
 - 自由移動與格子系統邊界情況 — 工程問題，開發中修復
 - 無盡模式缺乏終點 — VS 後根據玩家反饋決定是否加入軟結局
+- **Sprint 6 後物資僅靠探索**（登記於 TBD 池）：
+  - `TBD-balance-001` 好感度節奏可能變慢（物資稀缺 → 送禮少）— 實機測試後評估
+  - `TBD-balance-002` 探索產出是否能覆蓋委託 / 送禮 / 擴建三條下游需求 — 實機測試後評估
+- **Sprint 6 擴張後「沒紅點也要主動發問」教學關卡卡關風險**（登記於 TBD 池）：
+  - `TBD-balance-003` 新流程「探索關閉 + 提示訊息 + 守衛對話才能拿劍」可能讓部分玩家永久卡關 — 實機測試後評估是否需補保護機制（延遲紅點 / 守衛被動提示 / 其他）
 
 ### 已關閉
 
@@ -215,6 +220,25 @@
 - **2026-04-18**：**角色發問 prompt 打字機允許 Click-to-Skip + 選項階段避免 FullScreenArea 遮罩** — 製作人追加回報：「顯示問題時也無法點擊畫面立刻完成打字機」。先前 `StartCharacterQuestionInline` 刻意將 `_fullScreenDialogueArea.SetActive(false)` 禁用 prompt 階段點擊，製作人希望改為允許 Skip（與一般 VN 行為一致）。修正：(1) prompt 階段啟用 FullScreenDialogueArea 並 `SetAsLastSibling`，讓點擊觸發 `typewriter.Skip` → `OnComplete` → `OnCharacterQuestionPromptComplete` → 自然進入選項階段；(2) `ShowCharacterQuestionChoices` 進場時禁用 FullScreenDialogueArea 並將 `_choiceContainer` 自身 `SetAsLastSibling`，避免 FullScreenDialogueArea 的最上層順位遮住選項 button 的 raycast
 - **2026-04-18**：**角色回應 response 打字機無法點擊 Skip 修正** — 製作人實測回報：角色頁面選擇答案後，response 打字機播放中點擊畫面無法立即顯示完整句子。根因分析：`PlayDialogue` 只做 `_fullScreenDialogueArea.SetActive(true)` 而未呼叫 `transform.SetAsLastSibling()`，FullScreenDialogueArea 在 root 中為 sibling 5 位於 ChoiceContainer(6) / CommissionCountdownText(7) / CommissionClaimButton(8) 之下；雖然這三者在 Normal / 響應播放時應為 inactive，但任何殘留的 active 狀態（例如 ChoiceContainer 剛 Destroy 尚未真正銷毀、或 sibling 順序被 UI 佈局操作意外調整）都會攔截 raycast，導致 OnDialogueClicked 無法觸發 typewriter.Skip。修正：`PrepareDialogueUI` 啟用 FullScreenDialogueArea 時一併 `SetAsLastSibling` 強制為最高 raycast 順位；`PlayDialogue` 不再內聯設定步驟，改為呼叫 `PrepareDialogueUI` 走統一流程。Game.Tests 1235/1228 passed/7 failed（皆為既有 CollectiblePointStateTests，與本次修改無關）
 - **2026-04-18**：**對話按鈕紅點索引錯位修正 + VCW 隱藏判定擴大為整個前期流程** — 製作人實測回報兩個問題：(1) 農女 hub 紅點正確，但進入互動畫面對話按鈕沒紅點；(2) VCW 對話按鈕在流程結束前沒有持續隱藏。根因分析：(1) `RefreshMenu` 內 `Destroy` 為延遲銷毀，當幀結束才真正移除 GameObject，`ApplyButtonRedDots` 同一 frame 內 iterate `_menuContainer.childCount` 看到舊+新按鈕混合，索引對到舊按鈕（destroy in-progress），新按鈕得不到紅點；(2) 先前用 `GetPendingMainQuestNodeId() != null` 只在「T1/T3 完成但節點未播」這段有效，其他時點 VCW 對話仍可按。修正：(1) `CharacterInteractionView` 新增 `_visibleButtons : List<Button>` 直接追蹤本輪 Instantiate 的 Button 實例，`ApplyButtonRedDots` 改為迭代此清單，徹底避開 childCount 迭代；(2) `VillageEntryPoint` 新增 `HasPlayedAllUnlockNodes()` 判定 node_1 與 node_2 皆已播放，`SetDialogueSuppressionProvider` 判定條件改為 `characterId == VCW && !HasPlayedAllUnlockNodes()` — 兩個節點都播完（= 前期解鎖流程完成、探索功能開放）後，VCW 對話按鈕才恢復
+- **2026-04-20**：**建立 TBD 池並搬移 Sprint 4 TBD 清單** — 依 CLAUDE.md「TBD 池管理（專案級）」規則新建 `projects/ProjectDR/project-tbd.md`，將 `sprint/sprint-4-producer-tbd-list.md` 的 42 條 placeholder 轉為正式 TBD 條目並配發永久 ID：**intro 類 5 條**（`TBD-intro-001~005`，角色登場 CG）、**node 類 8 條**（`TBD-node-001~008`，節點 0/1/2 劇情）、**quest 類 10 條**（`TBD-quest-001~005` 守衛歸來、`TBD-quest-010~014` 前期主線 T0~T4）、**resource 類 4 條**（`TBD-resource-001~004`，初始資源）、**recipe 類 10 條**（`TBD-recipe-001~010`，委託配方）、**storage 類 5 條**（`TBD-storage-001~005`，倉庫擴建）。每條記錄來源 Sprint 項目、placeholder 內容、影響檔（JSON config 路徑）、建立日 2026-04-17、狀態 🟠 待拍板。`sprint-4-producer-tbd-list.md` 已轉為 tombstone 待製作人手動刪除（AI 不動 git）。FILE_MAP 同步
+- **2026-04-20（決策 6-1）**：**委託系統改為自主發現定位** — 委託保留，但從「強制主線教學」改為「玩家自主發現」。無紅點強推、無主線 T2/T3 要求「完成委託一次」。玩家可能玩很久都不碰委託，或第一次就發現。設計哲學轉向「沉浸式自主發現」。對應 GDD 修改：`commission-system.md` 新增「自主發現定位」章節（Sprint 6 / A3）
+- **2026-04-20（決策 6-2）**：**移除委託教學流程** — 開局四連擊角色登場流程（村長夫人 → 選擇 1 → 村長夫人 → 選擇 2）結束後，**不再要求玩家完成任何委託**才能推進。委託教學徹底移除。此決策同時作廢原 T2「幫她一次」、原 T3「再去認識另一個人」兩條主線任務
+- **2026-04-20（決策 6-3）**：**探索開放走節點 2 劇情** — 魔女（第二位）對話結束 → 村長夫人 L4 紅點立刻亮 → 玩家進入村長夫人 → 節點 2 劇情（鋪墊守衛）→ 出來見探索入口開啟。村長夫人對話保留 3 次（節點 0/1/2）。節點 2 的設計定位不變（鋪墊守衛、開啟探索），僅觸發條件變動
+- **2026-04-20（決策 6-4）**：**節點 2 L4 紅點觸發條件改為「魔女對話結束瞬間」** — 原觸發為「T3 完成」，現改為「魔女登場 CG + 對話結束瞬間立刻觸發村長夫人 L4 紅點」。涉及程式層修改：`RedDotManager` 訊號源切換、訂閱選擇 2 角色（= 魔女）的對話結束事件
+- **2026-04-20（決策 6-5）**：**主線任務結構重編** — 原 T2「幫她一次」、T3「再去認識另一個人」**合併**為新 T1「認識所有人」。原 T4「出去看看外面」重編為新 T2。主線序列變為 T0 → T1（含節點 1/2 觸發）→ T2（首次探索 + 守衛歸來）。TBD 對應：`TBD-quest-012/013` 改為 Deprecated，`TBD-quest-011` 與 `TBD-quest-014` 加備註（ID 保留、內容改寫）
+- **2026-04-20（決策 6-6）**：**完全不發初始物資** — 原本農女 / 魔女解鎖時分別發的種子 / 藥草 placeholder 全部移除。物資來源**完全依賴探索**。守衛贈劍（T2 完成時）保留不受影響。TBD 對應：`TBD-resource-001/002` 改為 Deprecated、`TBD-resource-003/004` 保留。連帶新增 `TBD-balance-001/002` 兩條實機測試驗證項（好感度節奏、探索產出覆蓋下游）
+- **2026-04-20**：**Sprint 6 建立** — 依上述 6 條決策建立 `sprint/sprint-6-explore-gate-rework.md`，工作項目 5 分類共 17 項（A 設計 5 項 / B Config 3 項 / C 程式 4 項 / D 測試 4 項 / E 收尾 3 項）。活躍 Sprint 從「無」更新為「sprint-6-explore-gate-rework」。待製作人確認 Sprint 範圍後可派 design-agent 執行 A 類 + dev-agent 執行 B~D 類
+- **2026-04-20**：**Sprint 6 A 類 GDD 修改完成** — `character-unlock-system.md` v1.2→v1.3（節點 2 觸發條件改為魔女對話結束瞬間、移除 T2/T3 循環條件、移除農女/魔女初始物資）；`main-quest-system.md` v1.1→v2.0（§1.4 前期主線序列重寫為 T0→T1「認識所有人」→T2「出去看看外面」）；`commission-system.md` v1.2→v1.3（新增「零、非強制定位」章節、移除解鎖時物資發放）；`core-definition.md` 確認無需修改；`/doc-health --impact` 影響分析完成，識別 `storage-expansion.md` §5.4 有一條過時 T2 描述（「倉庫快滿了，或許該擴建」與新 T2 定義不符）需後續處理
+- **2026-04-20**：**Sprint 6 C5+D3.1+D3.2 補修完成（dev-head 審核後）** — 修正 VillageEntryPoint 訊號源（node_2 完成送 Node2DialogueComplete）、補呼叫 SetMainQuestEventFlag 點亮節點 1 L4 紅點、清理節點 1 殘留死碼、加 [Obsolete] attribute、修復斷裂測試、新增 R7-1/R7-2 回歸測試；dev-log: 2026-04-20-3.md
+- **2026-04-20**：**Sprint 6 C7 bugfix 完成（D4 實機測試第二個 bug）** — 節點 1 對話結束後「剩下那位」角色 Hub 按鈕未解鎖。根因：C5 R3 刪除舊 ForceUnlock 路徑後，依賴 OnDialogueChoiceSelected，但真實 config 選項 choice_branch 為空字串，永遠不觸發。修復：CharacterUnlockManager 新增訂閱 NodeDialogueCompletedEvent，node_1 完成時依 _node0ChosenBranch 推算並 ForceUnlock；更新 8 個測試（3 個更新 + 8 個新增）；dev-log: 2026-04-20-5.md
+- **2026-04-20（決策 6-7）**：**守衛歸來事件不直接贈劍** — 守衛歸來事件結尾不再觸發贈劍動作；事件結束後探索入口**暫時關閉**；玩家必須主動進入守衛 interact view、透過 [對話] 發問才能取得劍。此決策將「取得劍」從被動獎勵改為玩家主動發起的互動，強化「沒紅點也要主動發問」的教學定位。涉及修改：`character-unlock-system.md` §守衛解鎖段落、`main-quest-system.md` T2 完成條件、`guard-return-config.json` 移除贈劍段、`GuardReturnEventController` 事件結尾發布「探索關閉 + 守衛解鎖」事件
+- **2026-04-20（決策 6-8）**：**探索按鈕關閉狀態的 UI 提示** — 守衛歸來事件結束後、玩家尚未取得劍前，探索按鈕處於「關閉但可見」狀態；玩家點擊時顯示提示訊息「要去找守衛對話拿劍...」，無法進入探索場景。此設計提供明確引導但不強制，玩家仍需主動連結「守衛 → 對話 → 拿劍」三步。涉及修改：`VillageHubView` / `ExplorationAreaView` 按鈕點擊提示邏輯
+- **2026-04-20（決策 6-9）**：**「要拿劍」加入玩家發問清單** — 守衛的玩家發問清單新增一題單次特殊題「要拿劍」；此題好感度無關、不消耗體力門檻、問完即從清單永久移除；執行時同步觸發贈劍 grant + 探索重新開啟。涉及修改：`player-questions-config.json` 新增守衛「要拿劍」題（flags: `single_use`、`grants_sword`、`reopens_exploration`）、`PlayerQuestionsManager` 支援單次題與特殊 flag 處理
+- **2026-04-20（決策 6-10）**：**玩家不主動發問會卡關（刻意設計）** — 新流程中無保護紅點、無時限提醒、無守衛被動對話提示。此段為「沒紅點也要主動發問」的教學關卡，影響後續委託 / 送禮 / CG 自主發現的節奏鋪陳。風險：部分玩家可能永遠不主動發問 → 永久卡關。登記 `TBD-balance-003` 實機驗證卡關率後決定是否補保護機制
+- **2026-04-20（決策 6-11）**：**Sprint 6 範圍擴張，不開新 Sprint** — 上述 6-7 ~ 6-10 四條決策併入當前 Sprint 6 實作，不另開 Sprint 7。Sprint 6 目標從「探索開放流程重構」延伸包含「守衛歸來流程重構」。D4 實機測試中止，A7 GDD 對齊由 design-agent 並行執行，完成後派 design-head 審核，再派 dev-agent 執行 B/C/D 新增工作項目
+- **2026-04-20**：**Sprint 6 F10 系統性重構完成（繞道路徑補償陷阱根治）** — 根因：F7/F8/F9/F10 是「守衛歸來繞過 InitializeCharacterView」同一陷阱的連續發現；F9 方向錯誤（守衛歸來瞬間清除 FirstMeet，導致 Hub 無紅點引導玩家）。修復：Revert F9；抽出 `OnCharacterEnteredAndCGDone` 共用方法；兩條路徑（路徑 A：標準 CG / 路徑 B：守衛特例跳過 CG）皆呼叫此方法執行 (b)/(c) side effects；FirstMeet 清除回歸正確時機（玩家首次進入時）。新增 4 個 F10 回歸測試；建置 0 錯誤。dev-log: 2026-04-20-12.md
+- **2026-04-20（決策 6-12）**：**廢棄 `guard-return-config.json` 31 條對話路徑，守衛歸來劇情改由 `intro_guard` CG 承載** — F7 bug 修復時，dev-agent 發現 `GuardReturnEventController` 原設計的 `DialogueManager.Advance()` 路徑無法執行（`DialogueManager.Advance` 唯一呼叫者是 `CharacterInteractionView`，守衛歸來事件中該 view 未顯示，導致對話無法推進、事件永遠無法完成）。製作人拍板方案 A：接受 dev-agent 的修復決定（CG 播完直接 `CompleteEvent`），並將實際守衛歸來劇情改由 `character-intro-config.json > intro_guard` 承載。`guard-return-config.json` 作為死檔保留（不刪除，保留劇本參考價值），但標註廢棄。影響：`TBD-quest-001~005`（守衛歸來事件 5 段劇情 phase）改為 Deprecated，不再需要製作人撰寫；`TBD-intro-005`（守衛登場 CG）的字數規格應從原「約 700 字」增加至涵蓋完整守衛歸來全流程（身分誤會 + 澄清 + 收劍 + 贈劍動機 + 收尾）
+- **2026-04-20（決策 6-13）**：**守衛取劍改為「首次進入 interact view 自動對白觸發」** — 原設計（決策 6-9/6-10）要求玩家主動向守衛發問「要拿劍」（透過玩家發問清單的單次特殊題）才能取得劍，無保護紅點、有卡關風險。實機測試 D4 中發現流程複雜且有無謂卡關風險，拍板改為：守衛歸來事件完成後，玩家只需點擊守衛 → 進入 interact view → 系統偵測首次進入旗標 → 自動播放取劍對白（interact view 內彈出，無全螢幕 CG）→ 對白結束自動贈劍 + 探索重開。下次進入守衛走正常流程。連動撤銷：決策 6-9（「要拿劍」不加入玩家發問清單）、決策 6-10（自主發問教學關卡）。影響：`TBD-balance-003` Deprecated；新增 `TBD-content-001`（取劍對白文本待拍板）；dev-agent 需同步更新相關程式碼（B5/C11 守衛取劍相關實作）。
 
 ## 工作量預估
 

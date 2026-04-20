@@ -377,16 +377,15 @@ namespace ProjectDR.Tests.Village.Integration
 
         private static MainQuestConfig BuildMainQuestConfig()
         {
+            // Sprint 6 B1：新 T0/T1/T2 三條結構
             return new MainQuestConfig(new MainQuestConfigData
             {
                 schema_version = 1,
                 main_quests = new MainQuestConfigEntry[]
                 {
-                    new MainQuestConfigEntry { quest_id = "T0", display_name = "醒來", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.Auto, unlock_on_complete = "T1", sort_order = 0 },
-                    new MainQuestConfigEntry { quest_id = "T1", display_name = "認識", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.DialogueEnd, completion_condition_value = MainQuestSignalValues.FirstCharIntroComplete, unlock_on_complete = "T2", sort_order = 1 },
-                    new MainQuestConfigEntry { quest_id = "T2", display_name = "幫", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.CommissionCount, unlock_on_complete = "T3", sort_order = 2 },
-                    new MainQuestConfigEntry { quest_id = "T3", display_name = "再認識", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.CommissionCount, unlock_on_complete = "T4", sort_order = 3 },
-                    new MainQuestConfigEntry { quest_id = "T4", display_name = "探索", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.FirstExplore, sort_order = 4 },
+                    new MainQuestConfigEntry { quest_id = "T0", display_name = "醒來的地方", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.Auto, completion_condition_value = MainQuestSignalValues.Node0DialogueComplete, unlock_on_complete = "T1|node_0_complete", sort_order = 0 },
+                    new MainQuestConfigEntry { quest_id = "T1", display_name = "認識所有人", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.DialogueEnd, completion_condition_value = MainQuestSignalValues.Node2DialogueComplete, unlock_on_complete = "T2|node_2_complete|exploration_open", sort_order = 1 },
+                    new MainQuestConfigEntry { quest_id = "T2", display_name = "出去看看外面", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.FirstExplore, completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete, reward_grant_ids = "unlock_guard_sword", unlock_on_complete = "guard_unlock|exploration_full_open", sort_order = 2 },
                 },
             });
         }

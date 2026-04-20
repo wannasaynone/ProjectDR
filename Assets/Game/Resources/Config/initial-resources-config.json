@@ -9,25 +9,11 @@
             "description": "節點 0 開局：玩家初始背包無額外物資（保留劇情氛圍，物資由後續主線/選擇流入）"
         },
         {
-            "grant_id": "unlock_farm_girl_seed",
-            "trigger_id": "unlock_farm_girl",
-            "item_id": "seed_tomato",
-            "quantity": 3,
-            "description": "選擇農女解鎖：番茄種子 ×3（夠 2 次委託體驗 + 1 顆緩衝，第 3 次自然誘發探索動機）"
-        },
-        {
-            "grant_id": "unlock_witch_herb",
-            "trigger_id": "unlock_witch",
-            "item_id": "herb_green",
-            "quantity": 3,
-            "description": "選擇魔女解鎖：綠藥草 ×3（夠 2 次回血藥水委託 + 1 顆緩衝）"
-        },
-        {
             "grant_id": "unlock_guard_sword",
-            "trigger_id": "guard_return_event",
+            "trigger_id": "guard_sword_asked",
             "item_id": "gift_sword_wooden",
             "quantity": 1,
-            "description": "守衛歸來事件贈劍：木劍 ×1（戰鬥裝備，非委託輸入；屬性見 gift-sword-config.json）"
+            "description": "守衛贈劍：木劍 ×1（Sprint 6 擴張：觸發時機改為玩家主動發問『要拿劍』特殊題成功，而非守衛歸來事件完成；屬性見 gift-sword-config.json）"
         }
     ]
 }

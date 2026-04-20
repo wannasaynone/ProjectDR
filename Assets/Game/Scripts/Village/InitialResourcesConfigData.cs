@@ -22,8 +22,16 @@ namespace ProjectDR.Village
         /// <summary>選擇魔女解鎖。</summary>
         public const string UnlockWitch = "unlock_witch";
 
-        /// <summary>守衛歸來事件完成（贈劍）。</summary>
+        /// <summary>
+        /// 守衛歸來事件完成（已廢止，Sprint 6 擴張後贈劍改由玩家發問觸發）。
+        /// JSON 中對應的 grant 已改為 trigger_id=guard_sword_asked。
+        /// 保留此常數以免破壞舊測試，但不應再用於新邏輯。
+        /// </summary>
+        [System.Obsolete("Sprint 6 擴張：贈劍改由 GuardSwordAsked 觸發，此常數保留僅供歷史參考。")]
         public const string GuardReturnEvent = "guard_return_event";
+
+        /// <summary>玩家主動向守衛發問「要拿劍」特殊題成功（Sprint 6 擴張）。</summary>
+        public const string GuardSwordAsked = "guard_sword_asked";
     }
 
     // ===== JSON DTO（供 JsonUtility.FromJson 使用） =====

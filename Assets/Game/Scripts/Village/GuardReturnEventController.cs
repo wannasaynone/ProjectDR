@@ -9,10 +9,9 @@
 // 1. 提供一次性觸發檢查：HasTriggered（避免重複觸發）
 // 2. 呼叫 TriggerEvent() 啟動守衛歸來事件：
 //    a. 發布 GuardReturnEventStartedEvent
-//    b. 透過 ICGPlayer 播放守衛登場 CG
-//    c. CG 完成後，啟動 DialogueManager 播放 guard-return-config 的所有行
-//    d. DialogueCompletedEvent 到達 → 解鎖守衛 + 贈劍（透過 CharacterUnlockManager.OnGuardReturnCompleted）
-//    e. 發布 GuardReturnEventCompletedEvent
+//    b. 透過 ICGPlayer 播放守衛登場 CG（台詞已整合於 CharacterIntroCGView 的 intro_lines）
+//    c. CG 完成後直接發布 GuardReturnEventCompletedEvent
+//       （F7 bugfix：原設計呼叫 DialogueManager.StartDialogue 但無 View 推進對話，事件鏈斷裂）
 //
 // 整合：ExplorationEntryManager 可在 Depart() 前檢查 CanTriggerGuardReturn()，若尚未觸發則優先觸發本事件。
 
@@ -23,20 +22,15 @@ namespace ProjectDR.Village
 {
     /// <summary>
     /// 守衛歸來事件控制器。
-    /// 協調 ICGPlayer、DialogueManager、CharacterUnlockManager 完成純劇情演出。
+    /// 協調 ICGPlayer + CharacterUnlockManager 完成純劇情演出。
     /// 一次性觸發：完成後 HasTriggered = true，後續呼叫 TriggerEvent 會被忽略。
     /// </summary>
     public class GuardReturnEventController : IDisposable
     {
         private readonly ICGPlayer _cgPlayer;
-        private readonly DialogueManager _dialogueManager;
-        private readonly GuardReturnConfig _config;
-
-        private readonly Action<DialogueCompletedEvent> _onDialogueCompleted;
 
         private bool _isRunning;
         private bool _hasTriggered;
-        private bool _dialoguePhase;
         private bool _disposed;
 
         /// <summary>目前是否正在播放守衛歸來事件。</summary>
@@ -52,31 +46,20 @@ namespace ProjectDR.Village
         /// 建構守衛歸來事件控制器。
         /// </summary>
         /// <param name="cgPlayer">CG 播放器（不可為 null）。</param>
-        /// <param name="dialogueManager">對話管理器（不可為 null）。</param>
-        /// <param name="config">守衛歸來事件配置（不可為 null）。</param>
-        /// <exception cref="ArgumentNullException">任一參數為 null 時拋出。</exception>
-        public GuardReturnEventController(
-            ICGPlayer cgPlayer,
-            DialogueManager dialogueManager,
-            GuardReturnConfig config)
+        /// <exception cref="ArgumentNullException">cgPlayer 為 null 時拋出。</exception>
+        public GuardReturnEventController(ICGPlayer cgPlayer)
         {
             _cgPlayer = cgPlayer ?? throw new ArgumentNullException(nameof(cgPlayer));
-            _dialogueManager = dialogueManager ?? throw new ArgumentNullException(nameof(dialogueManager));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-
-            _onDialogueCompleted = OnDialogueCompleted;
-            EventBus.Subscribe(_onDialogueCompleted);
         }
 
         /// <summary>
         /// 判斷現在是否可以觸發守衛歸來事件。
-        /// 條件：未曾觸發過 + 非執行中 + DialogueManager 空閒。
+        /// 條件：未曾觸發過 + 非執行中。
         /// </summary>
         public bool CanTriggerGuardReturn()
         {
             if (_hasTriggered) return false;
             if (_isRunning) return false;
-            if (_dialogueManager.IsActive) return false;
             return true;
         }
 
@@ -108,8 +91,6 @@ namespace ProjectDR.Village
         {
             if (_disposed) return;
             _disposed = true;
-
-            EventBus.Unsubscribe(_onDialogueCompleted);
         }
 
         // ===== 流程步驟 =====
@@ -118,25 +99,10 @@ namespace ProjectDR.Village
         {
             if (!_isRunning || _disposed) return;
 
-            // Step 2：播放整段守衛歸來對話（純線性）
-            string[] texts = _config.GetAllLineTexts();
-            if (texts.Length == 0)
-            {
-                // 無對話 → 直接跳到完成
-                CompleteEvent();
-                return;
-            }
-
-            _dialoguePhase = true;
-            _dialogueManager.StartDialogue(new DialogueData(texts));
-        }
-
-        private void OnDialogueCompleted(DialogueCompletedEvent e)
-        {
-            if (!_isRunning) return;
-            if (!_dialoguePhase) return;
-
-            _dialoguePhase = false;
+            // Step 2：守衛歸來對話台詞已整合於 CharacterIntroCGView 的 intro_lines 中播放（CG 期間）。
+            // CG 結束後直接完成事件，不再透過 DialogueManager 重播 guard_return_lines。
+            // 根因（F7 bugfix）：DialogueManager.Advance() 只存在於 CharacterInteractionView，
+            // 守衛歸來觸發時 CharacterInteractionView 未顯示，對話永遠無法推進。
             CompleteEvent();
         }
 
@@ -144,9 +110,8 @@ namespace ProjectDR.Village
         {
             _isRunning = false;
 
-            // Step 3：發布完成事件
             // CharacterUnlockManager 已訂閱 GuardReturnEventCompletedEvent，
-            // 自動處理守衛解鎖 + 贈劍 grant 派發。
+            // 自動處理守衛 Hub 按鈕解鎖（ForceUnlock(Guard) + 發布 CharacterUnlockedEvent）。
             EventBus.Publish(new GuardReturnEventCompletedEvent());
         }
     }

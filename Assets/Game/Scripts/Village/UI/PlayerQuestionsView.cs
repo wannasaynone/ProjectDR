@@ -54,6 +54,10 @@ namespace ProjectDR.Village.UI
         private string _characterId;
         private float _charsPerSecond;
 
+        // Sprint 6 C11：單次特殊題觸發用（可選，注入後才啟用特殊題邏輯）
+        private IInitialResourceDispatcher _singleUseDispatcher;
+        private InitialResourcesConfig _singleUseResourcesConfig;
+
         private System.Action _returnAction;
         private System.Action<string> _responseAction;
         private bool _isShowingAnswer;
@@ -99,6 +103,19 @@ namespace ProjectDR.Village.UI
             _redDotManager = redDotManager;
             _characterId = characterId;
             _charsPerSecond = charsPerSecond > 0f ? charsPerSecond : 20f;
+        }
+
+        /// <summary>
+        /// Sprint 6 C11：注入單次特殊題觸發所需的相依。
+        /// 注入後當玩家選擇有 trigger_flag 的 is_single_use 題目時，
+        /// 會自動呼叫 PlayerQuestionsManager.TriggerSingleUseQuestion。
+        /// </summary>
+        public void SetSingleUseQuestionDependencies(
+            IInitialResourceDispatcher dispatcher,
+            InitialResourcesConfig resourcesConfig)
+        {
+            _singleUseDispatcher = dispatcher;
+            _singleUseResourcesConfig = resourcesConfig;
         }
 
         public void SetReturnAction(System.Action action) { _returnAction = action; }
@@ -211,9 +228,22 @@ namespace ProjectDR.Village.UI
                 return;
             }
 
-            // 標記已看
+            // 標記已看（或觸發單次特殊題）
             if (_questionsManager != null)
-                _questionsManager.MarkSeen(_characterId, question.QuestionId);
+            {
+                if (question.IsSingleUse && question.HasTriggerFlag
+                    && _singleUseDispatcher != null && _singleUseResourcesConfig != null)
+                {
+                    // C11：單次特殊題 → 觸發 flag handler（派發 grant + 發布事件），題目永久移除
+                    _questionsManager.TriggerSingleUseQuestion(
+                        _characterId, question.TriggerFlag,
+                        _singleUseDispatcher, _singleUseResourcesConfig);
+                }
+                else
+                {
+                    _questionsManager.MarkSeen(_characterId, question.QuestionId);
+                }
+            }
 
             // B14：啟動 CD
             if (_cooldownManager != null)

@@ -1,15 +1,18 @@
 // CharacterUnlockManager — 四位村莊角色 Hub 按鈕解鎖狀態管理器。
-// 依據 GDD `character-unlock-system.md` v1.2：
+// 依據 GDD `character-unlock-system.md` v1.4（Sprint 6 更新）：
 // - 村長夫人開局即解鎖
-// - 農女/魔女：節點 0 VN 選項選擇觸發 + 節點 1 VN 選項確認剩餘者觸發
+// - 農女/魔女：節點 0 VN 選項選擇觸發（第一位）；節點 1 完成後觸發剩餘者（第二位）
+//   ※ C7 bugfix：真實 config 節點 1 選項 branch 為空字串，無法在 OnDialogueChoiceSelected 解鎖；
+//      改為監聽 NodeDialogueCompletedEvent(node_1)，依 _node0ChosenBranch 推算剩餘者並解鎖。
 // - 守衛：守衛歸來事件完成時觸發（贈劍同步）
-// - 節點 2 完成後：探索功能解鎖（發布 ExplorationFeatureUnlockedEvent）
+// - 新 T1（認識所有人）完成後：探索功能解鎖（發布 ExplorationFeatureUnlockedEvent）
 //
 // 此管理器同時負責：
-// - 監聽 DialogueChoiceSelectedEvent 對應節點 0/1 的選擇
-// - 監聽 MainQuestCompletedEvent 對應 T2（節點 1 觸發）、T3（節點 2 + 探索開放）
+// - 監聽 DialogueChoiceSelectedEvent 對應節點 0 的選擇（解鎖第一位角色按鈕，Sprint 6 後不再發放物資）
+// - 監聽 NodeDialogueCompletedEvent 對應節點 1 完成（解鎖第二位角色按鈕，C7 新路徑）
+// - 監聽 MainQuestCompletedEvent 對應新 T1（節點 2 完成 + 探索開放）
 // - 監聽 GuardReturnEventCompletedEvent 對應守衛解鎖 + 贈劍
-// - 觸發初始資源 grant（呼叫 IInitialResourceDispatcher 交由上層實際發放物品）
+// - 觸發初始資源 grant（呼叫 IInitialResourceDispatcher，Sprint 6 後僅守衛歸來事件有 grant）
 
 using System;
 using System.Collections.Generic;
@@ -55,10 +58,11 @@ namespace ProjectDR.Village
         private bool _disposed;
 
         private readonly Action<DialogueChoiceSelectedEvent> _onDialogueChoiceSelected;
+        private readonly Action<NodeDialogueCompletedEvent> _onNodeDialogueCompleted;
         private readonly Action<MainQuestCompletedEvent> _onMainQuestCompleted;
         private readonly Action<GuardReturnEventCompletedEvent> _onGuardReturnCompleted;
 
-        // 追蹤節點選擇狀態，以便節點 1 的選項處理「剩下那位」
+        // 追蹤節點選擇狀態，以便節點 1 完成後解鎖「剩下那位」
         private string _node0ChosenBranch;
 
         /// <summary>探索功能是否已解鎖。</summary>
@@ -87,10 +91,12 @@ namespace ProjectDR.Village
             };
 
             _onDialogueChoiceSelected = OnDialogueChoiceSelected;
+            _onNodeDialogueCompleted = OnNodeDialogueCompleted;
             _onMainQuestCompleted = OnMainQuestCompleted;
             _onGuardReturnCompleted = OnGuardReturnCompleted;
 
             EventBus.Subscribe(_onDialogueChoiceSelected);
+            EventBus.Subscribe(_onNodeDialogueCompleted);
             EventBus.Subscribe(_onMainQuestCompleted);
             EventBus.Subscribe(_onGuardReturnCompleted);
 
@@ -143,6 +149,7 @@ namespace ProjectDR.Village
             _disposed = true;
 
             EventBus.Unsubscribe(_onDialogueChoiceSelected);
+            EventBus.Unsubscribe(_onNodeDialogueCompleted);
             EventBus.Unsubscribe(_onMainQuestCompleted);
             EventBus.Unsubscribe(_onGuardReturnCompleted);
         }
@@ -151,9 +158,9 @@ namespace ProjectDR.Village
 
         /// <summary>
         /// 監聽 VN 對話選項：
-        /// - 節點 0：farm_girl / witch 分支 → 解鎖對應角色 + 觸發對應 grant
-        /// - 節點 1：剩下那位的確認選項 → 解鎖剩餘者
-        /// 判斷方式：依選項分支 ID 與目前已解鎖狀態組合推論。
+        /// - 節點 0：farm_girl / witch 分支 → 解鎖對應角色（第一位）
+        /// 注意：節點 1 的剩餘者解鎖已改由 OnNodeDialogueCompleted 處理（C7 bugfix），
+        ///       因為真實 config 的節點 1 選項 choice_branch 為空字串，此處無法攔截。
         /// </summary>
         private void OnDialogueChoiceSelected(DialogueChoiceSelectedEvent e)
         {
@@ -164,28 +171,40 @@ namespace ProjectDR.Village
 
             string branch = e.ChoiceId;
 
-            // 節點 0：尚未解鎖任何農女/魔女 → 依 branch 解鎖
+            // 節點 0：尚未解鎖任何農女/魔女 → 依 branch 解鎖（設定 _node0ChosenBranch）
             if (_node0ChosenBranch == null
                 && (branch == NodeDialogueBranchIds.FarmGirl || branch == NodeDialogueBranchIds.Witch))
             {
                 _node0ChosenBranch = branch;
                 UnlockByBranch(branch);
-                return;
             }
+        }
 
-            // 節點 1：剩餘那位。分支 ID 同樣為 farm_girl/witch（對應「剩下那位」的分支）。
-            // 若已有 _node0ChosenBranch 且此次 branch 為另一位，則解鎖剩餘者。
-            if (_node0ChosenBranch != null
-                && (branch == NodeDialogueBranchIds.FarmGirl || branch == NodeDialogueBranchIds.Witch)
-                && branch != _node0ChosenBranch)
+        /// <summary>
+        /// 監聽節點劇情完成事件（C7 新路徑）：
+        /// - node_1 完成 → 依 _node0ChosenBranch 推算剩餘者並解鎖
+        /// 背景：真實 node-dialogue-config.json 的節點 1 選項 choice_branch = ""（空字串），
+        ///       OnDialogueChoiceSelected 只處理 farm_girl/witch branch，無法解鎖剩餘者。
+        ///       改在節點 1 對話完成後統一處理，與選項 branch 內容解耦。
+        /// </summary>
+        private void OnNodeDialogueCompleted(NodeDialogueCompletedEvent e)
+        {
+            if (e == null || e.NodeId != NodeDialogueController.NodeIdNode1) return;
+            if (_node0ChosenBranch == null) return;
+
+            if (_node0ChosenBranch == NodeDialogueBranchIds.FarmGirl)
             {
-                UnlockByBranch(branch);
+                ForceUnlock(CharacterIds.Witch);
+            }
+            else if (_node0ChosenBranch == NodeDialogueBranchIds.Witch)
+            {
+                ForceUnlock(CharacterIds.FarmGirl);
             }
         }
 
         /// <summary>
         /// 監聽主線任務完成：
-        /// - T3 完成（unlock_on_complete 含 "exploration_open" 或 "node_2_complete"）→ 解鎖探索功能
+        /// - 新 T1 完成（Sprint 6 決策 3/4：節點 2 對話結束 → 探索開放）→ 解鎖探索功能
         /// 節點 0 / 1 / 2 的劇情觸發由上層（B9 開場劇情演出系統）透過訂閱 MainQuestCompletedEvent 自行處理；
         /// 本管理器僅負責「解鎖狀態」變更相關的部分（探索入口可見性）。
         /// </summary>
@@ -193,35 +212,38 @@ namespace ProjectDR.Village
         {
             if (e == null || string.IsNullOrEmpty(e.QuestId)) return;
 
-            // T3 完成時解鎖探索功能（GDD v1.2 明示：節點 2 結束後探索入口可見）
-            if (e.QuestId == "T3" && !_explorationFeatureUnlocked)
+            // 新 T1（認識所有人）完成時解鎖探索功能（GDD v1.4 § 6.2：T1 完成後探索入口可見）
+            // Sprint 6 設計轉向：原 T3 → 現為 T1（原 T2/T3 合併入新 T1）
+            if (e.QuestId == "T1" && !_explorationFeatureUnlocked)
             {
                 ForceUnlockExplorationFeature();
             }
         }
 
         /// <summary>
-        /// 監聽守衛歸來事件完成：解鎖守衛 + 觸發贈劍 grant。
+        /// 監聽守衛歸來事件完成：解鎖守衛 Hub 按鈕。
+        /// Sprint 6 擴張：移除贈劍 grant 派發（不再呼叫 DispatchGrantsByTrigger("guard_return_event")）。
+        /// 贈劍改由玩家主動向守衛發問「要拿劍」特殊題成功時觸發（PlayerQuestionsManager C11）。
         /// </summary>
         private void OnGuardReturnCompleted(GuardReturnEventCompletedEvent e)
         {
             ForceUnlock(CharacterIds.Guard);
-            DispatchGrantsByTrigger(InitialResourcesTriggerIds.GuardReturnEvent);
+            // Sprint 6 擴張：不在此處派發 unlock_guard_sword grant。
+            // 贈劍觸發點：玩家主動發問 guard_ask_sword 特殊題 → PlayerQuestionsManager.TriggerSingleUseQuestion。
         }
 
         // ===== 私有工具 =====
 
         private void UnlockByBranch(string branch)
         {
+            // Sprint 6 B2：移除農女/魔女解鎖時的 grant 派發（物資改為依賴探索，不在解鎖時發放）
             if (branch == NodeDialogueBranchIds.FarmGirl)
             {
                 ForceUnlock(CharacterIds.FarmGirl);
-                DispatchGrantsByTrigger(InitialResourcesTriggerIds.UnlockFarmGirl);
             }
             else if (branch == NodeDialogueBranchIds.Witch)
             {
                 ForceUnlock(CharacterIds.Witch);
-                DispatchGrantsByTrigger(InitialResourcesTriggerIds.UnlockWitch);
             }
         }
 

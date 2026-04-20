@@ -333,7 +333,7 @@ namespace ProjectDR.Village
         public string QuestId;
     }
 
-    // ----- 守衛歸來事件相關（B10） -----
+    // ----- 守衛歸來事件相關（B10 + Sprint 6 擴張） -----
 
     /// <summary>
     /// 守衛歸來事件開始播放時發布的事件。
@@ -342,8 +342,46 @@ namespace ProjectDR.Village
     /// </summary>
     public class GuardReturnEventStartedEvent : GameEventBase { }
 
-    /// <summary>守衛歸來事件完成時發布的事件（守衛解鎖 + 贈劍觸發）。</summary>
+    /// <summary>
+    /// 守衛歸來事件完成時發布的事件。
+    /// Sprint 6 擴張：事件完成後不再直接贈劍；
+    /// 贈劍改由玩家主動向守衛發問「要拿劍」特殊題時觸發。
+    /// </summary>
     public class GuardReturnEventCompletedEvent : GameEventBase { }
+
+    /// <summary>
+    /// 探索入口進入「鎖定」狀態（守衛歸來事件完成後）時發布的事件（Sprint 6 擴張）。
+    /// VillageHubView 訂閱此事件後切換探索按鈕為「可見但鎖定」狀態。
+    /// </summary>
+    public class ExplorationGateLockedEvent : GameEventBase { }
+
+    /// <summary>
+    /// 探索入口從「鎖定」狀態重新開啟（玩家發問「要拿劍」成功後）時發布的事件（Sprint 6 擴張）。
+    /// VillageHubView 訂閱此事件後恢復探索按鈕為正常可互動狀態。
+    /// </summary>
+    public class ExplorationGateReopenedEvent : GameEventBase { }
+
+    /// <summary>
+    /// 玩家發問單次特殊題觸發完成時發布的事件（Sprint 6 擴張）。
+    /// PlayerQuestionsManager 觸發 trigger_flag 對應的效果後發布。
+    /// </summary>
+    public class PlayerSpecialQuestionTriggeredEvent : GameEventBase
+    {
+        /// <summary>角色 ID。</summary>
+        public string CharacterId;
+
+        /// <summary>題目 ID。</summary>
+        public string QuestionId;
+
+        /// <summary>觸發旗標 ID（對應 trigger_flag 欄位）。</summary>
+        public string TriggerFlag;
+    }
+
+    /// <summary>
+    /// 探索入口鎖定狀態下玩家點擊探索按鈕時發布的事件（Sprint 6 擴張，C3 決策）。
+    /// VillageHubView 訂閱此事件後每次點擊都顯示完整提示 modal。
+    /// </summary>
+    public class ExplorationGateLockedClickedEvent : GameEventBase { }
 
     // ----- 紅點系統相關（B7） -----
 

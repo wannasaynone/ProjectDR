@@ -1,6 +1,6 @@
 {
     "schema_version": 1,
-    "note": "📝 AI 填寫 placeholder，待製作人審閱。守衛歸來事件純劇情演出。phase_id: alert=警戒、clarify=澄清、sheathe=收劍、gift_sword=贈劍、closing=收尾返村。",
+    "note": "📝 AI 填寫 placeholder，待製作人審閱。守衛歸來事件純劇情演出。phase_id: alert=警戒、clarify=澄清、sheathe=收劍、gift_sword=【劇情預告：守衛提到劍但本事件不實際贈出，玩家需主動向守衛發問「要拿劍」才能取得；Sprint 6 擴張後 gift_sword phase 保留用於守衛提到劍的劇情伏筆，不觸發 grant】、closing=收尾返村。",
     "guard_return_lines": [
         {
             "line_id": "gr_001",
@@ -182,7 +182,7 @@
             "line_id": "gr_023",
             "sequence": 23,
             "speaker": "narrator",
-            "text": "她從腰側的備用劍鞘裡取出一把短劍，把它平舉在你面前，柄朝向你。",
+            "text": "她的手摸了摸腰側的備用劍鞘——裡面還有一把短劍。她沒有立刻拔出，只是停頓了一秒。",
             "line_type": "narration",
             "phase_id": "gift_sword"
         },
@@ -190,7 +190,7 @@
             "line_id": "gr_024",
             "sequence": 24,
             "speaker": "Guard",
-            "text": "拿著。",
+            "text": "……你沒有武器吧。",
             "line_type": "dialogue",
             "phase_id": "gift_sword"
         },
@@ -198,7 +198,7 @@
             "line_id": "gr_025",
             "sequence": 25,
             "speaker": "Guard",
-            "text": "空手進森林是危험的。這不是我偏袒你——是外面確實有會傷人的東西，你不能沒有武器。",
+            "text": "空手進森林是危險的。外面有會傷人的東西。如果你打算繼續進去，記得來找我。",
             "line_type": "dialogue",
             "phase_id": "gift_sword"
         },
@@ -206,7 +206,7 @@
             "line_id": "gr_026",
             "sequence": 26,
             "speaker": "narrator",
-            "text": "你接過劍。它不重，但握在手心有份量。",
+            "text": "她說這句話的方式很平靜——不是命令，但也不像是普通的建議。像是一個已經做好決定的人，等著你開口。",
             "line_type": "narration",
             "phase_id": "gift_sword"
         },
@@ -214,7 +214,7 @@
             "line_id": "gr_027",
             "sequence": 27,
             "speaker": "Guard",
-            "text": "不會用的話，回去找我。我可以訓練你。村莊需要你能用這個。",
+            "text": "我有備用的。不是白拿——你要用，你來要。我不送沒開口的人東西。",
             "line_type": "dialogue",
             "phase_id": "gift_sword"
         },
@@ -222,7 +222,7 @@
             "line_id": "gr_028",
             "sequence": 28,
             "speaker": "narrator",
-            "text": "她說完，沒有再多說，轉身往村莊的方向走。艾薇夫人看著她的背影，輕輕呼了一口氣。",
+            "text": "她說完，轉身往村莊走。艾薇夫人輕輕呼了一口氣，看向你。",
             "line_type": "narration",
             "phase_id": "gift_sword"
         },
@@ -238,7 +238,7 @@
             "line_id": "gr_030",
             "sequence": 30,
             "speaker": "narrator",
-            "text": "你握著劍跟在夫人後面，走回村莊的方向。樹影在你們身後合攏，森林安靜如故。但今天多了一個人，回到村子裡。",
+            "text": "你跟在夫人後面，走回村莊的方向。樹影在你們身後合攏，森林安靜如故。但今天多了一個人，回到村子裡。",
             "line_type": "narration",
             "phase_id": "closing"
         },

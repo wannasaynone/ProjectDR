@@ -138,28 +138,30 @@ namespace ProjectDR.Tests.Village.Integration
             Assert.IsFalse(_unlockManager.IsUnlocked(CharacterIds.FarmGirl));
         }
 
-        // ===== TEST 1-D：選擇後初始資源發放 =====
+        // ===== TEST 1-D：選擇後初始資源（Sprint 6：農女/魔女無初始資源）=====
 
         [Test]
-        public void SelectFarmGirl_DispatchesTomatoSeedsToBackpack()
+        public void SelectFarmGirl_NoSeedDispatch_AfterSprint6()
         {
+            // Sprint 6 B2：農女解鎖不再發放種子，物資改為依賴探索
             _cgPlayer.AutoComplete = true;
             _openingController.StartOpeningSequence();
             _dialogueManager.SelectChoice(NodeDialogueBranchIds.FarmGirl);
 
             int seedsInBackpack = _backpack.GetItemCount("seed_tomato");
-            Assert.AreEqual(3, seedsInBackpack, "農女分支應發放 3 顆番茄種子到背包");
+            Assert.AreEqual(0, seedsInBackpack, "Sprint 6 後農女分支不應發放番茄種子");
         }
 
         [Test]
-        public void SelectWitch_DispatchesGreenHerbsToBackpack()
+        public void SelectWitch_NoHerbDispatch_AfterSprint6()
         {
+            // Sprint 6 B2：魔女解鎖不再發放藥草，物資改為依賴探索
             _cgPlayer.AutoComplete = true;
             _openingController.StartOpeningSequence();
             _dialogueManager.SelectChoice(NodeDialogueBranchIds.Witch);
 
             int herbs = _backpack.GetItemCount("herb_green");
-            Assert.AreEqual(3, herbs, "魔女分支應發放 3 顆綠藥草到背包");
+            Assert.AreEqual(0, herbs, "Sprint 6 後魔女分支不應發放綠藥草");
         }
 
         // ===== TEST 1-E：CharacterUnlockedEvent 發布 =====
@@ -235,6 +237,7 @@ namespace ProjectDR.Tests.Village.Integration
 
         private static InitialResourcesConfig BuildInitialResourcesConfig()
         {
+            // Sprint 6 B2：移除 unlock_farm_girl_seed、unlock_witch_herb；角色解鎖時不再發放物資
             return new InitialResourcesConfig(new InitialResourcesConfigData
             {
                 schema_version = 1,
@@ -246,27 +249,6 @@ namespace ProjectDR.Tests.Village.Integration
                         trigger_id = InitialResourcesTriggerIds.Node0Start,
                         item_id = "",
                         quantity = 0,
-                    },
-                    new InitialResourceGrantData
-                    {
-                        grant_id = "unlock_farm_girl_seed",
-                        trigger_id = InitialResourcesTriggerIds.UnlockFarmGirl,
-                        item_id = "seed_tomato",
-                        quantity = 3,
-                    },
-                    new InitialResourceGrantData
-                    {
-                        grant_id = "unlock_witch_herb",
-                        trigger_id = InitialResourcesTriggerIds.UnlockWitch,
-                        item_id = "herb_green",
-                        quantity = 3,
-                    },
-                    new InitialResourceGrantData
-                    {
-                        grant_id = "unlock_guard_sword",
-                        trigger_id = InitialResourcesTriggerIds.GuardReturnEvent,
-                        item_id = "gift_sword_wooden",
-                        quantity = 1,
                     },
                 },
             });

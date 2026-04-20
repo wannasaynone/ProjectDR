@@ -45,6 +45,7 @@ namespace ProjectDR.Village
 
         /// <summary>
         /// 開始該角色的倒數。
+        /// - 若該角色已處於 Blocked 狀態（封鎖中），此次呼叫被忽略。
         /// - 若該角色已處於 Ready 狀態（紅點亮），此次呼叫被忽略（上限 1）。
         /// - 若該角色目前正在倒數，重設為 0 重新計時。
         /// - 若該角色目前工作中，僅記錄「待恢復後倒數」，實際推進需 SetWorking(false)。
@@ -55,6 +56,11 @@ namespace ProjectDR.Village
             if (string.IsNullOrEmpty(characterId)) return;
 
             CountdownState state = GetOrCreate(characterId);
+            if (state.Blocked)
+            {
+                // 封鎖中：不啟動倒數（守衛「要拿劍」完成前的保護機制）
+                return;
+            }
             if (state.Ready)
             {
                 // 紅點累積上限 1：已 Ready 則忽略
@@ -130,6 +136,39 @@ namespace ProjectDR.Village
             state.Working = working;
         }
 
+        /// <summary>
+        /// 封鎖指定角色的倒數啟動。
+        /// 封鎖後呼叫 StartCountdown 無效；若該角色正在倒數，立刻停止。
+        /// 用途：守衛「要拿劍」完成前，不啟動 L2 角色發問倒數。
+        /// </summary>
+        public void BlockCountdown(string characterId)
+        {
+            if (string.IsNullOrEmpty(characterId)) return;
+            CountdownState state = GetOrCreate(characterId);
+            state.Blocked = true;
+            // 若已在倒數中，立刻停止
+            state.Active = false;
+            state.Elapsed = 0f;
+        }
+
+        /// <summary>
+        /// 解除指定角色的倒數封鎖。
+        /// 解封後需再次呼叫 StartCountdown 才會開始計時。
+        /// </summary>
+        public void UnblockCountdown(string characterId)
+        {
+            if (string.IsNullOrEmpty(characterId)) return;
+            if (!_states.TryGetValue(characterId, out CountdownState state)) return;
+            state.Blocked = false;
+        }
+
+        /// <summary>查詢該角色是否處於封鎖狀態。</summary>
+        public bool IsBlocked(string characterId)
+        {
+            if (string.IsNullOrEmpty(characterId)) return false;
+            return _states.TryGetValue(characterId, out CountdownState state) && state.Blocked;
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {
@@ -162,6 +201,13 @@ namespace ProjectDR.Village
 
             /// <summary>已累積秒數。</summary>
             public float Elapsed;
+
+            /// <summary>
+            /// 封鎖中（禁止啟動倒數）。
+            /// Sprint 6 F8：守衛「要拿劍」完成前設定為 true，
+            /// ExplorationGateReopenedEvent 後設定為 false 再呼叫 StartCountdown。
+            /// </summary>
+            public bool Blocked;
         }
     }
 }

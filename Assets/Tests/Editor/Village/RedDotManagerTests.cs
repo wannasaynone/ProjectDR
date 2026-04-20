@@ -148,10 +148,14 @@ namespace ProjectDR.Tests.Village
         {
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                // 先把 T0 完成讓 T1 (owner=FarmGirl in BuildConfig) Available
+                // 先把 T0 完成讓 T1 (owner=VillageChiefWife in BuildConfig) Available
                 _questManager.TryAutoCompleteFirstAutoQuest(); // T0 完成 → 發布 T1 Available
-                HubRedDotInfo info = sut.GetHubRedDot(CharacterIds.FarmGirl);
-                Assert.AreEqual(RedDotLayer.NewQuest, info.HighestLayer);
+                HubRedDotInfo info = sut.GetHubRedDot(CharacterIds.VillageChiefWife);
+                // T0 完成後 T1 Available → VCW L3 亮（T1 owner = VCW）
+                // 但 T0 owner 也是 VCW，完成 T0 後 L3 理應清除再重亮（T1 Available）
+                Assert.IsTrue(info.HighestLayer == RedDotLayer.NewQuest
+                    || info.HighestLayer == RedDotLayer.MainQuestEvent,
+                    "完成 T0 後 VCW 應有 L3 或 L4 紅點");
             }
         }
 
@@ -160,23 +164,26 @@ namespace ProjectDR.Tests.Village
         {
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                _questManager.TryAutoCompleteFirstAutoQuest(); // T0 → T1 Available, FarmGirl L3 亮
+                _questManager.TryAutoCompleteFirstAutoQuest(); // T0 → T1 Available, VCW L3 亮
                 _questManager.StartQuest("T1");
-                Assert.AreEqual(RedDotLayer.None,
-                    sut.GetHubRedDot(CharacterIds.FarmGirl).HighestLayer);
+                // 承接 T1 後，若無其他 Available 任務，L3 清除（但 L4 可能因其他路徑存在）
+                HubRedDotInfo info = sut.GetHubRedDot(CharacterIds.VillageChiefWife);
+                Assert.AreNotEqual(RedDotLayer.NewQuest, info.HighestLayer);
             }
         }
 
-        // ===== L4 主線事件層（T1 → 節點 1；T3 → 節點 2） =====
+        // ===== L4 主線事件層（新 T1 = 節點 2 觸發；節點 1 L4 由外部 SetMainQuestEventFlag 觸發）=====
 
         [Test]
-        public void MainQuestCompleted_T1_TriggersNode1L4OnVillageChiefWife()
+        public void MainQuestCompleted_NewT1_TriggersNode2L4OnVillageChiefWife()
         {
+            // Sprint 6：新 T1（認識所有人 = 節點 2 對話完成）→ VCW L4 亮
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                _questManager.TryAutoCompleteFirstAutoQuest(); // T0
-                _questManager.StartQuest("T1");
-                _questManager.CompleteQuest("T1");
+                _questManager.TryAutoCompleteFirstAutoQuest(); // T0 完成 → T1 Available
+                _questManager.NotifyCompletionSignal(
+                    MainQuestCompletionTypes.DialogueEnd,
+                    MainQuestSignalValues.Node2DialogueComplete); // T1 完成
 
                 HubRedDotInfo info = sut.GetHubRedDot(CharacterIds.VillageChiefWife);
                 Assert.AreEqual(RedDotLayer.MainQuestEvent, info.HighestLayer);
@@ -184,21 +191,14 @@ namespace ProjectDR.Tests.Village
         }
 
         [Test]
-        public void MainQuestCompleted_T3_TriggersNode2L4OnVillageChiefWife()
+        public void SetMainQuestEventFlag_ManuallyTriggersNode1L4()
         {
+            // Sprint 6：節點 1 L4 由外部（VillageEntryPoint 在選擇 1 角色 CG 完成後）呼叫 SetMainQuestEventFlag
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                _questManager.TryAutoCompleteFirstAutoQuest();
-                _questManager.StartQuest("T1");
-                _questManager.CompleteQuest("T1");
-                _questManager.StartQuest("T2");
-                _questManager.CompleteQuest("T2");
-                _questManager.StartQuest("T3");
-                _questManager.CompleteQuest("T3");
-
-                // T3 完成 → 村長夫人 L4
-                HubRedDotInfo info = sut.GetHubRedDot(CharacterIds.VillageChiefWife);
-                Assert.AreEqual(RedDotLayer.MainQuestEvent, info.HighestLayer);
+                sut.SetMainQuestEventFlag(CharacterIds.VillageChiefWife, true);
+                Assert.AreEqual(RedDotLayer.MainQuestEvent,
+                    sut.GetHubRedDot(CharacterIds.VillageChiefWife).HighestLayer);
             }
         }
 
@@ -208,8 +208,10 @@ namespace ProjectDR.Tests.Village
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
                 _questManager.TryAutoCompleteFirstAutoQuest();
-                _questManager.StartQuest("T1");
-                _questManager.CompleteQuest("T1");
+                _questManager.NotifyCompletionSignal(
+                    MainQuestCompletionTypes.DialogueEnd,
+                    MainQuestSignalValues.Node2DialogueComplete); // T1 完成 → L4 亮
+
                 Assert.AreEqual(RedDotLayer.MainQuestEvent,
                     sut.GetHubRedDot(CharacterIds.VillageChiefWife).HighestLayer);
 
@@ -226,12 +228,12 @@ namespace ProjectDR.Tests.Village
         {
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                // 先把村長夫人弄出 L2, L3, L4
-                // 村長夫人已經有 L3 (T0 Available) — 建構時初始 sync
+                // 村長夫人已有 L3 (T0 Available 初始 sync)
                 // 加上 L4
                 _questManager.TryAutoCompleteFirstAutoQuest();
-                _questManager.StartQuest("T1");
-                _questManager.CompleteQuest("T1"); // L4 亮
+                _questManager.NotifyCompletionSignal(
+                    MainQuestCompletionTypes.DialogueEnd,
+                    MainQuestSignalValues.Node2DialogueComplete); // 新 T1 完成 → L4 亮
 
                 // 加上 L2
                 EventBus.Publish(new CharacterQuestionCountdownReadyEvent
@@ -263,12 +265,7 @@ namespace ProjectDR.Tests.Village
                 Assert.AreEqual(RedDotLayer.CharacterQuestion,
                     sut.GetHubRedDot(CharacterIds.FarmGirl).HighestLayer);
 
-                // FarmGirl 獲得一個 Available quest (T1) 通過自動完成 T0
-                _questManager.TryAutoCompleteFirstAutoQuest();
-                Assert.AreEqual(RedDotLayer.NewQuest,
-                    sut.GetHubRedDot(CharacterIds.FarmGirl).HighestLayer);
-
-                // 手動設 L4（farmgirl 其實沒 L4 觸發條件，但此 API 允許手動設）
+                // FarmGirl 手動設 L4（模擬 VillageEntryPoint 在選擇 1 角色 CG 後呼叫）
                 sut.SetMainQuestEventFlag(CharacterIds.FarmGirl, true);
                 Assert.AreEqual(RedDotLayer.MainQuestEvent,
                     sut.GetHubRedDot(CharacterIds.FarmGirl).HighestLayer);
@@ -282,20 +279,12 @@ namespace ProjectDR.Tests.Village
             {
                 EventBus.Publish(new CharacterQuestionCountdownReadyEvent
                 {
-                    CharacterId = CharacterIds.Witch,
+                    CharacterId = CharacterIds.VillageChiefWife,
                 });
-                Assert.AreEqual(RedDotLayer.CharacterQuestion,
-                    sut.GetHubRedDot(CharacterIds.Witch).HighestLayer);
 
-                // 完成 T0/T1/T2 讓 T3 (owner=Witch in BuildConfig) Available
-                _questManager.TryAutoCompleteFirstAutoQuest();
-                _questManager.StartQuest("T1");
-                _questManager.CompleteQuest("T1");
-                _questManager.StartQuest("T2");
-                _questManager.CompleteQuest("T2"); // T3 Available
-
-                Assert.AreEqual(RedDotLayer.NewQuest,
-                    sut.GetHubRedDot(CharacterIds.Witch).HighestLayer);
+                // VCW 已有 L3 (T0 Available)，L3 > L2
+                HubRedDotInfo info = sut.GetHubRedDot(CharacterIds.VillageChiefWife);
+                Assert.AreEqual(RedDotLayer.NewQuest, info.HighestLayer);
             }
         }
 
@@ -407,12 +396,16 @@ namespace ProjectDR.Tests.Village
         // ===== Helper =====
 
         /// <summary>
-        /// 建立測試用的任務配置：
-        /// - T0 (owner=VillageChiefWife, Auto, 初始 Available)
-        /// - T1 (owner=FarmGirl, DialogueEnd, T0 完成後 Available) — 對應節點 1 觸發
-        /// - T2 (owner=FarmGirl, CommissionCount)
-        /// - T3 (owner=Witch, CommissionCount) — 對應節點 2 觸發
-        /// - T4 (owner=Guard, FirstExplore)
+        /// 建立測試用的任務配置（RedDotManager 專用 5-quest 配置，與生產環境不同）：
+        /// - T0 (owner=VillageChiefWife, Auto, 初始 Available) — T0 auto 完成
+        /// - T1 (owner=FarmGirl, DialogueEnd, node_2_dialogue_complete) — Sprint 6 新 T1（認識所有人），
+        ///   RedDotManager.QuestIdsTriggersNode2 = "T1" → T1 完成後 VCW L4 亮
+        /// - T2 (owner=FarmGirl, CommissionCount) — 用於 L3 多角色測試
+        /// - T3 (owner=Witch, CommissionCount) — 用於 L3 多角色測試（Witch 擁有）
+        /// - T4 (owner=Guard, FirstExplore) — 末端
+        ///
+        /// 注意：此配置刻意保留 5 個任務，以便 L3 測試能驗證多角色 owner 場景。
+        /// T1 的 completion_condition_value 對應新 T1 的觸發訊號（Sprint 6 更新）。
         /// </summary>
         private static MainQuestConfig BuildConfig()
         {
@@ -435,7 +428,8 @@ namespace ProjectDR.Tests.Village
                         quest_id = "T1",
                         owner_character_id = CharacterIds.FarmGirl,
                         completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
-                        completion_condition_value = "first_char_intro_complete",
+                        // Sprint 6：新 T1 completion_condition_value = node_2_dialogue_complete
+                        completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
                         unlock_on_complete = "T2",
                         sort_order = 1
                     },

@@ -1,13 +1,18 @@
 // PlayerQuestionsConfigData — 玩家發問 40 題配置的 JSON DTO 與不可變配置物件（B14）。
 // 配置檔路徑：Assets/Game/Resources/Config/player-questions-config.json
 //
-// 欄位說明：
+// 欄位說明（schema_version 1）：
 // - question_id      : 全域唯一識別
 // - character_id     : 對應角色（CharacterIds）
 // - unlock_affinity_stage : 解鎖需求好感度門檻索引（0 = 初始解鎖）
 // - question_text    : 問題文字（玩家視角）
 // - response_text    : 角色回答（打字機播放）
 // - sort_order       : 顯示排序（升序）
+//
+// 新增欄位（schema_version 2，Sprint 6 擴張 B5/C11）：
+// - is_single_use    : bool，預設 false；true = 單次特殊題，問後從清單永久消失
+// - trigger_flag     : string，預設空字串；非空時觸發對應 flag 效果（如 "grant_guard_sword"）
+// - affinity_gain    : int，預設 0；觸發特殊題時的好感度增量（通常為 0）
 //
 // ⚠️ 本配置中的所有題目均為 AI 生成 placeholder，待製作人審閱並逐一撰寫正式版本。
 
@@ -39,6 +44,25 @@ namespace ProjectDR.Village
 
         /// <summary>排序鍵（升序顯示）。</summary>
         public int sort_order;
+
+        // ===== schema_version 2 新增欄位（Sprint 6 擴張 B5/C11）=====
+
+        /// <summary>
+        /// 是否為單次特殊題（schema_version 2）。
+        /// true = 問完後從清單永久消失（session 旗標 + 概念上的永久移除）。
+        /// </summary>
+        public bool is_single_use;
+
+        /// <summary>
+        /// 觸發旗標 ID（schema_version 2）。
+        /// 非空時 PlayerQuestionsManager 在玩家選題後呼叫對應的 flag handler。
+        /// 目前已知旗標：
+        ///   "grant_guard_sword" → 贈劍 + 探索重開
+        /// </summary>
+        public string trigger_flag;
+
+        /// <summary>觸發特殊題時的好感度增量（schema_version 2，通常為 0）。</summary>
+        public int affinity_gain;
     }
 
     /// <summary>玩家發問配置完整 JSON DTO。</summary>
@@ -78,13 +102,34 @@ namespace ProjectDR.Village
         /// <summary>排序鍵。</summary>
         public int SortOrder { get; }
 
+        /// <summary>
+        /// 是否為單次特殊題（schema_version 2）。
+        /// true = 問完後從清單永久消失。
+        /// </summary>
+        public bool IsSingleUse { get; }
+
+        /// <summary>
+        /// 觸發旗標 ID（schema_version 2）。
+        /// 非空時 PlayerQuestionsManager 在玩家選題後呼叫對應 flag handler。
+        /// </summary>
+        public string TriggerFlag { get; }
+
+        /// <summary>觸發特殊題時的好感度增量（schema_version 2，通常為 0）。</summary>
+        public int AffinityGain { get; }
+
+        /// <summary>是否有觸發旗標效果。</summary>
+        public bool HasTriggerFlag => !string.IsNullOrEmpty(TriggerFlag);
+
         public PlayerQuestionInfo(
             string questionId,
             string characterId,
             int unlockAffinityStage,
             string questionText,
             string responseText,
-            int sortOrder)
+            int sortOrder,
+            bool isSingleUse = false,
+            string triggerFlag = "",
+            int affinityGain = 0)
         {
             QuestionId = questionId;
             CharacterId = characterId;
@@ -92,6 +137,9 @@ namespace ProjectDR.Village
             QuestionText = questionText;
             ResponseText = responseText;
             SortOrder = sortOrder;
+            IsSingleUse = isSingleUse;
+            TriggerFlag = triggerFlag ?? string.Empty;
+            AffinityGain = affinityGain;
         }
     }
 
@@ -128,7 +176,10 @@ namespace ProjectDR.Village
                     q.unlock_affinity_stage,
                     q.question_text ?? string.Empty,
                     q.response_text ?? string.Empty,
-                    q.sort_order);
+                    q.sort_order,
+                    q.is_single_use,
+                    q.trigger_flag ?? string.Empty,
+                    q.affinity_gain);
 
                 _byId[q.question_id] = info;
 

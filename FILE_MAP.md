@@ -5,7 +5,9 @@
 | 檔案 | 用途 |
 |------|------|
 | `project-status.md` | 專案狀態檔（當前階段、階段焦點、活躍 Sprint、待決事項、已知阻塞） |
-| `sprint/sprint-4-producer-tbd-list.md` | Sprint 4 後保留：製作人數值/文字/策略 TBD 清單（Sprint 4 完成後保留以供製作人決策） |
+| `project-tbd.md` | 專案級 TBD 池（跨 Sprint 累積的製作人待拍板 placeholder 清單，2026-04-20 建立；類別：intro/node/quest/resource/recipe/storage/balance） |
+| `sprint/sprint-6-explore-gate-rework.md` | Sprint 6 — 探索開放流程重構（移除委託強制教學；2026-04-20 建立；承接 6 條設計決策） |
+| `session-state/active.md` | 當前 session 狀態（Sprint 6 進度追蹤） |
 
 ## GDD 設計文件
 
@@ -97,6 +99,7 @@
 | `Assets/Game/Scripts/Village/HCGDialogueSetup.cs` | HCG 劇情播放整合層（KGC DialogueManager + GameStaticDataManager，IT 硬編碼 4 角色對話） |
 | `Assets/Game/Scripts/Village/CharacterIntroCGPlayer.cs` | ICGPlayer 真實實作（B13）：從 CharacterIntroConfig 取 intro → Resources.Load CG Sprite → Instantiate CharacterIntroCGView → 播放完成後銷毀 View + 發布 CompletedEvent；only-once 旗標由 VillageEntryPoint 以 session HashSet 管理 |
 | `Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs` | 玩家發問配置 JSON DTO（PlayerQuestionsConfigData/PlayerQuestionData）與不可變配置物件（PlayerQuestionsConfig/PlayerQuestionInfo）；API：GetQuestionsForCharacter / GetUnlockedQuestions(charId, stage) / GetQuestion(id)；B14 Sprint 4 |
+| `Assets/Game/Scripts/Village/GuardFirstMeetDialogueConfigData.cs` | 守衛首次進入取劍對白配置 JSON DTO（GuardFirstMeetDialogueConfigData）與不可變配置物件（GuardFirstMeetDialogueConfig），DialogueLines IReadOnlyList<string>，含 fallback；F12 Sprint 6 決策 6-13 |
 | `Assets/Game/Scripts/Village/CharacterIdSnakeCaseMapper.cs` | Sprint 5：JSON snake_case → CharacterIds 常數 (PascalCase) 映射器（內部使用） |
 | `Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs` | Sprint 5 B1：角色發問倒數管理器（純邏輯，60s 倒數/角色、工作中暫停、紅點上限 1、發布 CharacterQuestionCountdownReadyEvent） |
 | `Assets/Game/Scripts/Village/CharacterQuestionsConfigData.cs` | Sprint 5 B4：角色發問 280 題配置 JSON DTO 與不可變 Config（依 character/level 索引、個性 +0/+2/+5/+10 增量對應、snake_case/PascalCase 雙映射） |
@@ -235,7 +238,8 @@
 | `Assets/Game/Resources/Config/initial-resources-config.json` | 初始資源配置表（A4 placeholder：節點 0 空背包、農女解鎖/魔女解鎖/守衛歸來事件贈送物） |
 | `Assets/Game/Resources/Config/gift-sword-config.json` | 贈劍屬性表（A4-3 placeholder：木劍 ATK+3，守衛歸來事件贈送） |
 | `Assets/Game/Resources/Config/character-intro-config.json` | 角色登場 CG + 短劇情（A1 placeholder：4 位角色場景描述 + 對話行，village_chief_wife/farm_girl/witch/guard） |
-| `Assets/Game/Resources/Config/player-questions-config.json` | 玩家發問配置（B14 placeholder：37 題，VCW 12/農女 9/魔女 9/守衛 9，分 stage 0/1/2 三批解鎖，待製作人撰寫正式回答） |
+| `Assets/Game/Resources/Config/player-questions-config.json` | 玩家發問配置（B14 placeholder：28 題，VCW 12/農女 9/魔女 9/守衛 0（F12 決策 6-13 移除 guard_ask_sword），分 stage 0/1/2 三批解鎖，待製作人撰寫正式回答） |
+| `Assets/Game/Resources/Config/guard-first-meet-dialogue-config.json` | 守衛首次進入取劍對白配置（F12 Sprint 6 決策 6-13，placeholder 2 行，待製作人撰寫正式台詞） |
 | `Assets/Game/Resources/Config/character-questions-config.json` | 角色發問配置（Sprint 5 A1~A3 placeholder：4 個性類型定義 personality_gentle/lively/calm/assertive、4 角色個性偏好對應、280 題角色發問 4 角色 × 7 級 × 10 題 × 4 個性選項；所有文字程式化 placeholder 待製作人後續撰寫） |
 | `Assets/Game/Resources/Config/greeting-config.json` | 招呼語配置（Sprint 5 A4 placeholder：280 句 4 角色 × 7 級 × 10 句；進入角色互動畫面自動播放、L1/L4 紅點亮時跳過、L2/L3 仍播放） |
 | `Assets/Game/Resources/Config/idle-chat-config.json` | [閒聊] 問題池配置（Sprint 5 A5 placeholder：4 角色 × 20 題 × 3 回答；玩家 40 題池耗盡後觸發的隨機問答 fallback） |
@@ -291,6 +295,7 @@
 | `Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs` | C1 整合測試 TEST 1：開場流程（10 個：CG→節點 0→VN 選項→解鎖+資源→完成事件）；Sprint 4 C1 |
 | `Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs` | C1 整合測試 TEST 2/3：節點 1 流程 + 節點 2 + 探索解鎖（7 個：剩下那位解鎖、T1 完成訊號、T3→探索解鎖、序列驗證）；Sprint 4 C1 |
 | `Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs` | C1 整合測試 TEST 4：首次探索守衛歸來（7 個：攔截、CG+對話、守衛解鎖+贈劍、一次性觸發）；Sprint 4 C1 |
+| `Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs` | F12 Sprint 6 決策 6-13 整合測試（T1~T5b：首次進入觸發邏輯、callback 發劍+ExplorationGateReopenedEvent、重複保護、T2 production path、特殊題不在清單中） |
 | `Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs` | C1 整合測試 TEST 5：完整 4 循環並行（15 個：探索/委託/擴建/感情循環 + 紅點 L1/L2/L3 整合 + 多循環並行）；Sprint 4 C1 |
 | `Assets/Tests/Editor/Village/Exploration/MapDataTests.cs` | MapData 單元測試（建構驗證、格子查詢、邊界檢查、出發點/撤離點驗證） |
 | `Assets/Tests/Editor/Village/Exploration/MapDataLoaderTests.cs` | MapDataLoader 單元測試（8 個：正常反序列化、寬高、出發點、格子類型、撤離點、null/empty/invalid cell 例外） |
@@ -329,3 +334,11 @@
 | `dev-logs/2026-04-18-9.md` | Sprint 5 B+C（對話功能修正 B1~B21 實作 + C1~C7 整合測試；紅點 L2 倒數改造、角色發問 a 路徑、玩家發問 b 路徑重寫、招呼語系統、工作中 CD ×2、102 個新測試全通過） |
 | `dev-logs/2026-04-18-10.md` | 對話按鈕紅點視覺修正（AreaButton RedDot 白→紅、置中→右上角）+ 角色發問選答案後改由主畫面 PlayDialogue 播放 response（CharacterInteractionView 新增 PlayDialogue public API、CharacterQuestionsView responseAction 委外） |
 | `dev-logs/2026-04-18-11.md` | 角色 response 打字機 click-to-skip 修正（PrepareDialogueUI 啟用 FullScreenDialogueArea 時強制 SetAsLastSibling；PlayDialogue 改為呼叫 PrepareDialogueUI 統一流程） |
+| `dev-logs/2026-04-20-1.md` | Sprint 6 B1/B2/B3（main-quest-config.json 3 任務重構 + initial-resources-config.json 移除農女/魔女 grants + node-dialogue-config.json 確認無需改動；TDD 更新 9 個測試案例）實作細節 |
+| `dev-logs/2026-04-20-2.md` | Sprint 6 C1/C2/C4（MainQuestConfigData Node2DialogueComplete 常數 + CharacterUnlockManager T1 探索解鎖 + RedDotManager QuestIdsTriggersNode2="T1"）+ D1/D2/D3 測試更新（9 個測試檔涵蓋新 3-quest 結構）實作細節 |
+| `dev-logs/2026-04-20-3.md` | Sprint 6 C5+D3.1+D3.2 補修（dev-head 審核後）：VillageEntryPoint 訊號源修正（node_2 完成送 Node2DialogueComplete R1）、節點 1 CG 後 SetMainQuestEventFlag（R2）、刪除節點 1 殘留死碼（R3）、[Obsolete] attribute（R4）、過時注釋更新（R5）、斷裂測試修復（R6）、R7-1/R7-2 回歸測試新增 |
+| `dev-logs/2026-04-20-4.md` | Sprint 6 C6 bugfix（D4 實機測試第一個 bug）：節點 1/2 對話觸發邏輯修正。VillageEntryPoint 新增 _node1TriggerReady/_node2TriggerReady 旗標，與 MainQuest T1/T3 語義解耦；D4-1/D4-2 回歸測試新增 |
+| `dev-logs/2026-04-20-5.md` | Sprint 6 C7 bugfix（D4 實機測試第二個 bug）：節點 1 對話結束後「剩下那位」角色 Hub 按鈕未解鎖。CharacterUnlockManager 新增訂閱 NodeDialogueCompletedEvent，node_1 完成時依 _node0ChosenBranch ForceUnlock；8 個測試更新/新增 |
+| `dev-logs/2026-04-20-12.md` | Sprint 6 F10 bugfix（D4 bugfix 7）：系統性重構繞道路徑 + Revert F9；分析 callback side effects；抽出 OnCharacterEnteredAndCGDone 共用方法；4 個 F10 回歸測試（GuardInteractViewDialogueRegressionTest 重寫） |
+| `dev-logs/2026-04-20-13.md` | Sprint 6 F11 bugfix（D4 bugfix 8）：路徑 B 補 SetState(Normal)；SetState(Normal) 從路徑 A callback 移入 OnCharacterEnteredAndCGDone 共用方法；新增 3 個 F11 回歸測試 |
+| `dev-logs/2026-04-20-14.md` | Sprint 6 F12（D4 bugfix 9）：決策 6-13 守衛取劍改為首次進入自動對白觸發；Revert guard_ask_sword；新增 guard-first-meet-dialogue-config.json + GuardFirstMeetDialogueConfigData.cs + CharacterInteractionView.SetFirstMeetOverrideDialogue API + VillageEntryPoint.OnGuardFirstMeetDialogueCompleted；6 個新測試 + regression |

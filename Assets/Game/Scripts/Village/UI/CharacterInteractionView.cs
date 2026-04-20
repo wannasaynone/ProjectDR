@@ -290,6 +290,26 @@ namespace ProjectDR.Village.UI
         }
 
         /// <summary>
+        /// Sprint 6 決策 6-13：設定首次進入覆蓋對白（如守衛取劍對白）。
+        /// 設置後 StartDialoguePlayback 改播此對白，播完後呼叫 onComplete callback；
+        /// 使用一次後自動清除（one-time 語義）。
+        /// 必須在 Show() 之前呼叫，且在 SetCharacter() 之後呼叫。
+        /// </summary>
+        /// <param name="lines">覆蓋對白行。空或 null 則清除設定。</param>
+        /// <param name="onComplete">對白完成後的 callback（發劍、探索重開等業務邏輯）。</param>
+        public void SetFirstMeetOverrideDialogue(string[] lines, System.Action onComplete)
+        {
+            if (lines == null || lines.Length == 0)
+            {
+                _firstMeetOverrideDialogueLines = null;
+                _firstMeetOverrideCallback = null;
+                return;
+            }
+            _firstMeetOverrideDialogueLines = lines;
+            _firstMeetOverrideCallback = onComplete;
+        }
+
+        /// <summary>
         /// 設定是否由外部驅動 DialogueManager（而非由本 View 呼叫 StartDialogue）。
         /// 開場劇情（OpeningSequenceController）等由外部推進對話時使用，
         /// 外部模式下 OnShow 僅準備 UI，不自動啟動角色預設對話；
@@ -336,6 +356,12 @@ namespace ProjectDR.Village.UI
 
         private bool _pendingDialogueStart;
         private bool _externalDialogueMode;
+
+        // Sprint 6 決策 6-13：首次進入覆蓋對白（如守衛取劍對白）
+        // 設置後 StartDialoguePlayback 改播此對白，播完後呼叫 _firstMeetOverrideCallback
+        // 使用一次後自動清除（one-time 語義）
+        private string[] _firstMeetOverrideDialogueLines;
+        private System.Action _firstMeetOverrideCallback;
 
         // CTRL 快轉：按住 LeftCtrl / RightCtrl 時連續跳過打字機並自動推進到下一行
         // 在等待 VN 選項時暫停（必須由玩家選擇）。頻率控制：每 0.05s 推進一次。
@@ -437,6 +463,39 @@ namespace ProjectDR.Village.UI
         private void StartDialoguePlayback()
         {
             PrepareDialogueUI();
+
+            // Sprint 6 決策 6-13：首次進入覆蓋對白（如守衛取劍對白）優先播放
+            // 播完後呼叫 callback，並自動清除覆蓋（one-time 語義）
+            if (_firstMeetOverrideDialogueLines != null && _firstMeetOverrideDialogueLines.Length > 0)
+            {
+                string[] overrideLines = _firstMeetOverrideDialogueLines;
+                System.Action overrideCallback = _firstMeetOverrideCallback;
+                // 清除覆蓋（確保下次進入走正常招呼語流程）
+                _firstMeetOverrideDialogueLines = null;
+                _firstMeetOverrideCallback = null;
+
+                // 播放覆蓋對白
+                _dialogueManager.StartDialogue(new DialogueData(overrideLines));
+                string firstOverrideLine = _dialogueManager.GetCurrentLine();
+                if (firstOverrideLine != null && _typewriterEffect != null)
+                {
+                    _typewriterEffect.OnComplete += OnTypewriterLineComplete;
+                    _typewriterEffect.Play(firstOverrideLine, _typewriterCharsPerSecond);
+                }
+
+                // 訂閱對白完成事件，播完後執行 callback（發劍、探索重開等）
+                if (overrideCallback != null)
+                {
+                    System.Action<DialogueCompletedEvent> onFirstMeetCompleted = null;
+                    onFirstMeetCompleted = (e) =>
+                    {
+                        EventBus.Unsubscribe(onFirstMeetCompleted);
+                        overrideCallback.Invoke();
+                    };
+                    EventBus.Subscribe(onFirstMeetCompleted);
+                }
+                return;
+            }
 
             // 委託進行中：改用 placeholder 工作中台詞（B12）
             DialogueData dialogueToPlay = _characterData.Dialogue;

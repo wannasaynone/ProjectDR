@@ -29,6 +29,7 @@ namespace ProjectDR.Village
         public const string FirstStorageExpand = "first_storage_expand";
 
         /// <summary>首次角色引導流程完成（角色解鎖登場 CG 全播完）。</summary>
+        [System.Obsolete("Sprint 6 後已廢棄，改用 MainQuestCompletionTypes.DialogueEnd + Node2DialogueComplete。此常數無任何引用，可安全刪除。")]
         public const string FirstCharIntroComplete = "first_char_intro_complete";
     }
 
@@ -40,13 +41,17 @@ namespace ProjectDR.Village
     /// </summary>
     public static class MainQuestSignalValues
     {
-        /// <summary>T1 完成條件：首次角色 intro 完成（= 節點 1 結束）。</summary>
+        /// <summary>（舊 T1 完成條件，Sprint 6 後已廢棄）首次角色 intro 完成（= 節點 1 結束）。保留供相容性。</summary>
+        [System.Obsolete("Sprint 6 後已廢棄，改用 Node2DialogueComplete。VillageEntryPoint 不再送此訊號，無任何引用，可安全刪除。")]
         public const string FirstCharIntroComplete = "first_char_intro_complete";
 
         /// <summary>T0 完成條件：節點 0 對話完成。</summary>
         public const string Node0DialogueComplete = "node0_dialogue_complete";
 
-        /// <summary>T4 完成條件：守衛歸來事件完成。</summary>
+        /// <summary>新 T1 完成條件（Sprint 6）：節點 2 對話完成（= 魔女登場 CG + 對話結束）。</summary>
+        public const string Node2DialogueComplete = "node_2_dialogue_complete";
+
+        /// <summary>新 T2 完成條件（Sprint 6，舊 T4）：守衛歸來事件完成。</summary>
         public const string GuardReturnEventComplete = "guard_return_event_complete";
     }
 

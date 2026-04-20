@@ -250,10 +250,10 @@ namespace ProjectDR.Village
 
         /// <summary>
         /// L4 主線事件：特定任務完成時，對應的節點角色 L4 紅點亮起。
-        /// 目前採簡化規則：
-        /// - T1 完成（character-unlock-system.md QC-D：T1 觸發節點 1）→ VillageChiefWife L4 亮
-        /// - T3 完成（節點 2）→ VillageChiefWife L4 亮
-        /// - 其他任務完成後 → 依 owner_character_id 決定是否需要清除 L4（保守做法：任務 Completed → 該 owner 的 L4 清除）
+        /// Sprint 6 更新後規則（character-unlock-system.md v1.4 § 6.2）：
+        /// - 新 T1 完成（認識所有人 = 節點 2 對話結束）→ VillageChiefWife L4 亮（節點 2 觸發）
+        /// - 節點 1 的 L4 觸發條件改為「選擇 1 角色 CG 完成」，由 VillageEntryPoint 外部呼叫
+        ///   SetMainQuestEventFlag 處理（不在本管理器內靠 MainQuestCompletedEvent 觸發）
         /// </summary>
         private void OnMainQuestCompleted(MainQuestCompletedEvent e)
         {
@@ -268,8 +268,9 @@ namespace ProjectDR.Village
                 UpdateLayer(ownerId, RedDotLayer.NewQuest, false);
             }
 
-            // L4 節點觸發：T1 → 節點 1；T3 → 節點 2（character-unlock-system.md § 6.2）
-            if (e.QuestId == QuestIdsTriggersNode1 || e.QuestId == QuestIdsTriggersNode2)
+            // L4 節點 2 觸發：新 T1 完成（認識所有人）→ VillageChiefWife L4 亮（character-unlock-system.md § 6.2）
+            // Sprint 6：舊 T3 已刪除，QuestIdsTriggersNode2 改為新 T1
+            if (e.QuestId == QuestIdsTriggersNode2)
             {
                 UpdateLayer(CharacterIds.VillageChiefWife, RedDotLayer.MainQuestEvent, true);
             }
@@ -301,13 +302,18 @@ namespace ProjectDR.Village
         // ===== 私有工具 =====
 
         /// <summary>
-        /// 節點 1 的觸發任務 ID（character-unlock-system.md § 6.2）。
-        /// GDD 定義：T1 = 節點 1 觸發。
+        /// 節點 1 的觸發任務 ID（Sprint 6 後已廢棄：節點 1 L4 改由 VillageEntryPoint 外部事件觸發）。
+        /// 保留此常數供參考，不再用於 OnMainQuestCompleted 的條件判斷。
+        /// 原 GDD 定義：舊 T1 = 節點 1 觸發（現 T1 語義已改為「認識所有人」= 節點 2 完成）。
         /// </summary>
+        [System.Obsolete("Sprint 6 後，節點 1 L4 由 VillageEntryPoint 外部呼叫 SetMainQuestEventFlag 觸發，此常數不再用於 RedDotManager 內部邏輯。")]
         public const string QuestIdsTriggersNode1 = "T1";
 
-        /// <summary>節點 2 的觸發任務 ID（T3 = 節點 2 觸發）。</summary>
-        public const string QuestIdsTriggersNode2 = "T3";
+        /// <summary>
+        /// 節點 2 的觸發任務 ID（Sprint 6 更新：改為新 T1「認識所有人」）。
+        /// GDD v1.4 § 6.2：新 T1 完成（node_2_dialogue_complete）→ 節點 2 L4 亮。
+        /// </summary>
+        public const string QuestIdsTriggersNode2 = "T1";
 
         private void InitialSyncFromMainQuestManager()
         {

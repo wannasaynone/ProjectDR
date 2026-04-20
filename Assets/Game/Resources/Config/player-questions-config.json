@@ -1,6 +1,6 @@
 {
-    "schema_version": 1,
-    "note": "AI 生成 placeholder，B14 IT 階段用。每角色 12~13 題，分 3 個好感度階段（0/1/2）解鎖。所有題目均標注「AI placeholder，待製作人撰寫」。",
+    "schema_version": 2,
+    "note": "AI 生成 placeholder，B14 IT 階段用。每角色 12~13 題，分 3 個好感度階段（0/1/2）解鎖。所有題目均標注「AI placeholder，待製作人撰寫」。schema_version 2（Sprint 6 擴張）新增欄位：is_single_use（bool，預設 false）、trigger_flag（string，預設空字串）、affinity_gain（int，預設 0）。Sprint 6 決策 6-13：守衛取劍改為「首次進入自動對白觸發」，guard_ask_sword 特殊題已從清單移除。",
     "questions": [
         {
             "question_id": "vcw_q01",

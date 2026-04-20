@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
@@ -7,22 +6,22 @@ using ProjectDR.Village;
 namespace ProjectDR.Tests.Village
 {
     /// <summary>
-    /// GuardReturnEventController 單元測試（B10 Sprint 4）。
-    /// 驗證：CG 播放 → 對話 → 完成事件流程、一次性觸發、攔截器介面整合。
+    /// GuardReturnEventController 單元測試（B10 Sprint 4，F7 bugfix 更新）。
+    /// 驗證：CG 播放 → 直接完成事件流程、一次性觸發。
+    ///
+    /// F7 bugfix：移除 DialogueManager 依賴，CG 完成後直接發布 GuardReturnEventCompletedEvent。
+    /// guard_return_lines 台詞已整合於 character-intro-config.json 的 intro_guard lines，
+    /// 由 CharacterIntroCGView 在 CG 期間展示。
     /// </summary>
     [TestFixture]
     public class GuardReturnEventControllerTests
     {
-        private DialogueManager _dialogueManager;
-        private GuardReturnConfig _config;
         private FakeCGPlayer _cgPlayer;
 
         [SetUp]
         public void SetUp()
         {
             EventBus.ForceClearAll();
-            _dialogueManager = new DialogueManager();
-            _config = BuildConfig();
             _cgPlayer = new FakeCGPlayer();
         }
 
@@ -38,27 +37,13 @@ namespace ProjectDR.Tests.Village
         public void Constructor_NullCGPlayer_Throws()
         {
             Assert.Throws<ArgumentNullException>(() =>
-                new GuardReturnEventController(null, _dialogueManager, _config));
-        }
-
-        [Test]
-        public void Constructor_NullDialogueManager_Throws()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                new GuardReturnEventController(_cgPlayer, null, _config));
-        }
-
-        [Test]
-        public void Constructor_NullConfig_Throws()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                new GuardReturnEventController(_cgPlayer, _dialogueManager, null));
+                new GuardReturnEventController(null));
         }
 
         [Test]
         public void Constructor_InitialState_NotTriggeredAndNotRunning()
         {
-            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, _config))
+            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer))
             {
                 Assert.IsFalse(sut.IsRunning);
                 Assert.IsFalse(sut.HasTriggered);
@@ -71,7 +56,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void TriggerEvent_StartsCGPlayback()
         {
-            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, _config))
+            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer))
             {
                 _cgPlayer.AutoComplete = false;
                 bool result = sut.TriggerEvent();
@@ -85,7 +70,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void TriggerEvent_PublishesStartedEvent()
         {
-            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, _config))
+            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer))
             {
                 _cgPlayer.AutoComplete = false;
                 bool received = false;
@@ -104,51 +89,39 @@ namespace ProjectDR.Tests.Village
         }
 
         [Test]
-        public void TriggerEvent_CGComplete_StartsDialogue()
+        public void TriggerEvent_CGComplete_PublishesCompletedEvent()
         {
-            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, _config))
-            {
-                _cgPlayer.AutoComplete = true;
-                sut.TriggerEvent();
-                Assert.IsTrue(_dialogueManager.IsActive);
-            }
-        }
-
-        [Test]
-        public void FullFlow_CGAndDialogueComplete_PublishesCompletedEvent()
-        {
-            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, _config))
+            // F7 bugfix：CG 完成後直接發布 GuardReturnEventCompletedEvent，不依賴 DialogueManager。
+            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer))
             {
                 _cgPlayer.AutoComplete = true;
 
                 bool completedReceived = false;
                 Action<GuardReturnEventCompletedEvent> handler = (e) => { completedReceived = true; };
                 EventBus.Subscribe(handler);
-
                 try
                 {
                     sut.TriggerEvent();
-                    while (_dialogueManager.IsActive && _dialogueManager.Advance()) { }
                 }
                 finally
                 {
                     EventBus.Unsubscribe(handler);
                 }
 
-                Assert.IsTrue(completedReceived);
-                Assert.IsFalse(sut.IsRunning);
-                Assert.IsTrue(sut.HasTriggered);
+                Assert.IsTrue(completedReceived, "CG 完成後應立即發布 GuardReturnEventCompletedEvent");
+                Assert.IsFalse(sut.IsRunning, "事件完成後 IsRunning 應為 false");
+                Assert.IsTrue(sut.HasTriggered, "事件完成後 HasTriggered 應為 true");
             }
         }
 
         [Test]
         public void TriggerEvent_AfterTriggered_ReturnsFalse()
         {
-            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, _config))
+            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer))
             {
                 _cgPlayer.AutoComplete = true;
                 sut.TriggerEvent();
-                while (_dialogueManager.IsActive && _dialogueManager.Advance()) { }
+                // CG 完成後事件已結束
 
                 // 第二次觸發應該失敗
                 Assert.IsFalse(sut.CanTriggerGuardReturn());
@@ -159,39 +132,13 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void TriggerEvent_WhileRunning_ReturnsFalse()
         {
-            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, _config))
+            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer))
             {
-                _cgPlayer.AutoComplete = false; // 卡在 CG 階段
+                _cgPlayer.AutoComplete = false; // 卡在 CG 階段，事件執行中
                 sut.TriggerEvent();
+                Assert.IsTrue(sut.IsRunning, "CG 未完成時 IsRunning 應為 true");
                 Assert.IsFalse(sut.CanTriggerGuardReturn());
                 Assert.IsFalse(sut.TriggerEvent());
-            }
-        }
-
-        [Test]
-        public void TriggerEvent_EmptyConfig_CompletesImmediately()
-        {
-            GuardReturnConfig emptyConfig = new GuardReturnConfig(new GuardReturnConfigData
-            {
-                guard_return_lines = new GuardReturnLineData[0],
-            });
-            using (GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, emptyConfig))
-            {
-                _cgPlayer.AutoComplete = true;
-
-                bool completedReceived = false;
-                Action<GuardReturnEventCompletedEvent> handler = (e) => { completedReceived = true; };
-                EventBus.Subscribe(handler);
-                try
-                {
-                    sut.TriggerEvent();
-                }
-                finally
-                {
-                    EventBus.Unsubscribe(handler);
-                }
-                Assert.IsTrue(completedReceived);
-                Assert.IsFalse(sut.IsRunning);
             }
         }
 
@@ -200,33 +147,44 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void Dispose_DoesNotThrow()
         {
-            GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, _config);
+            GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer);
             Assert.DoesNotThrow(() => sut.Dispose());
         }
 
         [Test]
         public void Dispose_CalledTwice_DoesNotThrow()
         {
-            GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer, _dialogueManager, _config);
+            GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer);
             sut.Dispose();
             Assert.DoesNotThrow(() => sut.Dispose());
         }
 
-        // ===== Helper =====
-
-        private static GuardReturnConfig BuildConfig()
+        [Test]
+        public void Dispose_WhileCGRunning_CompletedEventNotPublished()
         {
-            return new GuardReturnConfig(new GuardReturnConfigData
+            // CG 執行中 Dispose 後，CG callback 被忽略（_disposed = true）
+            GuardReturnEventController sut = new GuardReturnEventController(_cgPlayer);
+            _cgPlayer.AutoComplete = false; // CG 卡住
+
+            bool completedReceived = false;
+            Action<GuardReturnEventCompletedEvent> handler = (e) => { completedReceived = true; };
+            EventBus.Subscribe(handler);
+            try
             {
-                schema_version = 1,
-                guard_return_lines = new GuardReturnLineData[]
-                {
-                    new GuardReturnLineData { line_id = "l1", sequence = 1, speaker = "narrator", text = "intro", line_type = "narration", phase_id = GuardReturnPhaseIds.Alert },
-                    new GuardReturnLineData { line_id = "l2", sequence = 2, speaker = "Guard", text = "stop", line_type = "dialogue", phase_id = GuardReturnPhaseIds.Alert },
-                    new GuardReturnLineData { line_id = "l3", sequence = 3, speaker = "VillageChiefWife", text = "friend", line_type = "dialogue", phase_id = GuardReturnPhaseIds.Clarify },
-                },
-            });
+                sut.TriggerEvent();
+                sut.Dispose();
+                // 現在手動觸發 CG 完成
+                _cgPlayer.InvokeStoredComplete();
+            }
+            finally
+            {
+                EventBus.Unsubscribe(handler);
+            }
+
+            Assert.IsFalse(completedReceived, "Dispose 後 CG callback 應被忽略，不發布完成事件");
         }
+
+        // ===== Helper =====
 
         private class FakeCGPlayer : ICGPlayer
         {

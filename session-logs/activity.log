@@ -1,0 +1,1601 @@
+=== Session 結束 2026-04-20-120659 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+?? session-logs/
+
+=== Session 結束 2026-04-20-121313 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-121544 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-121922 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-122420 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-125114 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-125351 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-130109 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-130230 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-131118 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-131313 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-131414 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-131728 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-132556 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-132712 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+
+=== Session 結束 2026-04-20-133611 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-133835 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-135630 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M gdd/character-unlock-system.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-144517 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/character-unlock-system.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-145947 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/character-unlock-system.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-151856 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/character-unlock-system.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-152913 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/character-unlock-system.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-153311 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/character-unlock-system.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-153959 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-154138 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-154308 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-154624 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-154725 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-155012 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-155238 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-160344 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-163338 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-163431 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-163620 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-170520 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-180555 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-184015 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-10.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-184145 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-10.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+
+=== Session 結束 2026-04-20-191824 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-10.md
+?? dev-logs/2026-04-20-11.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+?? test-output.log
+
+=== Session 結束 2026-04-20-194836 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-10.md
+?? dev-logs/2026-04-20-11.md
+?? dev-logs/2026-04-20-12.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+?? test-output.log
+
+=== Session 結束 2026-04-20-200139 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-10.md
+?? dev-logs/2026-04-20-11.md
+?? dev-logs/2026-04-20-12.md
+?? dev-logs/2026-04-20-13.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+?? test-output.log
+
+=== Session 結束 2026-04-20-200646 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-10.md
+?? dev-logs/2026-04-20-11.md
+?? dev-logs/2026-04-20-12.md
+?? dev-logs/2026-04-20-13.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+?? test-output.log
+
+=== Session 結束 2026-04-20-200830 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-10.md
+?? dev-logs/2026-04-20-11.md
+?? dev-logs/2026-04-20-12.md
+?? dev-logs/2026-04-20-13.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+?? test-output.log
+
+=== Session 結束 2026-04-20-202947 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/CharacterInteractionView.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Game/Resources/Config/guard-first-meet-dialogue-config.json
+?? Assets/Game/Resources/Config/guard-first-meet-dialogue-config.json.meta
+?? Assets/Game/Scripts/Village/GuardFirstMeetDialogueConfigData.cs
+?? Assets/Game/Scripts/Village/GuardFirstMeetDialogueConfigData.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-10.md
+?? dev-logs/2026-04-20-11.md
+?? dev-logs/2026-04-20-12.md
+?? dev-logs/2026-04-20-13.md
+?? dev-logs/2026-04-20-14.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+?? test-output.log
+
+=== Session 結束 2026-04-20-204025 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M Assets/Game/Resources/Config/gift-sword-config.json
+ M Assets/Game/Resources/Config/guard-return-config.json
+ M Assets/Game/Resources/Config/initial-resources-config.json
+ M Assets/Game/Resources/Config/main-quest-config.json
+ M Assets/Game/Resources/Config/player-questions-config.json
+ M Assets/Game/Scripts/Village/CharacterQuestionCountdownManager.cs
+ M Assets/Game/Scripts/Village/CharacterUnlockManager.cs
+ M Assets/Game/Scripts/Village/ExplorationEntryManager.cs
+ M Assets/Game/Scripts/Village/GuardReturnEventController.cs
+ M Assets/Game/Scripts/Village/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/PlayerQuestionsManager.cs
+ M Assets/Game/Scripts/Village/RedDotManager.cs
+ M Assets/Game/Scripts/Village/UI/CharacterInteractionView.cs
+ M Assets/Game/Scripts/Village/UI/PlayerQuestionsView.cs
+ M Assets/Game/Scripts/Village/UI/VillageHubView.cs
+ M Assets/Game/Scripts/Village/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/VillageEvents.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionCountdownManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/GuardReturnEventControllerTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardReturnIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M FILE_MAP.md
+ M gdd/base-management.md
+ M gdd/character-content-template.md
+ M gdd/character-unlock-system.md
+ M gdd/characters.md
+ M gdd/commission-system.md
+ M gdd/dialogue-writing-sop.md
+ M gdd/exploration-system.md
+ M gdd/main-quest-system.md
+ M gdd/narrative/village-chief-wife/character-spec.md
+ M gdd/storage-expansion.md
+ M project-status.md
+ M sprint/sprint-4-producer-tbd-list.md
+?? Assets/Game/Resources/Config/guard-first-meet-dialogue-config.json
+?? Assets/Game/Resources/Config/guard-first-meet-dialogue-config.json.meta
+?? Assets/Game/Scripts/Village/GuardFirstMeetDialogueConfigData.cs
+?? Assets/Game/Scripts/Village/GuardFirstMeetDialogueConfigData.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardCGAndCountdownRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs.meta
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs
+?? Assets/Tests/Editor/Village/Integration/GuardReturnSwordFlowIntegrationTest.cs.meta
+?? TestLog.txt
+?? dev-logs/2026-04-20-1.md
+?? dev-logs/2026-04-20-10.md
+?? dev-logs/2026-04-20-11.md
+?? dev-logs/2026-04-20-12.md
+?? dev-logs/2026-04-20-13.md
+?? dev-logs/2026-04-20-14.md
+?? dev-logs/2026-04-20-2.md
+?? dev-logs/2026-04-20-3.md
+?? dev-logs/2026-04-20-4.md
+?? dev-logs/2026-04-20-5.md
+?? dev-logs/2026-04-20-6.md
+?? dev-logs/2026-04-20-7.md
+?? dev-logs/2026-04-20-8.md
+?? dev-logs/2026-04-20-9.md
+?? project-tbd.md
+?? session-logs/
+?? session-state/
+?? sprint/sprint-6-explore-gate-rework.md
+?? test-output.log
+

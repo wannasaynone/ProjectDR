@@ -3,10 +3,13 @@
 //   玩家嘗試 ExplorationEntryManager.Depart()
 //   → interceptor 攔截（條件：探索功能已解鎖 + 守衛未解鎖 + 事件未觸發）
 //   → GuardReturnEventController.TriggerEvent() 啟動
-//   → CG 播放（FakeCGPlayer）→ DialogueManager 播放 31 行
-//   → DialogueCompleted → GuardReturnEventCompletedEvent
-//   → CharacterUnlockManager 解鎖守衛 + 發放木劍
+//   → CG 播放（FakeCGPlayer，台詞已整合於 intro_lines）
+//   → CG 完成後直接發布 GuardReturnEventCompletedEvent（F7 bugfix：不再依賴 DialogueManager）
+//   → CharacterUnlockManager 解鎖守衛
 //   → 再次 Depart() 不再觸發
+//
+// Sprint 6 擴張：守衛歸來事件不再贈劍。劍由玩家主動發問「要拿劍」特殊題觸發（C11）。
+// F7 bugfix：GuardReturnEventController 不再呼叫 DialogueManager.StartDialogue()。
 //
 // 使用真實 Manager（不 mock），透過 FakeCGPlayer 讓 CG 立即完成。
 
@@ -23,11 +26,9 @@ namespace ProjectDR.Tests.Village.Integration
     {
         private BackpackManager _backpack;
         private StorageManager _storage;
-        private DialogueManager _dialogueManager;
         private InitialResourcesConfig _resourcesConfig;
         private InitialResourceDispatcher _dispatcher;
         private CharacterUnlockManager _unlockManager;
-        private GuardReturnConfig _guardConfig;
         private GuardReturnEventController _guardController;
         private ExplorationEntryManager _explorationManager;
         private FakeCGPlayer _cgPlayer;
@@ -38,15 +39,13 @@ namespace ProjectDR.Tests.Village.Integration
             EventBus.ForceClearAll();
             _backpack = new BackpackManager(20, 99);
             _storage = new StorageManager(100, 99);
-            _dialogueManager = new DialogueManager();
 
             _resourcesConfig = BuildInitialResourcesConfig();
             _dispatcher = new InitialResourceDispatcher(_backpack, _storage);
             _unlockManager = new CharacterUnlockManager(_resourcesConfig, _dispatcher);
 
             _cgPlayer = new FakeCGPlayer { AutoComplete = true };
-            _guardConfig = BuildGuardReturnConfig();
-            _guardController = new GuardReturnEventController(_cgPlayer, _dialogueManager, _guardConfig);
+            _guardController = new GuardReturnEventController(_cgPlayer);
 
             _explorationManager = new ExplorationEntryManager(_backpack);
             // 模擬「探索功能已解鎖」— CharacterUnlockManager 的 IsExplorationFeatureUnlocked 只是內部狀態，
@@ -97,19 +96,11 @@ namespace ProjectDR.Tests.Village.Integration
             Assert.IsTrue(received);
         }
 
-        // ===== TEST 4-B：CG 完成 → 對話播放 =====
+        // ===== TEST 4-B：CG 完成 → 直接發布 GuardReturnEventCompletedEvent =====
+        // F7 bugfix：不再透過 DialogueManager 播放 guard_return_lines，CG 結束後直接完成。
 
         [Test]
-        public void AfterCGCompletion_DialogueBegins()
-        {
-            _cgPlayer.AutoComplete = true; // CG 完成後自動啟動對話
-            _explorationManager.Depart();
-
-            Assert.IsTrue(_dialogueManager.IsActive, "CG 完成後應啟動對話");
-        }
-
-        [Test]
-        public void DialoguePhaseComplete_PublishesGuardReturnCompletedEvent()
+        public void AfterCGCompletion_PublishesGuardReturnCompletedEvent()
         {
             bool completed = false;
             Action<GuardReturnEventCompletedEvent> handler = (e) => completed = true;
@@ -118,27 +109,28 @@ namespace ProjectDR.Tests.Village.Integration
             {
                 _cgPlayer.AutoComplete = true;
                 _explorationManager.Depart();
-                // 推進對話至結束
-                while (_dialogueManager.IsActive && _dialogueManager.Advance()) { }
+                // CG 完成後同步發布 GuardReturnEventCompletedEvent，不需推進對話
             }
             finally
             {
                 EventBus.Unsubscribe(handler);
             }
-            Assert.IsTrue(completed);
+            Assert.IsTrue(completed, "CG 完成後應立即發布 GuardReturnEventCompletedEvent");
         }
 
-        // ===== TEST 4-C：守衛解鎖 + 贈劍 =====
+        // ===== TEST 4-C：守衛解鎖（Sprint 6 擴張：不再贈劍，劍改由玩家主動發問取得）=====
 
         [Test]
-        public void EventComplete_UnlocksGuardAndDispatchesSword()
+        public void EventComplete_UnlocksGuard_SwordNotGrantedYet()
         {
             _cgPlayer.AutoComplete = true;
             _explorationManager.Depart();
-            while (_dialogueManager.IsActive && _dialogueManager.Advance()) { }
+            // F7 bugfix：CG 完成後同步完成事件，不需推進對話
 
             Assert.IsTrue(_unlockManager.IsUnlocked(CharacterIds.Guard));
-            Assert.AreEqual(1, _backpack.GetItemCount("gift_sword_wooden"));
+            // Sprint 6 擴張：守衛歸來完成不再直接贈劍；劍由玩家主動發問「要拿劍」觸發。
+            Assert.AreEqual(0, _backpack.GetItemCount("gift_sword_wooden"),
+                "守衛歸來事件完成時不應直接贈劍（劍由玩家主動發問取得）");
         }
 
         // ===== TEST 4-D：一次性觸發 =====
@@ -148,7 +140,7 @@ namespace ProjectDR.Tests.Village.Integration
         {
             _cgPlayer.AutoComplete = true;
             _explorationManager.Depart();
-            while (_dialogueManager.IsActive && _dialogueManager.Advance()) { }
+            // F7 bugfix：CG 完成後同步完成事件，守衛已解鎖
 
             // 事件已完成 + 守衛已解鎖 → 再次 Depart 應真正出發
             bool departed = _explorationManager.Depart();
@@ -197,23 +189,8 @@ namespace ProjectDR.Tests.Village.Integration
                 grants = new InitialResourceGrantData[]
                 {
                     new InitialResourceGrantData { grant_id = "initial_backpack_node0", trigger_id = InitialResourcesTriggerIds.Node0Start, item_id = "", quantity = 0 },
-                    new InitialResourceGrantData { grant_id = "unlock_guard_sword", trigger_id = InitialResourcesTriggerIds.GuardReturnEvent, item_id = "gift_sword_wooden", quantity = 1 },
-                },
-            });
-        }
-
-        private static GuardReturnConfig BuildGuardReturnConfig()
-        {
-            return new GuardReturnConfig(new GuardReturnConfigData
-            {
-                schema_version = 1,
-                guard_return_lines = new GuardReturnLineData[]
-                {
-                    new GuardReturnLineData { line_id = "g1", sequence = 1, speaker = "Guard", text = "站住！", line_type = "dialogue", phase_id = "alert" },
-                    new GuardReturnLineData { line_id = "g2", sequence = 2, speaker = "VillageChiefWife", text = "不是陌生人", line_type = "dialogue", phase_id = "clarify" },
-                    new GuardReturnLineData { line_id = "g3", sequence = 3, speaker = "Guard", text = "...（收劍）", line_type = "narration", phase_id = "sheathe" },
-                    new GuardReturnLineData { line_id = "g4", sequence = 4, speaker = "Guard", text = "這把劍給你", line_type = "dialogue", phase_id = "gift_sword" },
-                    new GuardReturnLineData { line_id = "g5", sequence = 5, speaker = "Guard", text = "走吧", line_type = "dialogue", phase_id = "closing" },
+                    // Sprint 6 擴張：trigger 改為 GuardSwordAsked（玩家主動發問觸發），不再於守衛歸來時派發
+                    new InitialResourceGrantData { grant_id = "unlock_guard_sword", trigger_id = InitialResourcesTriggerIds.GuardSwordAsked, item_id = "gift_sword_wooden", quantity = 1 },
                 },
             });
         }

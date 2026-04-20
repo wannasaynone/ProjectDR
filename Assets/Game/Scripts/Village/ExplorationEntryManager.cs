@@ -38,6 +38,7 @@ namespace ProjectDR.Village
     {
         private readonly BackpackManager _backpackManager;
         private bool _isExploring = false;
+        private bool _isLocked = false; // Sprint 6 擴張：守衛歸來後鎖定探索入口
         private BackpackSnapshot _departureSnapshot;
         private Action<ExplorationCompletedEvent> _onExplorationCompleted;
 
@@ -62,19 +63,39 @@ namespace ProjectDR.Village
             _interceptor = interceptor;
         }
 
-        /// <summary>檢查目前是否可以出發探索（未在探索中即可出發）。</summary>
+        /// <summary>
+        /// 設定探索入口鎖定狀態（Sprint 6 擴張）。
+        /// 鎖定後 Depart() 回傳 false，VillageHubView 顯示「要去找守衛對話拿劍...」提示。
+        /// 玩家發問「要拿劍」成功後呼叫 SetExplorationLocked(false) 解鎖。
+        /// </summary>
+        public void SetExplorationLocked(bool locked)
+        {
+            _isLocked = locked;
+        }
+
+        /// <summary>探索入口是否處於鎖定狀態。</summary>
+        public bool IsExplorationLocked => _isLocked;
+
+        /// <summary>檢查目前是否可以出發探索（未在探索中且未鎖定）。</summary>
         public bool CanDepart()
         {
-            return !_isExploring;
+            return !_isExploring && !_isLocked;
         }
 
         /// <summary>
-        /// 出發探索。若已在探索中，回傳 false。
+        /// 出發探索。若已在探索中或入口鎖定，回傳 false。
         /// 若有攔截器且攔截成功，不實際出發、回傳 false。
         /// 成功出發時，拍攝背包快照並發布 ExplorationDepartedEvent。
         /// </summary>
         public bool Depart()
         {
+            if (_isLocked)
+            {
+                // 鎖定狀態：不出發，發布提示事件（VillageHubView 處理每次點擊都顯示的 modal）
+                EventBus.Publish(new ExplorationGateLockedClickedEvent());
+                return false;
+            }
+
             if (!CanDepart())
             {
                 return false;

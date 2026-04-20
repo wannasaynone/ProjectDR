@@ -48,7 +48,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void Constructor_InitialState_FirstQuestIsAvailable()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             Assert.AreEqual(MainQuestState.Available, sut.GetState("T0"));
             Assert.AreEqual(MainQuestState.Locked, sut.GetState("T1"));
             Assert.AreEqual(MainQuestState.Locked, sut.GetState("T2"));
@@ -62,7 +62,7 @@ namespace ProjectDR.Tests.Village
             EventBus.Subscribe(handler);
             try
             {
-                MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+                MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             }
             finally
             {
@@ -77,7 +77,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void StartQuest_Available_SucceedsAndPublishesEvent()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
 
             MainQuestStartedEvent received = null;
             Action<MainQuestStartedEvent> handler = (e) => { received = e; };
@@ -100,7 +100,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void StartQuest_Locked_Fails()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             Assert.IsFalse(sut.StartQuest("T1"));
             Assert.AreEqual(MainQuestState.Locked, sut.GetState("T1"));
         }
@@ -108,7 +108,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void StartQuest_Unknown_Fails()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             Assert.IsFalse(sut.StartQuest("T99"));
         }
 
@@ -117,7 +117,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void CompleteQuest_InProgress_SucceedsAndPublishesEvent()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.StartQuest("T0");
 
             MainQuestCompletedEvent received = null;
@@ -140,7 +140,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void CompleteQuest_UnlocksNextViaUnlockOnComplete()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.StartQuest("T0");
             sut.CompleteQuest("T0");
             Assert.AreEqual(MainQuestState.Available, sut.GetState("T1"));
@@ -149,14 +149,14 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void CompleteQuest_NotInProgress_Fails()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             Assert.IsFalse(sut.CompleteQuest("T1")); // Locked
         }
 
         [Test]
         public void IsQuestCompleted_AfterCompletion_True()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.StartQuest("T0");
             sut.CompleteQuest("T0");
             Assert.IsTrue(sut.IsQuestCompleted("T0"));
@@ -168,14 +168,14 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetActiveQuest_NoneInProgress_ReturnsNull()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             Assert.IsNull(sut.GetActiveQuest());
         }
 
         [Test]
         public void GetActiveQuest_InProgress_ReturnsQuest()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.StartQuest("T0");
             MainQuestInfo active = sut.GetActiveQuest();
             Assert.IsNotNull(active);
@@ -185,7 +185,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetQuestsInState_ReturnsMatchingIds()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.StartQuest("T0");
             sut.CompleteQuest("T0");
 
@@ -203,7 +203,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void TryAutoCompleteFirstAutoQuest_T0IsAuto_Completes()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             bool ok = sut.TryAutoCompleteFirstAutoQuest();
             Assert.IsTrue(ok);
             Assert.IsTrue(sut.IsQuestCompleted("T0"));
@@ -235,12 +235,14 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void NotifyCompletionSignal_InProgressMatches_Completes()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            // 新 T1 完成條件 = node_2_dialogue_complete
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.TryAutoCompleteFirstAutoQuest(); // T0 complete, T1 Available
             sut.StartQuest("T1"); // T1 InProgress
 
             IReadOnlyList<string> completed = sut.NotifyCompletionSignal(
-                MainQuestCompletionTypes.DialogueEnd, "first_char_intro_complete");
+                MainQuestCompletionTypes.DialogueEnd,
+                MainQuestSignalValues.Node2DialogueComplete);
 
             Assert.AreEqual(1, completed.Count);
             Assert.AreEqual("T1", completed[0]);
@@ -250,7 +252,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void NotifyCompletionSignal_ValueMismatch_DoesNotComplete()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.TryAutoCompleteFirstAutoQuest();
             sut.StartQuest("T1");
 
@@ -264,7 +266,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void NotifyCompletionSignal_TypeMismatch_NoEffect()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.TryAutoCompleteFirstAutoQuest();
             sut.StartQuest("T1");
 
@@ -278,11 +280,13 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void NotifyCompletionSignal_AvailableTaskWithMatchingType_AutoStartsAndCompletes()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            // T1 Available（未手動 Start）— 應自動 Start 再 Complete
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.TryAutoCompleteFirstAutoQuest(); // T1 變為 Available，但還沒 Start
 
             IReadOnlyList<string> completed = sut.NotifyCompletionSignal(
-                MainQuestCompletionTypes.DialogueEnd, "first_char_intro_complete");
+                MainQuestCompletionTypes.DialogueEnd,
+                MainQuestSignalValues.Node2DialogueComplete);
 
             Assert.AreEqual(1, completed.Count);
             Assert.IsTrue(sut.IsQuestCompleted("T1"));
@@ -291,7 +295,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void NotifyCompletionSignal_EmptySignalType_NoOp()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             IReadOnlyList<string> completed = sut.NotifyCompletionSignal("", "x");
             Assert.AreEqual(0, completed.Count);
         }
@@ -300,7 +304,7 @@ namespace ProjectDR.Tests.Village
         public void NotifyCompletionSignal_NullValueMatchesAnyValue()
         {
             // 當 signalValue 為 null，只需類型匹配即可
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
             sut.TryAutoCompleteFirstAutoQuest();
             sut.StartQuest("T1");
 
@@ -310,30 +314,46 @@ namespace ProjectDR.Tests.Village
             Assert.AreEqual(1, completed.Count);
         }
 
-        // ===== 跨多關卡完整流程 =====
+        // ===== 跨多關卡完整流程（新 T0/T1/T2 三條結構）=====
 
         [Test]
-        public void FullFlow_T0ToT2_CompletesInOrder()
+        public void FullFlow_NewStructure_T0ToT2_CompletesInOrder()
         {
-            MainQuestManager sut = new MainQuestManager(BuildFiveQuestConfig());
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
 
-            sut.TryAutoCompleteFirstAutoQuest(); // T0 完成 → T1 Available
+            // T0 自動完成 → T1 Available
+            sut.TryAutoCompleteFirstAutoQuest();
             Assert.IsTrue(sut.IsQuestCompleted("T0"));
             Assert.AreEqual(MainQuestState.Available, sut.GetState("T1"));
 
-            sut.NotifyCompletionSignal(MainQuestCompletionTypes.DialogueEnd, "first_char_intro_complete");
+            // T1 完成條件 = node_2_dialogue_complete（魔女對話結束）
+            sut.NotifyCompletionSignal(
+                MainQuestCompletionTypes.DialogueEnd,
+                MainQuestSignalValues.Node2DialogueComplete);
             Assert.IsTrue(sut.IsQuestCompleted("T1"));
             Assert.AreEqual(MainQuestState.Available, sut.GetState("T2"));
 
-            sut.NotifyCompletionSignal(MainQuestCompletionTypes.CommissionCount, "choice1_character|1");
+            // T2 完成條件 = first_explore（首次探索守衛歸來）
+            sut.NotifyCompletionSignal(
+                MainQuestCompletionTypes.FirstExplore,
+                MainQuestSignalValues.GuardReturnEventComplete);
             Assert.IsTrue(sut.IsQuestCompleted("T2"));
-            Assert.AreEqual(MainQuestState.Available, sut.GetState("T3"));
         }
 
-        // ===== Helper =====
-
-        private static MainQuestConfig BuildFiveQuestConfig()
+        [Test]
+        public void Constructor_InitialState_ThreeQuests_FirstQuestIsAvailable()
         {
+            MainQuestManager sut = new MainQuestManager(BuildThreeQuestConfig());
+            Assert.AreEqual(MainQuestState.Available, sut.GetState("T0"));
+            Assert.AreEqual(MainQuestState.Locked, sut.GetState("T1"));
+            Assert.AreEqual(MainQuestState.Locked, sut.GetState("T2"));
+        }
+
+        // ===== Helper（舊 BuildFiveQuestConfig 已移除，改為 BuildThreeQuestConfig）=====
+
+        private static MainQuestConfig BuildThreeQuestConfig()
+        {
+            // 對應新 main-quest-config.json（Sprint 6 B1）：T0/T1/T2 三條任務
             MainQuestConfigData data = new MainQuestConfigData
             {
                 schema_version = 1,
@@ -342,42 +362,29 @@ namespace ProjectDR.Tests.Village
                     new MainQuestConfigEntry
                     {
                         quest_id = "T0",
+                        owner_character_id = CharacterIds.VillageChiefWife,
                         completion_condition_type = MainQuestCompletionTypes.Auto,
-                        completion_condition_value = "",
-                        unlock_on_complete = "T1",
+                        completion_condition_value = MainQuestSignalValues.Node0DialogueComplete,
+                        unlock_on_complete = "T1|node_0_complete",
                         sort_order = 0
                     },
                     new MainQuestConfigEntry
                     {
                         quest_id = "T1",
+                        owner_character_id = CharacterIds.VillageChiefWife,
                         completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
-                        completion_condition_value = "first_char_intro_complete",
-                        unlock_on_complete = "T2",
+                        completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
+                        unlock_on_complete = "T2|node_2_complete|exploration_open",
                         sort_order = 1
                     },
                     new MainQuestConfigEntry
                     {
                         quest_id = "T2",
-                        completion_condition_type = MainQuestCompletionTypes.CommissionCount,
-                        completion_condition_value = "choice1_character|1",
-                        unlock_on_complete = "T3",
-                        sort_order = 2
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        quest_id = "T3",
-                        completion_condition_type = MainQuestCompletionTypes.CommissionCount,
-                        completion_condition_value = "choice2_character|1",
-                        unlock_on_complete = "T4",
-                        sort_order = 3
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        quest_id = "T4",
+                        owner_character_id = CharacterIds.VillageChiefWife,
                         completion_condition_type = MainQuestCompletionTypes.FirstExplore,
-                        completion_condition_value = "guard_return_event_complete",
-                        unlock_on_complete = "",
-                        sort_order = 4
+                        completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete,
+                        unlock_on_complete = "guard_unlock|exploration_full_open",
+                        sort_order = 2
                     }
                 }
             };

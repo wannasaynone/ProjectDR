@@ -34,11 +34,12 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetGrant_ExistingGrantId_ReturnsEntry()
         {
+            // Sprint 6 重構後：unlock_farm_girl_seed 已移除，改測試仍存在的 unlock_guard_sword
             InitialResourcesConfig config = BuildConfig();
-            InitialResourceGrant grant = config.GetGrant("unlock_farm_girl_seed");
+            InitialResourceGrant grant = config.GetGrant("unlock_guard_sword");
             Assert.IsNotNull(grant);
-            Assert.AreEqual("seed_tomato", grant.ItemId);
-            Assert.AreEqual(3, grant.Quantity);
+            Assert.AreEqual("gift_sword_wooden", grant.ItemId);
+            Assert.AreEqual(1, grant.Quantity);
             Assert.IsTrue(grant.HasItem);
         }
 
@@ -128,8 +129,47 @@ namespace ProjectDR.Tests.Village
         }
 
         [Test]
+        public void Sprint6_FarmGirlSeedGrant_DoesNotExist()
+        {
+            // Sprint 6 決策 6：移除農女初始物資 grant
+            InitialResourcesConfig config = BuildConfig();
+            Assert.IsNull(config.GetGrant("unlock_farm_girl_seed"),
+                "unlock_farm_girl_seed 應已從 config 移除（Sprint 6 決策 6）");
+        }
+
+        [Test]
+        public void Sprint6_WitchHerbGrant_DoesNotExist()
+        {
+            // Sprint 6 決策 6：移除魔女初始物資 grant
+            InitialResourcesConfig config = BuildConfig();
+            Assert.IsNull(config.GetGrant("unlock_witch_herb"),
+                "unlock_witch_herb 應已從 config 移除（Sprint 6 決策 6）");
+        }
+
+        [Test]
+        public void Sprint6_GuardSwordGrant_StillExists()
+        {
+            // Sprint 6：守衛贈劍 grant 不受影響，應保留
+            InitialResourcesConfig config = BuildConfig();
+            InitialResourceGrant grant = config.GetGrant("unlock_guard_sword");
+            Assert.IsNotNull(grant, "unlock_guard_sword 應保留（守衛贈劍為 T2 完成條件）");
+            Assert.AreEqual("gift_sword_wooden", grant.ItemId);
+            Assert.AreEqual(1, grant.Quantity);
+        }
+
+        [Test]
+        public void Sprint6_InitialBackpackNode0_StillExists()
+        {
+            // Sprint 6：空背包初始化 grant 不受影響，應保留
+            InitialResourcesConfig config = BuildConfig();
+            Assert.IsNotNull(config.GetGrant("initial_backpack_node0"),
+                "initial_backpack_node0 應保留");
+        }
+
+        [Test]
         public void RealJsonFile_DeserializesSuccessfully()
         {
+            // Sprint 6 重構後：移除 unlock_farm_girl_seed / unlock_witch_herb；保留 unlock_guard_sword / initial_backpack_node0
             TextAsset asset = Resources.Load<TextAsset>("Config/initial-resources-config");
             if (asset == null)
             {
@@ -140,11 +180,17 @@ namespace ProjectDR.Tests.Village
             InitialResourcesConfigData data = JsonUtility.FromJson<InitialResourcesConfigData>(asset.text);
             Assert.IsNotNull(data);
             InitialResourcesConfig config = new InitialResourcesConfig(data);
-            Assert.IsNotNull(config.GetGrant("unlock_farm_girl_seed"));
-            Assert.IsNotNull(config.GetGrant("unlock_witch_herb"));
-            Assert.IsNotNull(config.GetGrant("unlock_guard_sword"));
+            Assert.IsNull(config.GetGrant("unlock_farm_girl_seed"), "unlock_farm_girl_seed 應已從 JSON 中移除");
+            Assert.IsNull(config.GetGrant("unlock_witch_herb"), "unlock_witch_herb 應已從 JSON 中移除");
+            Assert.IsNotNull(config.GetGrant("unlock_guard_sword"), "unlock_guard_sword 應保留");
+            Assert.IsNotNull(config.GetGrant("initial_backpack_node0"), "initial_backpack_node0 應保留");
         }
 
+        /// <summary>
+        /// Sprint 6 重構後的測試用配置。
+        /// 移除 unlock_farm_girl_seed / unlock_witch_herb（決策 6：物資完全依賴探索）。
+        /// 保留 initial_backpack_node0 / unlock_guard_sword。
+        /// </summary>
         private static InitialResourcesConfig BuildConfig()
         {
             InitialResourcesConfigData data = new InitialResourcesConfigData
@@ -158,20 +204,6 @@ namespace ProjectDR.Tests.Village
                         trigger_id = InitialResourcesTriggerIds.Node0Start,
                         item_id = "",
                         quantity = 0
-                    },
-                    new InitialResourceGrantData
-                    {
-                        grant_id = "unlock_farm_girl_seed",
-                        trigger_id = InitialResourcesTriggerIds.UnlockFarmGirl,
-                        item_id = "seed_tomato",
-                        quantity = 3
-                    },
-                    new InitialResourceGrantData
-                    {
-                        grant_id = "unlock_witch_herb",
-                        trigger_id = InitialResourcesTriggerIds.UnlockWitch,
-                        item_id = "herb_green",
-                        quantity = 3
                     },
                     new InitialResourceGrantData
                     {

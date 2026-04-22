@@ -1,22 +1,33 @@
-// GuardFirstMeetDialogueIntegrationTest — Sprint 6 決策 6-13 取劍新機制整合測試。
+// GuardFirstMeetDialogueIntegrationTest — 守衛首次取劍對白整合測試。
 //
-// 驗證「守衛首次進入互動畫面 → 自動對白觸發 → 發劍 + 探索重開」完整新流程。
+// A08 併入 NodeDialogueConfig（2026-04-22）重構後更新：
+//   原 GuardFirstMeetDialogueConfig 獨立對白已併入 node-dialogue-config.json（node_id="guard_first_meet"）。
+//   觸發路徑：NodeDialogueController.TryPlayFirstMeetDialogueIfNotTriggered("guard_first_meet")
+//   業務邏輯：NodeDialogueCompletedEvent { NodeId="guard_first_meet" } → 發劍 + ExplorationGateReopenedEvent
 //
-// 測試覆蓋（依 Sprint 6 F12 驗收準則）：
-//   T1. 守衛首次進入（IsUnlocked=true, CompleteStatus=false）→ CharacterInteractionView 被設置覆蓋對白
-//   T2. 覆蓋對白完成 callback → 劍入背包 + ExplorationGateReopenedEvent 發布
-//   T3. 覆蓋對白完成後再次進入守衛 → 不再設置覆蓋對白（僅一次性）
+// 測試覆蓋（依 Sprint 6 F12 + A08 併入驗收準則）：
+//   T1. NodeDialogueController.TryPlayFirstMeetDialogueIfNotTriggered 首次呼叫 → 回傳 true、節點開始播放
+//   T2. NodeDialogueCompletedEvent { NodeId="guard_first_meet" } → 劍入背包 + ExplorationGateReopenedEvent 發布
+//   T3. TryPlayFirstMeetDialogueIfNotTriggered 再次呼叫（已觸發）→ 回傳 false（不重播）
 //   T4. ExplorationGateReopenedEvent 發布 → T2 主線任務完成（production path）
 //   T5 regression：
-//     F9/F10 清除 FirstMeet 時機 — 首次進入後 FirstMeet = false（在對白完成之前）
 //     guard_ask_sword 題目不再出現在 PlayerQuestionsManager 的清單中
+//   T5b regression：
+//     FirstMeet 清除時機 — 首次進入後 FirstMeet = false（對白完成之前）
 
 using System;
 using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
-using ProjectDR.Village.UI;
+using ProjectDR.Village.Storage;
+using ProjectDR.Village.Backpack;
+using ProjectDR.Village.CharacterUnlock;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Progression;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.CharacterQuestions;
+using ProjectDR.Village.Dialogue;
 
 namespace ProjectDR.Tests.Village.Integration
 {
@@ -32,7 +43,9 @@ namespace ProjectDR.Tests.Village.Integration
         private RedDotManager _redDotManager;
         private MainQuestConfig _mainQuestConfig;
         private MainQuestManager _mainQuestManager;
-        private GuardFirstMeetDialogueConfig _firstMeetConfig;
+        private DialogueManager _dialogueManager;
+        private NodeDialogueConfig _nodeDialogueConfig;
+        private NodeDialogueController _nodeDialogueController;
         private PlayerQuestionsConfig _playerQuestionsConfig;
         private PlayerQuestionsManager _playerQuestionsManager;
 
@@ -47,15 +60,15 @@ namespace ProjectDR.Tests.Village.Integration
             _resourcesConfig = BuildInitialResourcesConfig();
             _dispatcher = new InitialResourceDispatcher(_backpack, _storage);
             _unlockManager = new CharacterUnlockManager(_resourcesConfig, _dispatcher);
-
             _explorationManager = new ExplorationEntryManager(_backpack);
-
             _mainQuestConfig = BuildMainQuestConfig();
             _mainQuestManager = new MainQuestManager(_mainQuestConfig);
-
             _redDotManager = new RedDotManager(_mainQuestConfig, _mainQuestManager);
 
-            _firstMeetConfig = BuildGuardFirstMeetConfig();
+            // 建立含 guard_first_meet 節點的 NodeDialogueConfig
+            _nodeDialogueConfig = BuildNodeDialogueConfigWithGuardFirstMeet();
+            _dialogueManager = new DialogueManager();
+            _nodeDialogueController = new NodeDialogueController(_dialogueManager, _nodeDialogueConfig);
 
             // Sprint 6 決策 6-13：guard_ask_sword 不應在 player-questions-config 中
             _playerQuestionsConfig = BuildGuardQuestionsConfigWithoutSwordQuestion();
@@ -65,35 +78,56 @@ namespace ProjectDR.Tests.Village.Integration
         [TearDown]
         public void TearDown()
         {
+            _nodeDialogueController?.Dispose();
             _unlockManager?.Dispose();
             _explorationManager?.Dispose();
             _redDotManager?.Dispose();
             EventBus.ForceClearAll();
         }
 
-        // ===== T1：首次進入守衛（已解鎖）→ CharacterInteractionView 設置覆蓋對白 =====
+        // ===== T1：TryPlayFirstMeetDialogueIfNotTriggered 首次呼叫 → 回傳 true =====
 
         [Test]
-        public void GuardFirstEnter_WhenUnlocked_AndNotCompleted_SetsOverrideDialogue()
+        public void TryPlayFirstMeetDialogueIfNotTriggered_FirstCall_ReturnsTrue()
         {
-            // Arrange：模擬守衛已解鎖
-            _unlockManager.ForceUnlock(CharacterIds.Guard);
-
-            // Act：模擬 VillageEntryPoint.OnCharacterEnteredAndCGDone 的判斷邏輯
-            bool shouldTrigger = ShouldTriggerGuardFirstMeetDialogue(
-                characterId: CharacterIds.Guard,
-                isCompleted: false,
-                isUnlocked: true);
+            // Act
+            bool result = _nodeDialogueController.TryPlayFirstMeetDialogueIfNotTriggered(
+                NodeDialogueController.NodeIdGuardFirstMeet);
 
             // Assert
-            Assert.IsTrue(shouldTrigger,
-                "守衛已解鎖且首次對白尚未完成時，應觸發首次進入取劍對白");
+            Assert.IsTrue(result,
+                "首次呼叫 TryPlayFirstMeetDialogueIfNotTriggered 應回傳 true（成功啟動播放）");
+            Assert.IsTrue(_nodeDialogueController.IsPlaying,
+                "成功啟動後 IsPlaying 應為 true");
         }
 
-        // ===== T2：覆蓋對白完成 callback → 劍入背包 + ExplorationGateReopenedEvent 發布 =====
+        // ===== T1b regression：TryPlayFirstMeet 呼叫後 DialogueManager.IsActive = true，且第一行是 guard_first_meet 台詞 =====
+        // 此測試對應 D7 bug：StartDialoguePlayback 曾覆蓋已啟動的 guard_first_meet 對話
+        // 修復：StartDialoguePlayback 在 DialogueManager.IsActive 時不得重啟對話
 
         [Test]
-        public void GuardFirstMeetCallback_GrantsSword_AndPublishesExplorationGateReopenedEvent()
+        public void Regression_D7_AfterTryPlayFirstMeet_DialogueManagerIsActiveWithGuardLine()
+        {
+            // Act：TryPlayFirstMeetDialogueIfNotTriggered 應呼叫 PlayNode → DialogueManager.StartDialogue
+            bool result = _nodeDialogueController.TryPlayFirstMeetDialogueIfNotTriggered(
+                NodeDialogueController.NodeIdGuardFirstMeet);
+
+            // Assert：DialogueManager 應在 Active 狀態（對話已啟動）
+            Assert.IsTrue(result, "首次呼叫應回傳 true");
+            Assert.IsTrue(_dialogueManager.IsActive,
+                "TryPlayFirstMeetDialogueIfNotTriggered 呼叫後 DialogueManager 應為 Active（StartDialoguePlayback 不得覆蓋此狀態）");
+
+            // Assert：第一行應是 guard_first_meet 的對白，不應是招呼語
+            string currentLine = _dialogueManager.GetCurrentLine();
+            Assert.IsNotNull(currentLine, "對話應有第一行");
+            Assert.IsTrue(currentLine.Contains("終於來了") || currentLine.Contains("test placeholder"),
+                $"第一行應是 guard_first_meet 的台詞，實際：{currentLine}");
+        }
+
+        // ===== T2：NodeDialogueCompletedEvent { NodeId=guard_first_meet } → 發劍 + ExplorationGateReopenedEvent =====
+
+        [Test]
+        public void GuardFirstMeetNodeCompleted_GrantsSword_AndPublishesExplorationGateReopenedEvent()
         {
             // Arrange
             bool reopenedReceived = false;
@@ -102,7 +136,7 @@ namespace ProjectDR.Tests.Village.Integration
 
             try
             {
-                // Act：模擬 OnGuardFirstMeetDialogueCompleted
+                // Act：模擬 VillageEntryPoint.OnNodeDialogueCompletedForMainQuest 業務邏輯
                 SimulateGuardFirstMeetCompleted();
             }
             finally
@@ -119,23 +153,25 @@ namespace ProjectDR.Tests.Village.Integration
                 "取劍對白完成後應發布 ExplorationGateReopenedEvent");
         }
 
-        // ===== T3：對白完成後再次進入守衛 → 不再觸發取劍對白（僅一次性）=====
+        // ===== T3：TryPlayFirstMeetDialogueIfNotTriggered 再次呼叫（已觸發）→ 回傳 false =====
 
         [Test]
-        public void GuardFirstMeet_AfterCompleted_DoesNotTriggerAgain()
+        public void TryPlayFirstMeetDialogueIfNotTriggered_AfterAlreadyTriggered_ReturnsFalse()
         {
-            // Arrange：模擬首次對白已完成
-            bool firstMeetCompleted = true;
+            // Arrange：第一次呼叫
+            _nodeDialogueController.TryPlayFirstMeetDialogueIfNotTriggered(
+                NodeDialogueController.NodeIdGuardFirstMeet);
 
-            // Act
-            bool shouldTrigger = ShouldTriggerGuardFirstMeetDialogue(
-                characterId: CharacterIds.Guard,
-                isCompleted: firstMeetCompleted,
-                isUnlocked: true);
+            // 模擬對白完成（重設 IsPlaying 狀態）
+            EventBus.Publish(new DialogueCompletedEvent());
 
-            // Assert
-            Assert.IsFalse(shouldTrigger,
-                "取劍對白完成後再次進入守衛，不應再次觸發取劍對白");
+            // Act：第二次呼叫
+            bool result = _nodeDialogueController.TryPlayFirstMeetDialogueIfNotTriggered(
+                NodeDialogueController.NodeIdGuardFirstMeet);
+
+            // Assert：不應重播
+            Assert.IsFalse(result,
+                "TryPlayFirstMeetDialogueIfNotTriggered 在已觸發後再次呼叫應回傳 false（不重播）");
         }
 
         // ===== T4：ExplorationGateReopenedEvent → T2 主線完成（production path）=====
@@ -227,24 +263,11 @@ namespace ProjectDR.Tests.Village.Integration
         // ===== Helpers =====
 
         /// <summary>
-        /// 模擬 VillageEntryPoint.OnCharacterEnteredAndCGDone 中的判斷邏輯。
-        /// </summary>
-        private static bool ShouldTriggerGuardFirstMeetDialogue(
-            string characterId,
-            bool isCompleted,
-            bool isUnlocked)
-        {
-            return characterId == CharacterIds.Guard
-                && !isCompleted
-                && isUnlocked;
-        }
-
-        /// <summary>
-        /// 模擬 VillageEntryPoint.OnGuardFirstMeetDialogueCompleted 業務邏輯。
+        /// 模擬 VillageEntryPoint.OnNodeDialogueCompletedForMainQuest 中 guard_first_meet 的業務邏輯。
         /// </summary>
         private void SimulateGuardFirstMeetCompleted()
         {
-            // 發劍（與 VillageEntryPoint.OnGuardFirstMeetDialogueCompleted 邏輯一致）
+            // 發劍（與 VillageEntryPoint guard_first_meet 完成邏輯一致）
             IReadOnlyList<InitialResourceGrant> grants =
                 _resourcesConfig.GetGrantsByTrigger(InitialResourcesTriggerIds.GuardSwordAsked);
             foreach (InitialResourceGrant grant in grants)
@@ -283,16 +306,61 @@ namespace ProjectDR.Tests.Village.Integration
             });
         }
 
-        private static GuardFirstMeetDialogueConfig BuildGuardFirstMeetConfig()
+        /// <summary>
+        /// 建立含 guard_first_meet 節點（4 行）的 NodeDialogueConfig，
+        /// 與 production node-dialogue-config.json 的 guard_first_meet 結構一致。
+        /// </summary>
+        private static NodeDialogueConfig BuildNodeDialogueConfigWithGuardFirstMeet()
         {
-            return new GuardFirstMeetDialogueConfig(new GuardFirstMeetDialogueConfigData
+            return new NodeDialogueConfig(new NodeDialogueConfigData
             {
-                schema_version = 1,
-                dialogue_lines = new string[]
+                schema_version = 2,
+                node_dialogue_lines = new NodeDialogueLineData[]
                 {
-                    "你終於來了。【test placeholder】",
-                    "拿好這個。【test placeholder】",
-                    "在森林裡小心。【test placeholder】"
+                    new NodeDialogueLineData
+                    {
+                        id = 32,
+                        line_id = "guard_first_meet_001",
+                        node_id = "guard_first_meet",
+                        sequence = 1,
+                        speaker = "guard",
+                        text = "你終於來了。【test placeholder】",
+                        line_type = NodeDialogueLineTypes.Dialogue,
+                        choice_branch = ""
+                    },
+                    new NodeDialogueLineData
+                    {
+                        id = 33,
+                        line_id = "guard_first_meet_002",
+                        node_id = "guard_first_meet",
+                        sequence = 2,
+                        speaker = "guard",
+                        text = "出發前，你需要這個。拿好它。【test placeholder】",
+                        line_type = NodeDialogueLineTypes.Dialogue,
+                        choice_branch = ""
+                    },
+                    new NodeDialogueLineData
+                    {
+                        id = 34,
+                        line_id = "guard_first_meet_003",
+                        node_id = "guard_first_meet",
+                        sequence = 3,
+                        speaker = "narrator",
+                        text = "（守衛遞給你一把劍）",
+                        line_type = NodeDialogueLineTypes.Narration,
+                        choice_branch = ""
+                    },
+                    new NodeDialogueLineData
+                    {
+                        id = 35,
+                        line_id = "guard_first_meet_004",
+                        node_id = "guard_first_meet",
+                        sequence = 4,
+                        speaker = "guard",
+                        text = "在森林裡小心。【test placeholder】",
+                        line_type = NodeDialogueLineTypes.Dialogue,
+                        choice_branch = ""
+                    },
                 }
             });
         }
@@ -342,6 +410,7 @@ namespace ProjectDR.Tests.Village.Integration
                 {
                     new MainQuestConfigEntry
                     {
+                        id = 1,
                         quest_id = "T0",
                         display_name = "開始",
                         description = "",
@@ -351,6 +420,7 @@ namespace ProjectDR.Tests.Village.Integration
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 2,
                         quest_id = "T1",
                         display_name = "認識所有人",
                         description = "",
@@ -360,6 +430,7 @@ namespace ProjectDR.Tests.Village.Integration
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 3,
                         quest_id = "T2",
                         display_name = "出去看看外面",
                         description = "",

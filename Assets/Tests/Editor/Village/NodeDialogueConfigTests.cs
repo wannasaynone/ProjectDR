@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using ProjectDR.Village;
+using ProjectDR.Village.Dialogue;
 
 namespace ProjectDR.Tests.Village
 {
@@ -203,23 +204,32 @@ namespace ProjectDR.Tests.Village
         public void JsonRoundTrip_WithRealisticData_ParsesSuccessfully()
         {
             string json = @"{
-                ""schema_version"": 1,
+                ""schema_version"": 2,
                 ""note"": ""test"",
                 ""node_dialogue_lines"": [
-                    { ""line_id"": ""n0_1"", ""node_id"": ""node_0"", ""sequence"": 1, ""speaker"": ""narrator"", ""text"": ""旁白"", ""line_type"": ""narration"", ""choice_branch"": """" },
-                    { ""line_id"": ""n0_2"", ""node_id"": ""node_0"", ""sequence"": 2, ""speaker"": ""VillageChiefWife"", ""text"": ""台詞"", ""line_type"": ""dialogue"", ""choice_branch"": """" },
-                    { ""line_id"": ""n0_3"", ""node_id"": ""node_0"", ""sequence"": 3, ""speaker"": ""VillageChiefWife"", ""text"": ""選項提示"", ""line_type"": ""choice_prompt"", ""choice_branch"": """" },
-                    { ""line_id"": ""n0_a"", ""node_id"": ""node_0"", ""sequence"": 4, ""speaker"": ""player"", ""text"": ""A"", ""line_type"": ""choice_option"", ""choice_branch"": ""farm_girl"" },
-                    { ""line_id"": ""n0_b"", ""node_id"": ""node_0"", ""sequence"": 5, ""speaker"": ""player"", ""text"": ""B"", ""line_type"": ""choice_option"", ""choice_branch"": ""witch"" },
-                    { ""line_id"": ""n0_rfg"", ""node_id"": ""node_0"", ""sequence"": 6, ""speaker"": ""VillageChiefWife"", ""text"": ""回應A"", ""line_type"": ""choice_response"", ""choice_branch"": ""farm_girl"" },
-                    { ""line_id"": ""n0_rw"", ""node_id"": ""node_0"", ""sequence"": 7, ""speaker"": ""VillageChiefWife"", ""text"": ""回應B"", ""line_type"": ""choice_response"", ""choice_branch"": ""witch"" }
+                    { ""id"": 1, ""line_id"": ""n0_1"", ""node_id"": ""node_0"", ""sequence"": 1, ""speaker"": ""narrator"", ""text"": ""旁白"", ""line_type"": ""narration"", ""choice_branch"": """" },
+                    { ""id"": 2, ""line_id"": ""n0_2"", ""node_id"": ""node_0"", ""sequence"": 2, ""speaker"": ""VillageChiefWife"", ""text"": ""台詞"", ""line_type"": ""dialogue"", ""choice_branch"": """" },
+                    { ""id"": 3, ""line_id"": ""n0_3"", ""node_id"": ""node_0"", ""sequence"": 3, ""speaker"": ""VillageChiefWife"", ""text"": ""選項提示"", ""line_type"": ""choice_prompt"", ""choice_branch"": """" },
+                    { ""id"": 4, ""line_id"": ""n0_a"", ""node_id"": ""node_0"", ""sequence"": 4, ""speaker"": ""player"", ""text"": ""A"", ""line_type"": ""choice_option"", ""choice_branch"": ""farm_girl"" },
+                    { ""id"": 5, ""line_id"": ""n0_b"", ""node_id"": ""node_0"", ""sequence"": 5, ""speaker"": ""player"", ""text"": ""B"", ""line_type"": ""choice_option"", ""choice_branch"": ""witch"" },
+                    { ""id"": 6, ""line_id"": ""n0_rfg"", ""node_id"": ""node_0"", ""sequence"": 6, ""speaker"": ""VillageChiefWife"", ""text"": ""回應A"", ""line_type"": ""choice_response"", ""choice_branch"": ""farm_girl"" },
+                    { ""id"": 7, ""line_id"": ""n0_rw"", ""node_id"": ""node_0"", ""sequence"": 7, ""speaker"": ""VillageChiefWife"", ""text"": ""回應B"", ""line_type"": ""choice_response"", ""choice_branch"": ""witch"" }
                 ]
             }";
 
             NodeDialogueConfigData data = JsonUtility.FromJson<NodeDialogueConfigData>(json);
             Assert.IsNotNull(data);
-            Assert.AreEqual(1, data.schema_version);
+            Assert.AreEqual(2, data.schema_version);
             Assert.AreEqual(7, data.node_dialogue_lines.Length);
+
+            // ADR-001 / ADR-002 A14：驗證 NodeDialogueLineData 實作 IGameData + id 非 0
+            NodeDialogueLineData firstLine = data.node_dialogue_lines[0];
+            Assert.That(firstLine, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
+                "NodeDialogueLineData 必須實作 IGameData（ADR-001）");
+            Assert.That(firstLine.ID, Is.Not.Zero,
+                "NodeDialogueLineData.ID 必須非 0（ADR-002 A14）");
+            Assert.That(firstLine.Key, Is.EqualTo("n0_1"),
+                "NodeDialogueLineData.Key 應回傳 line_id");
 
             NodeDialogueConfig config = new NodeDialogueConfig(data);
             NodeDialogueData node = config.GetNode("node_0");

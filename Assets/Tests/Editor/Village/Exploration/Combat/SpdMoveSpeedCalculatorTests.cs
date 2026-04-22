@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using ProjectDR.Village.Exploration.Combat;
+using ProjectDR.Village.Exploration.MoveSpeed;
 
 namespace ProjectDR.Tests.Village.Exploration.Combat
 {

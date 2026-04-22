@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Storage;
+using ProjectDR.Village.Farm;
+using ProjectDR.Village.ItemType;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.TimeProvider;
 
 namespace ProjectDR.Tests.Village
 {

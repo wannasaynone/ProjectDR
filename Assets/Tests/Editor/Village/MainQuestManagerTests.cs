@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Navigation;
 
 namespace ProjectDR.Tests.Village
 {
@@ -220,6 +222,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new MainQuestConfigEntry
                     {
+                        id = 1,
                         quest_id = "T_dialogue",
                         completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
                         sort_order = 0
@@ -361,6 +364,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new MainQuestConfigEntry
                     {
+                        id = 1,
                         quest_id = "T0",
                         owner_character_id = CharacterIds.VillageChiefWife,
                         completion_condition_type = MainQuestCompletionTypes.Auto,
@@ -370,6 +374,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 2,
                         quest_id = "T1",
                         owner_character_id = CharacterIds.VillageChiefWife,
                         completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
@@ -379,6 +384,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 3,
                         quest_id = "T2",
                         owner_character_id = CharacterIds.VillageChiefWife,
                         completion_condition_type = MainQuestCompletionTypes.FirstExplore,

@@ -1,0 +1,172 @@
+# TR Registry — ProjectDR（Technical Requirements Registry）
+#
+# 用途：登記 ProjectDR 中所有技術需求的穩定 ID，供 ADR 與 Story 綁定使用
+# 位置：projects/ProjectDR/adrs/tr-registry.yaml
+# 維護：design-agent 在 GDD 撰寫技術需求章節時新增；dev-head 在 ADR 綁定時確認 ID 存在
+#
+# ID 格式：TR-<system>-<3 位數序號>
+# 例：TR-data-001、TR-save-001
+#
+# status 狀態：
+#   - active：當前有效的需求
+#   - deprecated：已廢止（不再適用於當前設計）
+#   - superseded-by: TR-XXX：被其他需求取代
+#
+# 維護鐵律（違反會導致 ADR 引用斷裂，不可逆）：
+#   - ID 永久不變：一旦登記，不可改 ID、不可刪除（只能改狀態）
+#   - 只能 append 新條目：不可 renumber 既有條目
+#   - GDD 重寫需求文字但意圖不變：更新 requirement 欄位 + 加 revised 日期，ID 不動
+#   - GDD 廢止需求：改狀態為 deprecated
+#   - GDD 拆分或重大改寫：建新 TR-ID，舊 ID 改狀態為 superseded-by: TR-<新 ID>，兩邊互指
+
+registry_version: "1.1"
+last_updated: 2026-04-22
+project: "ProjectDR"
+
+requirements:
+  # ========================================================================
+  # 工作室級 TR（跨專案繼承，來源為 CLAUDE.md 或 .claude/rules/）
+  # 這類 TR 在每個專案的 registry 中都要登記，source_gdd 寫「工作室級規則衍生」
+  # ========================================================================
+
+  - id: TR-data-001
+    status: active
+    system: data
+    requirement: "所有遊戲數值禁止寫死在程式碼中，必須存放於外部資料源（Google Sheets / config 檔 / ScriptableObject / Resource）。判斷標準：若此數值可能因設計調整或平衡測試而改變 → 必須外部化。"
+    source_gdd: "（工作室級規則衍生：CLAUDE.md『遊戲數值外部化』段落 + .claude/rules/gameplay-code.md）"
+    source_section: "Coding Standards / 遊戲數值外部化"
+    governing_adrs:
+      - ADR-001
+    created: 2026-04-21
+    notes: "工作室級強制規則，所有專案繼承。ProjectDR 的落地機制由 ADR-001 定義（IGameData 契約 + GameStaticDataManager 統一載入）。"
+
+  - id: TR-data-002
+    status: active
+    system: data
+    requirement: "所有進入 runtime 查詢的遊戲資料（tabular data）必須實作 IGameData 介面，契約為 `int ID { get; }` 作為主鍵；runtime 載入必須透過 GameStaticDataManager.Add<T>(handler) 統一註冊。"
+    source_gdd: "（源自 projects/ProjectDR/Assets/KahaGameCore/InGame/GameData/IGameData.cs）"
+    source_section: "KahaGameCore.GameData.IGameData"
+    governing_adrs:
+      - ADR-001
+    created: 2026-04-21
+    notes: "契約由 KahaGameCore（共用框架）定義；2026-04-21 製作人決策『不大重構』：保持 int ID 契約、不泛型化、不改框架；所有新 config DTO 必須跟隨。豁免條件由 ADR-001 定義、由 ADR-002 作退出驗證。"
+
+  - id: TR-data-003
+    status: active
+    system: data
+    requirement: "IT 階段允許暫時繞過 IGameData 契約（string 主鍵 DTO），但必須在 IT 驗收結束前清除所有豁免並改為符合 TR-data-002；退出 Gate 由 ADR-002 定義的檢查清單驗證。"
+    source_gdd: "（2026-04-21 製作人決策衍生：project-status.md 2026-04-21 條目）"
+    source_section: "製作人決策記錄 / 2026-04-21 / 資料層架構決策"
+    governing_adrs:
+      - ADR-001
+      - ADR-002
+    created: 2026-04-21
+    notes: "此 TR 不是「永恆需求」，而是「過渡期例外的退出契約」。IT 驗收結束、ADR-002 檢查清單全部 ✅ 後，此 TR 轉為 deprecated。進 VS 後若再有 string 主鍵 DTO 通過程式碼審查，應被視為 ADR-001 違反而非 TR-data-003 豁免。"
+
+  - id: TR-save-001
+    status: active
+    system: save
+    requirement: "存檔資料禁止使用 UnityEngine.PlayerPrefs 儲存；跨 session 狀態在存檔機制定案前一律改為 session 內記憶體旗標（HashSet<string> / private field），每次進遊戲重置。"
+    source_gdd: "（工作室級規則衍生：CLAUDE.md『禁止使用 PlayerPrefs』段落 + .claude/rules/gameplay-code.md）"
+    source_section: "Coding Standards / 禁止 PlayerPrefs"
+    governing_adrs: []
+    created: 2026-04-21
+    notes: "工作室級禁令，所有專案繼承。目前 ProjectDR 有 B13 CharacterIntroCGPlayer 使用 PlayerPrefs 作為『只播一次』旗標（key 格式 `CG_Intro_Played_<characterId>`），屬規則違反，待後續 ADR 治理（存檔系統設計定案後統一替換）。本條目暫無治理 ADR，在 /architecture-review 時會警告。"
+
+  # ========================================================================
+  # 架構 / 結構類 TR（工作室級規則 + ProjectDR 2026-04-22 決策衍生）
+  # ========================================================================
+
+  - id: TR-arch-001
+    status: active
+    system: arch
+    requirement: "Script 組織必須依固定模組邊界劃分，Village 模組下為 21 個模組 + 4 個共用資料夾（Shared、Navigation、Core、Exploration），禁止在 Village 根目錄放任何 .cs 檔；新增模組必更新 ADR-004 並加版本行。"
+    source_gdd: "（工作室級規則衍生：CLAUDE.md § Conventions § Source code + ProjectDR 製作人 2026-04-22 六題拍板 Q1=a）"
+    source_section: "Conventions / Source code"
+    governing_adrs:
+      - ADR-004
+    created: 2026-04-22
+    notes: "ProjectDR 模組清單見 ADR-004 § Decision D1；其他專案若比照此結構，可新建同規格的 TR-arch-001 條目。"
+
+  - id: TR-arch-002
+    status: active
+    system: arch
+    requirement: "每個模組內部強制分為 5 層型別子資料夾（Manager / View / Data / Presenter / Interface），即使檔案數少於 5 仍強制分；禁止新增 5 層之外的子資料夾；空子層必建 .keep 檔保留結構。"
+    source_gdd: "（ProjectDR 製作人 2026-04-22 六題拍板 Q2=a + Q3=a）"
+    source_section: "製作人決策記錄 / 2026-04-22 / ADR-004 六題"
+    governing_adrs:
+      - ADR-004
+    created: 2026-04-22
+    notes: "規則一致性優先於檔案密度（製作人明示）；代價為空子層膨脹，已在 ADR-004 Consequences 章節載明。"
+
+  - id: TR-arch-003
+    status: active
+    system: arch
+    requirement: "Namespace 完全跟資料夾走到模組層為止，型別子層不納入 namespace，格式為 `ProjectDR.Village.<Module>`（Exploration 例外為 `ProjectDR.Village.Exploration.<SubModule>`）；禁止不加 namespace 的 .cs；禁止 namespace 與目錄脫鉤；禁止把型別子層寫進 namespace。"
+    source_gdd: "（ProjectDR 製作人 2026-04-22 六題拍板 Q6=a）"
+    source_section: "製作人決策記錄 / 2026-04-22 / ADR-004 六題"
+    governing_adrs:
+      - ADR-004
+    created: 2026-04-22
+    notes: "Exploration 因子模組數多且複雜，namespace 特許三層，為本規則唯一例外。"
+
+  - id: TR-arch-004
+    status: active
+    system: arch
+    requirement: "測試目錄必須鏡像 runtime 結構：`Assets/Tests/Game/Village/<Module>/<Type>/`。實際搬移不納入 Sprint 7 執行範圍，登記為 tech-debt，觸發時機為 VS 階段啟動後任一 Sprint 的閒置時段或下次大規模測試新增時。"
+    source_gdd: "（ProjectDR 製作人 2026-04-22 六題拍板額外事 2）"
+    source_section: "製作人決策記錄 / 2026-04-22 / ADR-004 額外事"
+    governing_adrs:
+      - ADR-004
+    created: 2026-04-22
+    notes: "本 TR 在 Sprint 7 期間處於「規定已立、執行延後」狀態；tech-debt.md 需新增對應條目追蹤。"
+
+  - id: TR-arch-005
+    status: active
+    system: arch
+    requirement: "Village 場景組裝必須透過 IVillageInstaller 契約執行：介面含 `Install(VillageContext ctx)` 與 `Uninstall()` 兩方法且必須對稱（Subscribe 次數 == Unsubscribe 次數）；Install 唯一參數為 VillageContext；禁止在 VillageEntryPoint 直接 new manager 或直接 `EventBus.Subscribe`；禁止 Installer 繼承 MonoBehaviour。"
+    source_gdd: "（工作室級規則衍生：CLAUDE.md § 分工鐵則 + ADR-004 Core/ 預留 + ProjectDR 製作人 2026-04-22 Sprint 7 選項 B 拍板）"
+    source_section: "製作人決策記錄 / 2026-04-22 / Sprint 7 架構重構選項 B"
+    governing_adrs:
+      - ADR-003
+    created: 2026-04-22
+    notes: "ProjectDR 的 6 個 Installer 清單見 ADR-003 § Decision D5；新 Installer 需按 ADR-003 D8 規則加入。"
+
+  - id: TR-arch-006
+    status: active
+    system: arch
+    requirement: "Village 跨 Installer 共用服務必須透過 VillageContext 建構器注入（明示 readonly 欄位）；禁止 Service Locator 形式的 `Resolve<T>()` / `Get<T>()` 泛型查找 API；禁止 Installer 間直接引用彼此實例（須透過 VillageContext 唯讀查詢介面或 EventBus 事件）；VillageContext 欄位數初期 ≤ 10，超過須回改 ADR-003。"
+    source_gdd: "（工作室級規則衍生：CLAUDE.md § 分工鐵則 + ProjectDR 製作人 2026-04-22 Sprint 7 選項 B 拍板）"
+    source_section: "製作人決策記錄 / 2026-04-22 / Sprint 7 架構重構選項 B"
+    governing_adrs:
+      - ADR-003
+    created: 2026-04-22
+    notes: "VillageContext 初期欄位清單見 ADR-003 § Appendix A。Service Locator 反模式禁令為硬規定，避免把 VillageEntryPoint 的檔案膨脹轉移為 VillageContext 膨脹。"
+
+  - id: TR-arch-007
+    status: active
+    system: arch
+    requirement: "VillageEntryPoint.cs 量化護欄：檔案 < 600 行（2026-04-22 調整，原 < 300）、任一方法 < 100 行；禁止 `InitializeManagers` 或等價的『上帝方法』；允許 partial class 拆分為語意清晰的子檔（VillageEntryPointFunctionPrefabs.cs / VillageEntryPointInstallers.cs），合計行數適用護欄；瘦身後 VillageEntryPoint 僅保留四職責——讀 SerializeField、建 VillageContext、按順序 Install Installer、啟動 Launcher。"
+    source_gdd: "（ProjectDR 製作人 2026-04-22 Sprint 7 選項 B 拍板 + Sprint 7 D3 選 b 調整 + Sprint 7 C1 validate-file-size.sh hook 配套）"
+    source_section: "製作人決策記錄 / 2026-04-22 / Sprint 7 C 類工具層守護 + Sprint 7 D3"
+    governing_adrs:
+      - ADR-003
+    created: 2026-04-22
+    notes: "2026-04-22 調整：原 300 行目標在 B5/B8 實作過程證實過嚴（585 行已是扣除 6 Installer 可承接邏輯後的 scene 層底線），製作人 2026-04-22 Sprint 7 D3 選 b 拍板放寬為 600 行。Sprint 7 C1 建立的 hook 警示閾值為 800 行（一般警示）/ 1200 行（強警示），ADR-003 的 600 限制仍嚴於 hook 警示。違反時 dev-head Code Review 必判 FAIL。"
+
+  - id: TR-arch-008
+    status: active
+    system: arch
+    requirement: "每個 IVillageInstaller 實作自管事件訂閱：Install 內 Subscribe、Uninstall 內 Unsubscribe，數量嚴格對稱；事件 handler 方法寫在該 Installer 類別內，禁止寫在 VillageEntryPoint；跨 Installer 的事件流向透過 EventBus 解耦，不透過 VillageContext 直接引用他人 manager；同一事件可被多個 Installer 訂閱（各自管各自的 Sub/Unsub）。"
+    source_gdd: "（工作室級規則衍生：CLAUDE.md § 分工鐵則 + ProjectDR 製作人 2026-04-22 Sprint 7 選項 B 拍板）"
+    source_section: "製作人決策記錄 / 2026-04-22 / Sprint 7 B6 事件訂閱分散"
+    governing_adrs:
+      - ADR-003
+    created: 2026-04-22
+    notes: "2026-04-22 VillageEntryPoint 實測 16 對 Subscribe/Unsubscribe，分散表見 ADR-003 § Implementation Guidelines。事件訂閱對稱性違反會造成跨 scene 雙訊號或記憶體洩漏，屬高優先 bug。"
+
+  # ========================================================================
+  # 專案級 TR（從 ProjectDR GDD 抽出的技術需求）
+  # 目前為空。後續 GDD 新增「系統必須...」「可調參數」「驗收準則」時
+  # 由 /architecture-review 或 /architecture-decision 補登。
+  # ========================================================================

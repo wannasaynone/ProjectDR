@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.OpeningSequence;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.Dialogue;
+using ProjectDR.Village.CG;
 
 namespace ProjectDR.Tests.Village
 {

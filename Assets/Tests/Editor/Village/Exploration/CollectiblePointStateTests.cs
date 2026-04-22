@@ -4,6 +4,9 @@ using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
 using ProjectDR.Village.Exploration;
+using ProjectDR.Village.Backpack;
+using ProjectDR.Village.Exploration.Core;
+using ProjectDR.Village.Exploration.Collection;
 
 namespace ProjectDR.Tests.Village.Exploration
 {

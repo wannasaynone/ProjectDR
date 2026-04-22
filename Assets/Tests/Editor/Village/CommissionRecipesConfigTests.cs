@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Commission;
 
 namespace ProjectDR.Tests.Village
 {
@@ -159,6 +160,27 @@ namespace ProjectDR.Tests.Village
             Assert.IsNotNull(cfg.GetRecipe("valid"));
         }
 
+        // ===== IGameData 契約斷言（ADR-001 / ADR-002 A06）=====
+
+        [Test]
+        public void CommissionRecipeEntry_ImplementsIGameData()
+        {
+            CommissionRecipeEntry entry = new CommissionRecipeEntry { id = 1, recipe_id = "test_recipe" };
+            KahaGameCore.GameData.IGameData iGameData = entry;
+            Assert.AreEqual(1, iGameData.ID, "IGameData.ID 必須等於 id 欄位");
+        }
+
+        [Test]
+        public void CommissionRecipeInfo_HasIdAndKey()
+        {
+            CommissionRecipesConfig cfg = BuildSampleConfig();
+            CommissionRecipeInfo info = cfg.GetRecipe("farm_tomato");
+            Assert.IsNotNull(info);
+            Assert.AreNotEqual(0, info.ID, "CommissionRecipeInfo.ID 不應為 0（id 欄位必須在 JSON 中賦值）");
+            Assert.AreEqual("farm_tomato", info.Key, "CommissionRecipeInfo.Key 應等於 recipe_id");
+            Assert.AreEqual(info.Key, info.RecipeId, "RecipeId 應等於 Key");
+        }
+
         // ===== 真實 JSON =====
 
         [Test]
@@ -172,6 +194,11 @@ namespace ProjectDR.Tests.Village
             CommissionRecipesConfig cfg = new CommissionRecipesConfig(data);
 
             Assert.Greater(cfg.AllRecipes.Count, 0);
+            // 所有配方的 ID 非 0（ADR-001 IGameData 契約驗證）
+            foreach (CommissionRecipeInfo r in cfg.AllRecipes)
+            {
+                Assert.AreNotEqual(0, r.ID, $"recipe '{r.Key}' 的 ID 不應為 0");
+            }
             // 預期三位委託角色
             Assert.IsTrue(cfg.GetWorkbenchSlotCount("FarmGirl") > 0);
             Assert.IsTrue(cfg.GetWorkbenchSlotCount("Witch") > 0);
@@ -188,10 +215,11 @@ namespace ProjectDR.Tests.Village
         // ===== 輔助：建立測試資料 =====
 
         private static CommissionRecipeEntry BuildEntry(
-            string recipeId, string charId, string input, string output, float dur, int slotMax)
+            string recipeId, string charId, string input, string output, float dur, int slotMax, int id = 1)
         {
             return new CommissionRecipeEntry
             {
+                id = id,
                 recipe_id = recipeId,
                 character_id = charId,
                 input_item_id = input,
@@ -205,9 +233,9 @@ namespace ProjectDR.Tests.Village
         }
 
         private static CommissionRecipeEntry BuildOutputQtyEntry(
-            string recipeId, string charId, string input, string output, float dur, int slotMax, int outputQty)
+            string recipeId, string charId, string input, string output, float dur, int slotMax, int outputQty, int id = 1)
         {
-            CommissionRecipeEntry e = BuildEntry(recipeId, charId, input, output, dur, slotMax);
+            CommissionRecipeEntry e = BuildEntry(recipeId, charId, input, output, dur, slotMax, id);
             e.output_quantity = outputQty;
             return e;
         }
@@ -220,6 +248,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new CommissionRecipeEntry
                     {
+                        id = 1,
                         recipe_id = "farm_tomato",
                         character_id = "FarmGirl",
                         input_item_id = "seed_tomato",
@@ -232,6 +261,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new CommissionRecipeEntry
                     {
+                        id = 2,
                         recipe_id = "farm_carrot",
                         character_id = "FarmGirl",
                         input_item_id = "seed_carrot",
@@ -244,6 +274,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new CommissionRecipeEntry
                     {
+                        id = 3,
                         recipe_id = "witch_heal",
                         character_id = "Witch",
                         input_item_id = "herb_green",
@@ -256,6 +287,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new CommissionRecipeEntry
                     {
+                        id = 4,
                         recipe_id = "guard_patrol",
                         character_id = "Guard",
                         input_item_id = "",

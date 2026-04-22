@@ -5,6 +5,13 @@ using NUnit.Framework;
 using UnityEngine;
 using ProjectDR.Village;
 using ProjectDR.Village.Exploration;
+using ProjectDR.Village.Exploration.Combat;
+using ProjectDR.Village.Exploration.Core;
+using ProjectDR.Village.Exploration.MoveSpeed;
+using ProjectDR.Village.Backpack;
+using ProjectDR.Village.Exploration.Collection;
+using ProjectDR.Village.Exploration.Movement;
+using ProjectDR.Village.Exploration.Map;
 
 namespace ProjectDR.Tests.Village.Exploration
 {

@@ -9,6 +9,8 @@
 
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.CharacterQuestions;
+using ProjectDR.Village.Navigation;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -137,6 +139,29 @@ namespace ProjectDR.Village.Tests
             Assert.AreEqual(10, cfg.GetAffinityDelta(CharacterIds.FarmGirl, "personality_lively"));
             Assert.AreEqual(10, cfg.GetAffinityDelta(CharacterIds.Witch, "personality_calm"));
             Assert.AreEqual(10, cfg.GetAffinityDelta(CharacterIds.Guard, "personality_assertive"));
+        }
+
+        // ===== ADR-001 / ADR-002 A04：IGameData 契約斷言 =====
+
+        [Test]
+        public void CharacterQuestionEntryData_ImplementsIGameData()
+        {
+            CharacterQuestionEntryData entry = new CharacterQuestionEntryData
+            {
+                id = 1,
+                character_id = CharacterIds.VillageChiefWife,
+                level = 1,
+                question_id = "q_vcw_lv1_01",
+                prompt = "test prompt",
+                options = new CharacterQuestionOptionData[0]
+            };
+
+            Assert.That(entry, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
+                "CharacterQuestionEntryData 必須實作 IGameData（ADR-001 / ADR-002 A04）");
+            Assert.That(entry.ID, Is.Not.Zero,
+                "CharacterQuestionEntryData.ID（=id）不得為 0（ADR-002 A04 反序列化要求）");
+            Assert.That(entry.Key, Is.EqualTo("q_vcw_lv1_01"),
+                "CharacterQuestionEntryData.Key 應回傳 question_id");
         }
 
         // ===== 助手 =====

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.CG;
 using UnityEngine;
 
 namespace ProjectDR.Tests.Village
@@ -40,6 +42,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new CGSceneConfigEntry
                     {
+                        id = 1,
                         cgSceneId = "vcw_scene_1",
                         characterId = "VillageChiefWife",
                         requiredThreshold = 5,
@@ -48,6 +51,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new CGSceneConfigEntry
                     {
+                        id = 2,
                         cgSceneId = "guard_scene_1",
                         characterId = "Guard",
                         requiredThreshold = 5,
@@ -56,6 +60,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new CGSceneConfigEntry
                     {
+                        id = 3,
                         cgSceneId = "witch_scene_1",
                         characterId = "Witch",
                         requiredThreshold = 5,
@@ -64,6 +69,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new CGSceneConfigEntry
                     {
+                        id = 4,
                         cgSceneId = "farmgirl_scene_1",
                         characterId = "FarmGirl",
                         requiredThreshold = 5,
@@ -320,6 +326,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new CGSceneConfigEntry
                     {
+                        id = 1,
                         cgSceneId = "test_scene",
                         characterId = "TestChar",
                         requiredThreshold = 10,
@@ -335,6 +342,32 @@ namespace ProjectDR.Tests.Village
             Assert.AreEqual(1, scenes.Count);
             Assert.AreEqual("test_scene", scenes[0].CgSceneId);
             Assert.AreEqual(10, scenes[0].RequiredThreshold);
+        }
+
+        // ===== ADR-001 / ADR-002 A02：IGameData 契約斷言 =====
+
+        [Test]
+        public void CGSceneConfigEntry_ImplementsIGameData()
+        {
+            CGSceneConfigEntry entry = new CGSceneConfigEntry
+            {
+                id = 7,
+                cgSceneId = "vcw_scene_1",
+                characterId = "VillageChiefWife",
+                requiredThreshold = 5,
+                dialogueId = 1001,
+                displayName = "溫柔的夜晚"
+            };
+
+            // IGameData 介面斷言
+            Assert.IsInstanceOf<KahaGameCore.GameData.IGameData>(entry,
+                "CGSceneConfigEntry 必須實作 IGameData（ADR-001 / ADR-002 A02）");
+            // ID 非 0
+            Assert.AreNotEqual(0, entry.ID,
+                "CGSceneConfigEntry.ID 不得為 0（ADR-002 A02 反序列化要求）");
+            // Key 與 cgSceneId 一致
+            Assert.AreEqual(entry.cgSceneId, entry.Key,
+                "CGSceneConfigEntry.Key 應回傳與 cgSceneId 相同的語意字串");
         }
 
         [Test]
@@ -357,6 +390,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new CGSceneConfigEntry
                     {
+                        id = 1,
                         cgSceneId = "scene_1",
                         characterId = "Char1",
                         requiredThreshold = 5,
@@ -365,6 +399,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new CGSceneConfigEntry
                     {
+                        id = 2,
                         cgSceneId = "scene_2",
                         characterId = "Char1",
                         requiredThreshold = 10,
@@ -390,6 +425,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new CGSceneConfigEntry
                     {
+                        id = 1,
                         cgSceneId = "test_scene",
                         characterId = "TestChar",
                         requiredThreshold = 5,
@@ -425,6 +461,7 @@ namespace ProjectDR.Tests.Village
             string json = @"{
                 ""scenes"": [
                     {
+                        ""id"": 1,
                         ""cgSceneId"": ""vcw_scene_1"",
                         ""characterId"": ""VillageChiefWife"",
                         ""requiredThreshold"": 5,

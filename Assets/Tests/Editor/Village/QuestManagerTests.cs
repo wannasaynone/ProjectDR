@@ -2,6 +2,9 @@ using System;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Storage;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Navigation;
 
 namespace ProjectDR.Tests.Village
 {

@@ -4,6 +4,9 @@ using System.IO;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.IdleChat;
+using ProjectDR.Village.CharacterUnlock;
 using UnityEngine;
 
 namespace ProjectDR.Village.Tests
@@ -63,6 +66,28 @@ namespace ProjectDR.Village.Tests
             }
         }
 
+        // ===== ADR-001 / ADR-002 A10：IGameData 契約斷言 =====
+
+        [Test]
+        public void IdleChatTopicData_ImplementsIGameData()
+        {
+            IdleChatTopicData entry = new IdleChatTopicData
+            {
+                id = 1,
+                character_id = CharacterIds.VillageChiefWife,
+                topic_id = "topic_test",
+                prompt = "test prompt",
+                answers = new IdleChatAnswerData[0]
+            };
+
+            Assert.That(entry, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
+                "IdleChatTopicData 必須實作 IGameData（ADR-001 / ADR-002 A10）");
+            Assert.That(entry.ID, Is.Not.Zero,
+                "IdleChatTopicData.ID 不得為 0（ADR-002 A10 反序列化要求）");
+            Assert.That(entry.Key, Is.EqualTo("topic_test"),
+                "IdleChatTopicData.Key 應回傳 topic_id");
+        }
+
         private static IdleChatConfig Build()
         {
             return new IdleChatConfig(new IdleChatConfigData
@@ -71,7 +96,7 @@ namespace ProjectDR.Village.Tests
                 {
                     new IdleChatTopicData
                     {
-                        character_id = CharacterIds.VillageChiefWife, topic_id="t1", prompt="p1",
+                        id = 1, character_id = CharacterIds.VillageChiefWife, topic_id="t1", prompt="p1",
                         answers = new IdleChatAnswerData[]
                         {
                             new IdleChatAnswerData{ answer_id="a1", text="aa" },
@@ -80,7 +105,7 @@ namespace ProjectDR.Village.Tests
                     },
                     new IdleChatTopicData
                     {
-                        character_id = CharacterIds.VillageChiefWife, topic_id="t2", prompt="p2",
+                        id = 2, character_id = CharacterIds.VillageChiefWife, topic_id="t2", prompt="p2",
                         answers = new IdleChatAnswerData[]
                         {
                             new IdleChatAnswerData{ answer_id="a1", text="xx" },

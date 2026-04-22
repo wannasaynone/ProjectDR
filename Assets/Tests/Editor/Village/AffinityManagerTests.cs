@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Affinity;
+using ProjectDR.Village.Navigation;
 
 namespace ProjectDR.Tests.Village
 {
@@ -407,6 +409,81 @@ namespace ProjectDR.Tests.Village
         public void AffinityConfig_NullData_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new AffinityConfig(null));
+        }
+
+        // ===== ADR-001 IGameData 契約驗證（ADR-002 A01 改造後新增）=====
+
+        [Test]
+        public void AffinityCharacterConfigData_ImplementsIGameData()
+        {
+            // AffinityCharacterConfigData 必須實作 IGameData（ADR-001）
+            var data = new AffinityCharacterConfigData
+            {
+                id = 1,
+                characterId = "test_char",
+                thresholds = new int[] { 5 }
+            };
+
+            Assert.IsInstanceOf<KahaGameCore.GameData.IGameData>(data,
+                "AffinityCharacterConfigData 必須實作 IGameData（ADR-001）");
+        }
+
+        [Test]
+        public void AffinityCharacterConfigData_ID_IsNonZero_WhenSetToPositive()
+        {
+            // IGameData.ID 非 0 斷言（ADR-001：ID 必須可區分資料行）
+            const int EXPECTED_ID = 1;
+            var data = new AffinityCharacterConfigData
+            {
+                id = EXPECTED_ID,
+                characterId = "village_chief_wife",
+                thresholds = new int[] { 5 }
+            };
+
+            Assert.AreNotEqual(0, data.ID,
+                "AffinityCharacterConfigData.ID 不可為 0（ADR-001 IGameData 契約）");
+            Assert.AreEqual(EXPECTED_ID, data.ID);
+        }
+
+        [Test]
+        public void AffinityCharacterConfigData_ID_MapsToIdField()
+        {
+            // 確認 IGameData.ID property 對應 int id 欄位（雙欄位規則：ID + characterId）
+            var data = new AffinityCharacterConfigData
+            {
+                id = 42,
+                characterId = "witch",
+                thresholds = new int[] { 3, 7 }
+            };
+
+            Assert.AreEqual(42, data.ID, "ID property 應對應 int id 欄位");
+            Assert.AreEqual("witch", data.characterId, "characterId 語意字串外鍵應獨立保留");
+        }
+
+        [Test]
+        public void AffinityConfigData_Deserialization_WithId_CorrectValues()
+        {
+            // 驗證包含 id 欄位的 JSON 可正確反序列化（ADR-001 改造後 JSON 格式）
+            string json = @"{
+                ""characters"": [
+                    {
+                        ""id"": 1,
+                        ""characterId"": ""TestChar"",
+                        ""thresholds"": [3, 6, 9]
+                    }
+                ],
+                ""defaultThresholds"": [5]
+            }";
+
+            AffinityConfigData data = UnityEngine.JsonUtility.FromJson<AffinityConfigData>(json);
+
+            Assert.IsNotNull(data);
+            Assert.AreEqual(1, data.characters.Length);
+            Assert.AreEqual(1, data.characters[0].id);
+            Assert.AreEqual(1, data.characters[0].ID);
+            Assert.AreEqual("TestChar", data.characters[0].characterId);
+            Assert.AreNotEqual(0, data.characters[0].ID,
+                "反序列化後 ID 不可為 0（ADR-001 IGameData 契約）");
         }
     }
 }

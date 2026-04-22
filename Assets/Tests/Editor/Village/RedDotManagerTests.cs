@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Progression;
+using ProjectDR.Village.Navigation;
 
 namespace ProjectDR.Tests.Village
 {
@@ -148,14 +151,12 @@ namespace ProjectDR.Tests.Village
         {
             using (RedDotManager sut = new RedDotManager(_config, _questManager))
             {
-                // 先把 T0 完成讓 T1 (owner=VillageChiefWife in BuildConfig) Available
+                // 先把 T0 完成讓 T1 (owner=FarmGirl in BuildConfig) Available
                 _questManager.TryAutoCompleteFirstAutoQuest(); // T0 完成 → 發布 T1 Available
-                HubRedDotInfo info = sut.GetHubRedDot(CharacterIds.VillageChiefWife);
-                // T0 完成後 T1 Available → VCW L3 亮（T1 owner = VCW）
-                // 但 T0 owner 也是 VCW，完成 T0 後 L3 理應清除再重亮（T1 Available）
-                Assert.IsTrue(info.HighestLayer == RedDotLayer.NewQuest
-                    || info.HighestLayer == RedDotLayer.MainQuestEvent,
-                    "完成 T0 後 VCW 應有 L3 或 L4 紅點");
+                HubRedDotInfo info = sut.GetHubRedDot(CharacterIds.FarmGirl);
+                // T0 完成後 T1 Available → FarmGirl L3 亮（T1 owner = FarmGirl）
+                Assert.IsTrue(info.HighestLayer == RedDotLayer.NewQuest,
+                    "完成 T0 後 FarmGirl 應有 L3 紅點（T1 owner）");
             }
         }
 
@@ -416,6 +417,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new MainQuestConfigEntry
                     {
+                        id = 1,
                         quest_id = "T0",
                         owner_character_id = CharacterIds.VillageChiefWife,
                         completion_condition_type = MainQuestCompletionTypes.Auto,
@@ -425,6 +427,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 2,
                         quest_id = "T1",
                         owner_character_id = CharacterIds.FarmGirl,
                         completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
@@ -435,6 +438,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 3,
                         quest_id = "T2",
                         owner_character_id = CharacterIds.FarmGirl,
                         completion_condition_type = MainQuestCompletionTypes.CommissionCount,
@@ -444,6 +448,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 4,
                         quest_id = "T3",
                         owner_character_id = CharacterIds.Witch,
                         completion_condition_type = MainQuestCompletionTypes.CommissionCount,
@@ -453,6 +458,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 5,
                         quest_id = "T4",
                         owner_character_id = CharacterIds.Guard,
                         completion_condition_type = MainQuestCompletionTypes.FirstExplore,

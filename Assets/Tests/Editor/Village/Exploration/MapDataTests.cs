@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using ProjectDR.Village.Exploration;
+using ProjectDR.Village.Exploration.Map;
 
 namespace ProjectDR.Tests.Village.Exploration
 {

@@ -4,7 +4,9 @@ using System.Linq;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
-using static ProjectDR.Village.AreaIds;
+using ProjectDR.Village.Progression;
+using ProjectDR.Village.Navigation;
+using static ProjectDR.Village.Navigation.AreaIds;
 
 namespace ProjectDR.Tests.Village
 {

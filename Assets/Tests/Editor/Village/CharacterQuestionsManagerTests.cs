@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.CharacterQuestions;
+using ProjectDR.Village.Affinity;
 
 namespace ProjectDR.Village.Tests
 {

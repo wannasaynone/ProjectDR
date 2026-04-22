@@ -14,6 +14,9 @@ using System;
 using NUnit.Framework;
 using KahaGameCore.GameEvent;
 using ProjectDR.Village;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.CG;
+using ProjectDR.Village.CharacterIntro;
 
 namespace ProjectDR.Village.Tests
 {

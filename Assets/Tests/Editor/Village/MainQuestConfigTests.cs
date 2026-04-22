@@ -2,6 +2,8 @@ using System;
 using NUnit.Framework;
 using UnityEngine;
 using ProjectDR.Village;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Navigation;
 
 namespace ProjectDR.Tests.Village
 {
@@ -99,12 +101,12 @@ namespace ProjectDR.Tests.Village
         {
             MainQuestConfigData data = new MainQuestConfigData
             {
-                schema_version = 1,
+                schema_version = 2,
                 main_quests = new MainQuestConfigEntry[]
                 {
-                    new MainQuestConfigEntry { quest_id = "T3", sort_order = 3 },
-                    new MainQuestConfigEntry { quest_id = "T1", sort_order = 1 },
-                    new MainQuestConfigEntry { quest_id = "T2", sort_order = 2 }
+                    new MainQuestConfigEntry { id = 3, quest_id = "T3", sort_order = 3 },
+                    new MainQuestConfigEntry { id = 1, quest_id = "T1", sort_order = 1 },
+                    new MainQuestConfigEntry { id = 2, quest_id = "T2", sort_order = 2 }
                 }
             };
             MainQuestConfig config = new MainQuestConfig(data);
@@ -118,16 +120,37 @@ namespace ProjectDR.Tests.Village
         {
             MainQuestConfigData data = new MainQuestConfigData
             {
-                schema_version = 1,
+                schema_version = 2,
                 main_quests = new MainQuestConfigEntry[]
                 {
-                    new MainQuestConfigEntry { quest_id = "", sort_order = 0 },
-                    new MainQuestConfigEntry { quest_id = "T1", sort_order = 1 }
+                    new MainQuestConfigEntry { id = 0, quest_id = "", sort_order = 0 },
+                    new MainQuestConfigEntry { id = 1, quest_id = "T1", sort_order = 1 }
                 }
             };
             MainQuestConfig config = new MainQuestConfig(data);
             Assert.AreEqual(1, config.OrderedQuests.Count);
             Assert.AreEqual("T1", config.OrderedQuests[0].QuestId);
+        }
+
+        // ===== IGameData 契約斷言（ADR-001 / ADR-002 A12）=====
+
+        [Test]
+        public void MainQuestConfigEntry_ImplementsIGameData()
+        {
+            MainQuestConfigEntry entry = new MainQuestConfigEntry { id = 1, quest_id = "T0" };
+            KahaGameCore.GameData.IGameData iGameData = entry;
+            Assert.AreEqual(1, iGameData.ID, "IGameData.ID 必須等於 id 欄位");
+        }
+
+        [Test]
+        public void MainQuestInfo_HasIdAndKey()
+        {
+            MainQuestConfig config = BuildSimpleConfig();
+            MainQuestInfo t0 = config.GetQuest("T0");
+            Assert.IsNotNull(t0);
+            Assert.AreNotEqual(0, t0.ID, "MainQuestInfo.ID 不應為 0");
+            Assert.AreEqual("T0", t0.Key, "Key 應等於 quest_id");
+            Assert.AreEqual(t0.Key, t0.QuestId, "QuestId 應等於 Key");
         }
 
         [Test]
@@ -150,6 +173,11 @@ namespace ProjectDR.Tests.Village
             Assert.IsNull(config.GetQuest("T3"), "T3（幫她一次）應已移除");
             Assert.IsNull(config.GetQuest("T4"), "T4 應已重編為 T2，不再有 T4 條目");
             Assert.AreEqual(3, config.OrderedQuests.Count);
+            // IGameData 契約驗證（ADR-001 A12）
+            foreach (MainQuestInfo q in config.OrderedQuests)
+            {
+                Assert.AreNotEqual(0, q.ID, $"quest '{q.Key}' 的 ID 不應為 0");
+            }
             // 驗 T1 完成條件
             MainQuestInfo t1 = config.GetQuest("T1");
             Assert.AreEqual(MainQuestCompletionTypes.DialogueEnd, t1.CompletionConditionType);
@@ -167,11 +195,12 @@ namespace ProjectDR.Tests.Village
         {
             MainQuestConfigData data = new MainQuestConfigData
             {
-                schema_version = 1,
+                schema_version = 2,
                 main_quests = new MainQuestConfigEntry[]
                 {
                     new MainQuestConfigEntry
                     {
+                        id = 1,
                         quest_id = "T0",
                         display_name = "醒來的地方",
                         description = "開局任務",
@@ -184,6 +213,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 2,
                         quest_id = "T1",
                         display_name = "認識所有人",
                         description = "任務 1",
@@ -196,6 +226,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 3,
                         quest_id = "T2",
                         display_name = "出去看看外面",
                         description = "任務 2（原 T4）",

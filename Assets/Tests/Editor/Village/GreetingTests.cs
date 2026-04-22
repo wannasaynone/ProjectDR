@@ -4,6 +4,11 @@ using System.IO;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Progression;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.Greeting;
+using ProjectDR.Village.CharacterUnlock;
 using UnityEngine;
 
 namespace ProjectDR.Village.Tests
@@ -58,15 +63,37 @@ namespace ProjectDR.Village.Tests
             Assert.AreEqual(280, total);
         }
 
+        // ===== ADR-001 / ADR-002 A07：IGameData 契約斷言 =====
+
+        [Test]
+        public void GreetingEntryData_ImplementsIGameData()
+        {
+            GreetingEntryData entry = new GreetingEntryData
+            {
+                id = 1,
+                character_id = CharacterIds.VillageChiefWife,
+                level = 1,
+                greeting_id = "g_test",
+                text = "test"
+            };
+
+            Assert.That(entry, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
+                "GreetingEntryData 必須實作 IGameData（ADR-001 / ADR-002 A07）");
+            Assert.That(entry.ID, Is.Not.Zero,
+                "GreetingEntryData.ID 不得為 0（ADR-002 A07 反序列化要求）");
+            Assert.That(entry.Key, Is.EqualTo("g_test"),
+                "GreetingEntryData.Key 應回傳 greeting_id");
+        }
+
         private static GreetingConfig Build()
         {
             return new GreetingConfig(new GreetingConfigData
             {
                 greetings = new GreetingEntryData[]
                 {
-                    new GreetingEntryData{ character_id=CharacterIds.VillageChiefWife, level=1, greeting_id="g1", text="a" },
-                    new GreetingEntryData{ character_id=CharacterIds.VillageChiefWife, level=1, greeting_id="g2", text="b" },
-                    new GreetingEntryData{ character_id=CharacterIds.VillageChiefWife, level=2, greeting_id="g3", text="c" },
+                    new GreetingEntryData{ id=1, character_id=CharacterIds.VillageChiefWife, level=1, greeting_id="g1", text="a" },
+                    new GreetingEntryData{ id=2, character_id=CharacterIds.VillageChiefWife, level=1, greeting_id="g2", text="b" },
+                    new GreetingEntryData{ id=3, character_id=CharacterIds.VillageChiefWife, level=2, greeting_id="g3", text="c" },
                 }
             });
         }

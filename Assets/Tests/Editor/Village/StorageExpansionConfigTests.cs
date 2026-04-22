@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using UnityEngine;
 using ProjectDR.Village;
+using ProjectDR.Village.Storage;
 
 namespace ProjectDR.Tests.Village
 {
@@ -157,6 +158,26 @@ namespace ProjectDR.Tests.Village
             StorageExpansionConfig config = new StorageExpansionConfig(data);
             Assert.GreaterOrEqual(config.Stages.Count, 1);
             Assert.AreEqual(100, config.InitialCapacity);
+        }
+
+        // ===== ADR-001 / ADR-002 A16：IGameData 契約斷言 =====
+
+        [Test]
+        public void StorageExpansionStageData_ImplementsIGameData()
+        {
+            StorageExpansionStageData entry = new StorageExpansionStageData
+            {
+                level = 1,
+                capacity_before = 100,
+                capacity_after = 150,
+                required_items = "",
+                duration_seconds = 90
+            };
+
+            Assert.That(entry, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
+                "StorageExpansionStageData 必須實作 IGameData（ADR-001 / ADR-002 A16）");
+            Assert.That(entry.ID, Is.Not.Zero,
+                "StorageExpansionStageData.ID（=level）不得為 0（ADR-002 A16 反序列化要求）");
         }
     }
 }

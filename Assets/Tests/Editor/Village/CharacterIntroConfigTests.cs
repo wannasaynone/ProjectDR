@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.CharacterIntro;
 
 namespace ProjectDR.Tests.Village
 {
@@ -41,6 +43,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new CharacterIntroData
                     {
+                        id = 1,
                         intro_id = "intro_a",
                         character_id = CharacterIds.FarmGirl,
                         cg_sprite_id = "cg_a",
@@ -49,6 +52,7 @@ namespace ProjectDR.Tests.Village
                     },
                     new CharacterIntroData
                     {
+                        id = 2,
                         intro_id = "intro_b",
                         character_id = CharacterIds.Witch,
                         cg_sprite_id = "cg_b",
@@ -86,7 +90,7 @@ namespace ProjectDR.Tests.Village
             {
                 character_intros = new CharacterIntroData[]
                 {
-                    new CharacterIntroData { intro_id = "i1", character_id = CharacterIds.Guard },
+                    new CharacterIntroData { id = 1, intro_id = "i1", character_id = CharacterIds.Guard },
                 },
                 character_intro_lines = new CharacterIntroLineData[]
                 {
@@ -107,15 +111,41 @@ namespace ProjectDR.Tests.Village
             {
                 character_intros = new CharacterIntroData[]
                 {
-                    new CharacterIntroData { intro_id = null, character_id = CharacterIds.Guard },
-                    new CharacterIntroData { intro_id = "", character_id = CharacterIds.Guard },
-                    new CharacterIntroData { intro_id = "valid", character_id = CharacterIds.Guard },
+                    new CharacterIntroData { id = 0, intro_id = null, character_id = CharacterIds.Guard },
+                    new CharacterIntroData { id = 0, intro_id = "", character_id = CharacterIds.Guard },
+                    new CharacterIntroData { id = 3, intro_id = "valid", character_id = CharacterIds.Guard },
                 },
                 character_intro_lines = new CharacterIntroLineData[0],
             };
             CharacterIntroConfig sut = new CharacterIntroConfig(data);
             Assert.AreEqual(1, sut.IntroIds.Count);
             Assert.IsNotNull(sut.GetIntro("valid"));
+        }
+
+        // ===== ADR-001 / ADR-002 A03：IGameData 契約斷言 =====
+
+        [Test]
+        public void CharacterIntroData_ImplementsIGameData()
+        {
+            CharacterIntroData entry = new CharacterIntroData
+            {
+                id = 5,
+                intro_id = "intro_vcw",
+                character_id = CharacterIds.VillageChiefWife,
+                cg_sprite_id = "cg_vcw",
+                scene_description = "test scene",
+                word_count_target = 500,
+            };
+
+            // IGameData 介面斷言
+            Assert.IsInstanceOf<KahaGameCore.GameData.IGameData>(entry,
+                "CharacterIntroData 必須實作 IGameData（ADR-001 / ADR-002 A03）");
+            // ID 非 0
+            Assert.AreNotEqual(0, entry.ID,
+                "CharacterIntroData.ID 不得為 0（ADR-002 A03 反序列化要求）");
+            // Key 與 intro_id 一致
+            Assert.AreEqual(entry.intro_id, entry.Key,
+                "CharacterIntroData.Key 應回傳與 intro_id 相同的語意字串");
         }
     }
 }

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Dialogue;
+using ProjectDR.Village.CharacterUnlock;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Progression;
+using ProjectDR.Village.Navigation;
 
 namespace ProjectDR.Tests.Village
 {
@@ -476,13 +481,15 @@ namespace ProjectDR.Tests.Village
         private static InitialResourcesConfig BuildConfig()
         {
             // Sprint 6 B2：移除 unlock_farm_girl_seed、unlock_witch_herb；保留 initial_backpack_node0 與 unlock_guard_sword
+            // A11 改造（2026-04-22）：加 id 欄位，改 GuardReturnEvent → GuardSwordAsked
             InitialResourcesConfigData data = new InitialResourcesConfigData
             {
-                schema_version = 1,
+                schema_version = 2,
                 grants = new InitialResourceGrantData[]
                 {
                     new InitialResourceGrantData
                     {
+                        id = 1,
                         grant_id = "initial_backpack_node0",
                         trigger_id = InitialResourcesTriggerIds.Node0Start,
                         item_id = "",
@@ -490,8 +497,9 @@ namespace ProjectDR.Tests.Village
                     },
                     new InitialResourceGrantData
                     {
+                        id = 2,
                         grant_id = "unlock_guard_sword",
-                        trigger_id = InitialResourcesTriggerIds.GuardReturnEvent,
+                        trigger_id = InitialResourcesTriggerIds.GuardSwordAsked,
                         item_id = "gift_sword_wooden",
                         quantity = 1
                     }

@@ -13,6 +13,15 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Progression;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.CharacterQuestions;
+using ProjectDR.Village.CharacterStamina;
+using ProjectDR.Village.IdleChat;
+using ProjectDR.Village.Greeting;
+using ProjectDR.Village.Affinity;
+using ProjectDR.Village.Dialogue;
 
 namespace ProjectDR.Village.Tests.Integration
 {

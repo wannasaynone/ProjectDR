@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using KahaGameCore.GameEvent;
 using ProjectDR.Village;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.Dialogue;
 
 namespace ProjectDR.Tests.Village
 {

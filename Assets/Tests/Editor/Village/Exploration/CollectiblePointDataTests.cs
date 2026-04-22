@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProjectDR.Village.Exploration;
+using ProjectDR.Village.Exploration.Collection;
 
 namespace ProjectDR.Tests.Village.Exploration
 {

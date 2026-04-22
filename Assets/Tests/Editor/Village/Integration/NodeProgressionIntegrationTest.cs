@@ -16,6 +16,13 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Storage;
+using ProjectDR.Village.Backpack;
+using ProjectDR.Village.CharacterUnlock;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Progression;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.Dialogue;
 
 namespace ProjectDR.Tests.Village.Integration
 {
@@ -239,6 +246,7 @@ namespace ProjectDR.Tests.Village.Integration
                 {
                     new MainQuestConfigEntry
                     {
+                        id = 1,
                         quest_id = "T0",
                         display_name = "醒來的地方",
                         owner_character_id = CharacterIds.VillageChiefWife,
@@ -249,6 +257,7 @@ namespace ProjectDR.Tests.Village.Integration
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 2,
                         quest_id = "T1",
                         display_name = "認識所有人",
                         owner_character_id = CharacterIds.VillageChiefWife,
@@ -259,6 +268,7 @@ namespace ProjectDR.Tests.Village.Integration
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 3,
                         quest_id = "T2",
                         display_name = "出去看看外面",
                         owner_character_id = CharacterIds.VillageChiefWife,

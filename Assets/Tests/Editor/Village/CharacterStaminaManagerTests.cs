@@ -2,6 +2,8 @@
 
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.CharacterStamina;
 
 namespace ProjectDR.Village.Tests
 {

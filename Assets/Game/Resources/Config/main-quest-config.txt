@@ -1,0 +1,42 @@
+{
+    "schema_version": 2,
+    "note": "Sprint 6 重構（2026-04-20）：原 T2「幫她一次」、T3「再去認識另一個人」已刪除，委託強制教學完全移除；原 T4「出去看看外面」重編為 T2（sort_order 2）。A12 改造（2026-04-22）：加 id 欄位（流水號主鍵），實作 IGameData。",
+    "main_quests": [
+        {
+            "id": 1,
+            "quest_id": "T0",
+            "display_name": "醒來的地方",
+            "description": "你在一個陌生的房間醒來。有人在床邊照顧著你。聽她說說這裡的事吧。",
+            "owner_character_id": "",
+            "completion_condition_type": "auto",
+            "completion_condition_value": "node0_dialogue_complete",
+            "reward_grant_ids": "",
+            "unlock_on_complete": "T1|node_0_complete",
+            "sort_order": 0
+        },
+        {
+            "id": 2,
+            "quest_id": "T1",
+            "display_name": "認識所有人",
+            "description": "村長夫人說，還有幾個人你沒見過。去認識她們吧。",
+            "owner_character_id": "",
+            "completion_condition_type": "dialogue_end",
+            "completion_condition_value": "node_2_dialogue_complete",
+            "reward_grant_ids": "",
+            "unlock_on_complete": "T2|node_2_complete|exploration_open",
+            "sort_order": 1
+        },
+        {
+            "id": 3,
+            "quest_id": "T2",
+            "display_name": "出去看看外面",
+            "description": "探索入口開了。夫人說外面有東西，也有一個人一直在那邊等著……去看看吧。",
+            "owner_character_id": "",
+            "completion_condition_type": "first_explore",
+            "completion_condition_value": "guard_return_event_complete",
+            "reward_grant_ids": "unlock_guard_sword",
+            "unlock_on_complete": "guard_unlock|exploration_full_open",
+            "sort_order": 2
+        }
+    ]
+}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using ProjectDR.Village;
+using ProjectDR.Village.Progression;
 
 namespace ProjectDR.Tests.Village
 {
@@ -186,8 +187,29 @@ namespace ProjectDR.Tests.Village
             Assert.IsNotNull(config.GetGrant("initial_backpack_node0"), "initial_backpack_node0 應保留");
         }
 
+        // ===== IGameData 契約斷言（ADR-001 / ADR-002 A11）=====
+
+        [Test]
+        public void InitialResourceGrantData_ImplementsIGameData()
+        {
+            InitialResourceGrantData entry = new InitialResourceGrantData { id = 1, grant_id = "test_grant" };
+            KahaGameCore.GameData.IGameData iGameData = entry;
+            Assert.AreEqual(1, iGameData.ID, "IGameData.ID 必須等於 id 欄位");
+        }
+
+        [Test]
+        public void InitialResourceGrant_HasIdAndKey()
+        {
+            InitialResourcesConfig config = BuildConfig();
+            InitialResourceGrant grant = config.GetGrant("unlock_guard_sword");
+            Assert.IsNotNull(grant);
+            Assert.AreNotEqual(0, grant.ID, "InitialResourceGrant.ID 不應為 0");
+            Assert.AreEqual("unlock_guard_sword", grant.Key, "Key 應等於 grant_id");
+            Assert.AreEqual(grant.Key, grant.GrantId, "GrantId 應等於 Key");
+        }
+
         /// <summary>
-        /// Sprint 6 重構後的測試用配置。
+        /// Sprint 6 重構後的測試用配置（A11 改造：加 id 欄位）。
         /// 移除 unlock_farm_girl_seed / unlock_witch_herb（決策 6：物資完全依賴探索）。
         /// 保留 initial_backpack_node0 / unlock_guard_sword。
         /// </summary>
@@ -195,11 +217,12 @@ namespace ProjectDR.Tests.Village
         {
             InitialResourcesConfigData data = new InitialResourcesConfigData
             {
-                schema_version = 1,
+                schema_version = 2,
                 grants = new InitialResourceGrantData[]
                 {
                     new InitialResourceGrantData
                     {
+                        id = 1,
                         grant_id = "initial_backpack_node0",
                         trigger_id = InitialResourcesTriggerIds.Node0Start,
                         item_id = "",
@@ -207,8 +230,9 @@ namespace ProjectDR.Tests.Village
                     },
                     new InitialResourceGrantData
                     {
+                        id = 2,
                         grant_id = "unlock_guard_sword",
-                        trigger_id = InitialResourcesTriggerIds.GuardReturnEvent,
+                        trigger_id = InitialResourcesTriggerIds.GuardSwordAsked,
                         item_id = "gift_sword_wooden",
                         quantity = 1
                     }

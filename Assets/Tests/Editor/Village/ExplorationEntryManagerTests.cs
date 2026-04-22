@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Backpack;
+using ProjectDR.Village.Navigation;
 using ProjectDR.Village.Exploration;
+using ProjectDR.Village.Exploration.Core;
 
 namespace ProjectDR.Tests.Village
 {
@@ -424,7 +427,7 @@ namespace ProjectDR.Tests.Village
             Action<ExplorationReturnedEvent> handler = (e) => { returnedEventPublished = true; };
             EventBus.Subscribe<ExplorationReturnedEvent>(handler);
 
-            EventBus.Publish(new ProjectDR.Village.Exploration.ExplorationCompletedEvent());
+            EventBus.Publish(new ExplorationCompletedEvent());
 
             EventBus.Unsubscribe<ExplorationReturnedEvent>(handler);
 
@@ -443,7 +446,7 @@ namespace ProjectDR.Tests.Village
             Action<ExplorationReturnedEvent> handler = (e) => { returnedEventPublished = true; };
             EventBus.Subscribe<ExplorationReturnedEvent>(handler);
 
-            EventBus.Publish(new ProjectDR.Village.Exploration.ExplorationCompletedEvent());
+            EventBus.Publish(new ExplorationCompletedEvent());
 
             EventBus.Unsubscribe<ExplorationReturnedEvent>(handler);
 

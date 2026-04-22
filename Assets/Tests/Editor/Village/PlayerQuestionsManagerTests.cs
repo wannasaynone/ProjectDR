@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.CharacterQuestions;
 
 namespace ProjectDR.Village.Tests
 {

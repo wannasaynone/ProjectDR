@@ -3,6 +3,12 @@ using System.Linq;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.Storage;
+using ProjectDR.Village.Backpack;
+using ProjectDR.Village.Commission;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.TimeProvider;
 
 namespace ProjectDR.Tests.Village
 {
@@ -555,6 +561,7 @@ namespace ProjectDR.Tests.Village
                 {
                     new MainQuestConfigEntry
                     {
+                        id = 1,
                         quest_id = "TC",
                         completion_condition_type = MainQuestCompletionTypes.CommissionCount,
                         completion_condition_value = WitchId,

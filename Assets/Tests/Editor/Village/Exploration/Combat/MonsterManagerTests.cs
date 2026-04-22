@@ -4,6 +4,7 @@ using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using UnityEngine;
 using ProjectDR.Village.Exploration;
+using ProjectDR.Village.Exploration.Map;
 using ProjectDR.Village.Exploration.Combat;
 
 namespace ProjectDR.Tests.Village.Exploration.Combat

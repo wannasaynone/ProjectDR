@@ -27,6 +27,11 @@ using System.Collections.Generic;
 using KahaGameCore.GameEvent;
 using NUnit.Framework;
 using ProjectDR.Village;
+using ProjectDR.Village.MainQuest;
+using ProjectDR.Village.Progression;
+using ProjectDR.Village.Navigation;
+using ProjectDR.Village.CharacterQuestions;
+using ProjectDR.Village.Greeting;
 
 namespace ProjectDR.Tests.Village.Integration
 {
@@ -332,6 +337,7 @@ namespace ProjectDR.Tests.Village.Integration
                 {
                     new MainQuestConfigEntry
                     {
+                        id = 1,
                         quest_id = "T0",
                         owner_character_id = CharacterIds.VillageChiefWife,
                         completion_condition_type = MainQuestCompletionTypes.Auto,
@@ -341,6 +347,7 @@ namespace ProjectDR.Tests.Village.Integration
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 2,
                         quest_id = "T1",
                         owner_character_id = CharacterIds.FarmGirl,
                         completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
@@ -350,6 +357,7 @@ namespace ProjectDR.Tests.Village.Integration
                     },
                     new MainQuestConfigEntry
                     {
+                        id = 3,
                         quest_id = "T2",
                         owner_character_id = CharacterIds.Guard,
                         completion_condition_type = MainQuestCompletionTypes.FirstExplore,

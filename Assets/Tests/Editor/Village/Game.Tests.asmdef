@@ -5,6 +5,7 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "KahaGameCore.GameEvent",
+        "KahaGameCore.GameData",
         "Game"
     ],
     "includePlatforms": [

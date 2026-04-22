@@ -1,0 +1,21 @@
+{
+    "id": 1,
+    "playerStats": {
+        "maxHp": 20,
+        "atk": 5,
+        "def": 2,
+        "spd": 10
+    },
+    "sword": {
+        "angleDegreesHalf": 45,
+        "range": 1.5,
+        "baseCooldownSeconds": 0.8,
+        "spdCooldownFactor": 0.02
+    },
+    "moveSpeedBase": 0.2,
+    "spdMoveSpeedFactor": 0.005,
+    "freeMovementBaseSpeed": 3.0,
+    "spdFreeMovementSpeedFactor": 0.1,
+    "knockbackDistance": 1.5,
+    "knockbackDuration": 0.2
+}

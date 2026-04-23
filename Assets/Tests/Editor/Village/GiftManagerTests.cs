@@ -31,20 +31,11 @@ namespace ProjectDR.Tests.Village
         {
             EventBus.ForceClearAll();
 
-            AffinityConfigData configData = new AffinityConfigData
+            AffinityConfig config = new AffinityConfig(new AffinityCharacterData[]
             {
-                characters = new AffinityCharacterConfigData[]
-                {
-                    new AffinityCharacterConfigData
-                    {
-                        characterId = CharacterIds.VillageChiefWife,
-                        thresholds = new int[] { 3, 6 }
-                    }
-                },
-                defaultThresholds = new int[] { 5 }
-            };
-
-            AffinityConfig config = new AffinityConfig(configData);
+                new AffinityCharacterData { id = 1, character_id = CharacterIds.VillageChiefWife, thresholds = "3,6" },
+                new AffinityCharacterData { id = 2, character_id = "__default__",                 thresholds = "5"   },
+            });
             _affinityManager = new AffinityManager(config);
             _backpackManager = new BackpackManager(BackpackMaxSlots, BackpackDefaultMaxStack);
             _storageManager = new StorageManager();

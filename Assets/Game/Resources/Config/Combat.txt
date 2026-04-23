@@ -1,0 +1,1 @@
+[{"id":1,"player_max_hp":20,"player_atk":5,"player_def":2,"player_spd":10,"sword_angle_degrees_half":45,"sword_range":1.5,"sword_base_cooldown_seconds":0.8,"sword_spd_cooldown_factor":0.02,"move_speed_base":0.2,"spd_move_speed_factor":0.005,"free_movement_base_speed":3,"spd_free_movement_speed_factor":0.1,"knockback_distance":1.5,"knockback_duration":0.2}]

@@ -246,46 +246,39 @@ namespace ProjectDR.Tests.Village.Integration
         private static InitialResourcesConfig BuildInitialResourcesConfig()
         {
             // Sprint 6 B2：移除 unlock_farm_girl_seed、unlock_witch_herb；角色解鎖時不再發放物資
-            return new InitialResourcesConfig(new InitialResourcesConfigData
+            return new InitialResourcesConfig(new InitialResourceGrantData[]
             {
-                schema_version = 1,
-                grants = new InitialResourceGrantData[]
+                new InitialResourceGrantData
                 {
-                    new InitialResourceGrantData
-                    {
-                        grant_id = "initial_backpack_node0",
-                        trigger_id = InitialResourcesTriggerIds.Node0Start,
-                        item_id = "",
-                        quantity = 0,
-                    },
+                    id = 1,
+                    grant_id = "initial_backpack_node0",
+                    trigger_id = InitialResourcesTriggerIds.Node0Start,
+                    item_id = "",
+                    quantity = 0,
                 },
             });
         }
 
         private static NodeDialogueConfig BuildNodeDialogueConfig()
         {
-            return new NodeDialogueConfig(new NodeDialogueConfigData
+            return new NodeDialogueConfig(new NodeDialogueLineData[]
             {
-                schema_version = 1,
-                node_dialogue_lines = new NodeDialogueLineData[]
-                {
-                    // 節點 0
-                    new NodeDialogueLineData { line_id = "n0_1", node_id = "node_0", sequence = 1, text = "開場：村長夫人出現", line_type = "narration", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n0_2", node_id = "node_0", sequence = 2, text = "你醒來了", line_type = "dialogue", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n0_3", node_id = "node_0", sequence = 3, text = "你想先見誰？", line_type = "choice_prompt", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n0_c1", node_id = "node_0", sequence = 4, text = "農女", line_type = "choice_option", choice_branch = "farm_girl" },
-                    new NodeDialogueLineData { line_id = "n0_c2", node_id = "node_0", sequence = 5, text = "魔女", line_type = "choice_option", choice_branch = "witch" },
-                    new NodeDialogueLineData { line_id = "n0_r1", node_id = "node_0", sequence = 6, text = "那去農場吧", line_type = "choice_response", choice_branch = "farm_girl" },
-                    new NodeDialogueLineData { line_id = "n0_r2", node_id = "node_0", sequence = 7, text = "那去煉金台吧", line_type = "choice_response", choice_branch = "witch" },
+                // 節點 0
+                new NodeDialogueLineData { id=1,  line_id = "n0_1",  node_id = "node_0", sequence = 1, text = "開場：村長夫人出現", line_type = "narration",        choice_branch = "" },
+                new NodeDialogueLineData { id=2,  line_id = "n0_2",  node_id = "node_0", sequence = 2, text = "你醒來了",           line_type = "dialogue",         choice_branch = "" },
+                new NodeDialogueLineData { id=3,  line_id = "n0_3",  node_id = "node_0", sequence = 3, text = "你想先見誰？",       line_type = "choice_prompt",    choice_branch = "" },
+                new NodeDialogueLineData { id=4,  line_id = "n0_c1", node_id = "node_0", sequence = 4, text = "農女",               line_type = "choice_option",    choice_branch = "farm_girl" },
+                new NodeDialogueLineData { id=5,  line_id = "n0_c2", node_id = "node_0", sequence = 5, text = "魔女",               line_type = "choice_option",    choice_branch = "witch" },
+                new NodeDialogueLineData { id=6,  line_id = "n0_r1", node_id = "node_0", sequence = 6, text = "那去農場吧",         line_type = "choice_response",  choice_branch = "farm_girl" },
+                new NodeDialogueLineData { id=7,  line_id = "n0_r2", node_id = "node_0", sequence = 7, text = "那去煉金台吧",       line_type = "choice_response",  choice_branch = "witch" },
 
-                    // 節點 1
-                    new NodeDialogueLineData { line_id = "n1_1", node_id = "node_1", sequence = 1, text = "再介紹下一位", line_type = "dialogue", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n1_c1", node_id = "node_1", sequence = 2, text = "好", line_type = "choice_option", choice_branch = "farm_girl" },
-                    new NodeDialogueLineData { line_id = "n1_c2", node_id = "node_1", sequence = 3, text = "好", line_type = "choice_option", choice_branch = "witch" },
+                // 節點 1
+                new NodeDialogueLineData { id=8,  line_id = "n1_1",  node_id = "node_1", sequence = 1, text = "再介紹下一位",       line_type = "dialogue",         choice_branch = "" },
+                new NodeDialogueLineData { id=9,  line_id = "n1_c1", node_id = "node_1", sequence = 2, text = "好",                 line_type = "choice_option",    choice_branch = "farm_girl" },
+                new NodeDialogueLineData { id=10, line_id = "n1_c2", node_id = "node_1", sequence = 3, text = "好",                 line_type = "choice_option",    choice_branch = "witch" },
 
-                    // 節點 2
-                    new NodeDialogueLineData { line_id = "n2_1", node_id = "node_2", sequence = 1, text = "探索開了", line_type = "dialogue", choice_branch = "" },
-                },
+                // 節點 2
+                new NodeDialogueLineData { id=11, line_id = "n2_1",  node_id = "node_2", sequence = 1, text = "探索開了",           line_type = "dialogue",         choice_branch = "" },
             });
         }
 

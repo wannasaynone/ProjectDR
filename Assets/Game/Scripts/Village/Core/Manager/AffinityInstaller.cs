@@ -31,7 +31,7 @@ namespace ProjectDR.Village.Core
     {
         // ===== 建構子注入（由 VillageEntryPoint 傳入） =====
 
-        private readonly AffinityConfigData _affinityConfigData;
+        private readonly AffinityCharacterData[] _affinityEntries;
 
         // ===== Install 後的 Manager 實例 =====
 
@@ -39,13 +39,13 @@ namespace ProjectDR.Village.Core
         private GiftManager _giftManager;
 
         /// <summary>
-        /// 建構 AffinityInstaller，注入好感度配置資料。
+        /// 建構 AffinityInstaller，注入好感度配置純陣列。
         /// </summary>
-        /// <param name="affinityConfigData">好感度配置 JSON DTO（不可為 null）。</param>
-        public AffinityInstaller(AffinityConfigData affinityConfigData)
+        /// <param name="affinityEntries">JsonFx 反序列化後的 AffinityCharacterData 陣列（不可為 null）。</param>
+        public AffinityInstaller(AffinityCharacterData[] affinityEntries)
         {
-            _affinityConfigData = affinityConfigData
-                ?? throw new ArgumentNullException(nameof(affinityConfigData));
+            _affinityEntries = affinityEntries
+                ?? throw new ArgumentNullException(nameof(affinityEntries));
         }
 
         // ===== IVillageInstaller =====
@@ -67,7 +67,7 @@ namespace ProjectDR.Village.Core
                 throw new InvalidOperationException("AffinityInstaller.Install: ctx.StorageReadOnly 尚未就位（CoreStorageInstaller 必須先 Install）");
 
             // ===== 建構 AffinityManager =====
-            AffinityConfig affinityConfig = new AffinityConfig(_affinityConfigData);
+            AffinityConfig affinityConfig = new AffinityConfig(_affinityEntries);
             _affinityManager = new AffinityManager(affinityConfig);
 
             // ===== 暴露至 VillageContext（ADR-003 D5 #3 產出）=====

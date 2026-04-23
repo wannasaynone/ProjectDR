@@ -316,87 +316,79 @@ namespace ProjectDR.Tests.Village.Integration
 
         private static AffinityConfig BuildAffinityConfig()
         {
-            return new AffinityConfig(new AffinityConfigData
+            return new AffinityConfig(new AffinityCharacterData[]
             {
-                defaultThresholds = new int[] { 5 },
-                characters = new AffinityCharacterConfigData[0],
+                new AffinityCharacterData { id = 1, character_id = "__default__", thresholds = "5" },
             });
         }
 
         private static CommissionRecipesConfig BuildCommissionConfig()
         {
-            return new CommissionRecipesConfig(new CommissionRecipesConfigData
+            return new CommissionRecipesConfig(new CommissionRecipeData[]
             {
-                schema_version = 1,
-                recipes = new CommissionRecipeEntry[]
+                new CommissionRecipeData
                 {
-                    new CommissionRecipeEntry
-                    {
-                        recipe_id = "witch_heal_potion", character_id = CharacterIds.Witch,
-                        input_item_id = "herb_green", input_quantity = 1,
-                        output_item_id = "potion_heal", output_quantity = 1,
-                        duration_seconds = 45, workbench_slot_index_max = 2,
-                    },
-                    new CommissionRecipeEntry
-                    {
-                        recipe_id = "guard_patrol_basic", character_id = CharacterIds.Guard,
-                        input_item_id = "", input_quantity = 0,
-                        output_item_id = "seed_tomato", output_quantity = 1,
-                        duration_seconds = 90, workbench_slot_index_max = 2,
-                    },
-                    new CommissionRecipeEntry
-                    {
-                        recipe_id = "farm_tomato", character_id = CharacterIds.FarmGirl,
-                        input_item_id = "seed_tomato", input_quantity = 1,
-                        output_item_id = "crop_tomato", output_quantity = 1,
-                        duration_seconds = 30, workbench_slot_index_max = 2,
-                    },
+                    id = 1, recipe_id = "witch_heal_potion", character_id = CharacterIds.Witch,
+                    input_item_id = "herb_green", input_quantity = 1,
+                    output_item_id = "potion_heal", output_quantity = 1,
+                    duration_seconds = 45, workbench_slot_index_max = 2,
+                },
+                new CommissionRecipeData
+                {
+                    id = 2, recipe_id = "guard_patrol_basic", character_id = CharacterIds.Guard,
+                    input_item_id = "", input_quantity = 0,
+                    output_item_id = "seed_tomato", output_quantity = 1,
+                    duration_seconds = 90, workbench_slot_index_max = 2,
+                },
+                new CommissionRecipeData
+                {
+                    id = 3, recipe_id = "farm_tomato", character_id = CharacterIds.FarmGirl,
+                    input_item_id = "seed_tomato", input_quantity = 1,
+                    output_item_id = "crop_tomato", output_quantity = 1,
+                    duration_seconds = 30, workbench_slot_index_max = 2,
                 },
             });
         }
 
         private static StorageExpansionConfig BuildExpansionConfig()
         {
-            return new StorageExpansionConfig(new StorageExpansionConfigData
+            StorageExpansionStageData[] stages = new StorageExpansionStageData[]
             {
-                schema_version = 1,
-                initial_capacity = 100,
-                max_expansion_level = 5,
-                stages = new StorageExpansionStageData[]
-                {
-                    new StorageExpansionStageData
-                    {
-                        level = 1,
-                        capacity_before = 100,
-                        capacity_after = 150,
-                        required_items = "material_wood:10|material_cloth:5",
-                        duration_seconds = 90,
-                    },
-                    new StorageExpansionStageData
-                    {
-                        level = 2,
-                        capacity_before = 150,
-                        capacity_after = 200,
-                        required_items = "material_wood:20|material_cloth:10|material_stone:5",
-                        duration_seconds = 120,
-                    },
-                },
-            });
+                new StorageExpansionStageData { id = 0, level = 0, capacity_before = 0, capacity_after = 100, duration_seconds = 0 },
+                new StorageExpansionStageData { id = 1, level = 1, capacity_before = 100, capacity_after = 150, duration_seconds = 90, description = "stage 1" },
+                new StorageExpansionStageData { id = 2, level = 2, capacity_before = 150, capacity_after = 200, duration_seconds = 120, description = "stage 2" },
+            };
+            StorageExpansionRequirementData[] requirements = new StorageExpansionRequirementData[]
+            {
+                new StorageExpansionRequirementData { id = 1, stage_level = 1, item_id = "material_wood",  quantity = 10 },
+                new StorageExpansionRequirementData { id = 2, stage_level = 1, item_id = "material_cloth", quantity = 5  },
+                new StorageExpansionRequirementData { id = 3, stage_level = 2, item_id = "material_wood",  quantity = 20 },
+                new StorageExpansionRequirementData { id = 4, stage_level = 2, item_id = "material_cloth", quantity = 10 },
+                new StorageExpansionRequirementData { id = 5, stage_level = 2, item_id = "material_stone", quantity = 5  },
+            };
+            return new StorageExpansionConfig(stages, requirements);
         }
 
         private static MainQuestConfig BuildMainQuestConfig()
         {
-            // Sprint 6 B1：新 T0/T1/T2 三條結構
-            return new MainQuestConfig(new MainQuestConfigData
-            {
-                schema_version = 1,
-                main_quests = new MainQuestConfigEntry[]
+            // Sprint 6 B1：新 T0/T1/T2 三條結構（純陣列格式）
+            return new MainQuestConfig(
+                new MainQuestData[]
                 {
-                    new MainQuestConfigEntry { id = 1, quest_id = "T0", display_name = "醒來的地方", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.Auto, completion_condition_value = MainQuestSignalValues.Node0DialogueComplete, unlock_on_complete = "T1|node_0_complete", sort_order = 0 },
-                    new MainQuestConfigEntry { id = 2, quest_id = "T1", display_name = "認識所有人", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.DialogueEnd, completion_condition_value = MainQuestSignalValues.Node2DialogueComplete, unlock_on_complete = "T2|node_2_complete|exploration_open", sort_order = 1 },
-                    new MainQuestConfigEntry { id = 3, quest_id = "T2", display_name = "出去看看外面", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.FirstExplore, completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete, reward_grant_ids = "unlock_guard_sword", unlock_on_complete = "guard_unlock|exploration_full_open", sort_order = 2 },
+                    new MainQuestData { id = 1, quest_id = "T0", display_name = "醒來的地方",   owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.Auto,         completion_condition_value = MainQuestSignalValues.Node0DialogueComplete,  sort_order = 0 },
+                    new MainQuestData { id = 2, quest_id = "T1", display_name = "認識所有人",   owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.DialogueEnd,   completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,  sort_order = 1 },
+                    new MainQuestData { id = 3, quest_id = "T2", display_name = "出去看看外面", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.FirstExplore,  completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete, sort_order = 2 },
                 },
-            });
+                new MainQuestUnlockData[]
+                {
+                    new MainQuestUnlockData { id = 1, main_quest_id = "T0", unlock_type = "quest",   unlock_value = "T1" },
+                    new MainQuestUnlockData { id = 2, main_quest_id = "T0", unlock_type = "event",   unlock_value = "node_0_complete" },
+                    new MainQuestUnlockData { id = 3, main_quest_id = "T1", unlock_type = "quest",   unlock_value = "T2" },
+                    new MainQuestUnlockData { id = 4, main_quest_id = "T1", unlock_type = "event",   unlock_value = "node_2_complete" },
+                    new MainQuestUnlockData { id = 5, main_quest_id = "T1", unlock_type = "feature", unlock_value = "exploration_open" },
+                    new MainQuestUnlockData { id = 6, main_quest_id = "T2", unlock_type = "event",   unlock_value = "guard_unlock" },
+                    new MainQuestUnlockData { id = 7, main_quest_id = "T2", unlock_type = "feature", unlock_value = "exploration_full_open" },
+                });
         }
 
         private class FakeTimeProvider : ITimeProvider

@@ -38,8 +38,9 @@ namespace ProjectDR.Village.Core
     {
         // ===== 建構子注入（由 VillageEntryPoint 傳入） =====
 
-        private readonly CommissionRecipesConfigData _commissionRecipesConfigData;
-        private readonly StorageExpansionConfigData _storageExpansionConfigData;
+        private readonly CommissionRecipeData[] _commissionEntries;
+        private readonly StorageExpansionStageData[] _storageExpansionStageEntries;
+        private readonly StorageExpansionRequirementData[] _storageExpansionRequirementEntries;
         private readonly BackpackManager _backpackManager;
         private readonly StorageManager _storageManager;
         private readonly IReadOnlyList<string> _allowedCommissionCharacterIds;
@@ -50,23 +51,27 @@ namespace ProjectDR.Village.Core
         private StorageExpansionManager _storageExpansionManager;
 
         /// <summary>
-        /// 建構 CommissionInstaller，注入所需配置與依賴。
+        /// 建構 CommissionInstaller，注入所需配置純陣列與依賴。
         /// </summary>
-        /// <param name="commissionRecipesConfigData">委託配方 JSON DTO（不可為 null）。</param>
-        /// <param name="storageExpansionConfigData">倉庫擴建 JSON DTO（不可為 null）。</param>
+        /// <param name="commissionEntries">委託配方 DTO 陣列（不可為 null）。</param>
+        /// <param name="storageExpansionStageEntries">倉庫擴建階段主表 DTO 陣列（不可為 null）。</param>
+        /// <param name="storageExpansionRequirementEntries">倉庫擴建需求子表 DTO 陣列（不可為 null）。</param>
         /// <param name="backpackManager">背包管理器（不可為 null）。</param>
         /// <param name="storageManager">倉庫管理器（不可為 null）。</param>
         public CommissionInstaller(
-            CommissionRecipesConfigData commissionRecipesConfigData,
-            StorageExpansionConfigData storageExpansionConfigData,
+            CommissionRecipeData[] commissionEntries,
+            StorageExpansionStageData[] storageExpansionStageEntries,
+            StorageExpansionRequirementData[] storageExpansionRequirementEntries,
             BackpackManager backpackManager,
             StorageManager storageManager,
             IReadOnlyList<string> allowedCommissionCharacterIds = null)
         {
-            _commissionRecipesConfigData = commissionRecipesConfigData
-                ?? throw new ArgumentNullException(nameof(commissionRecipesConfigData));
-            _storageExpansionConfigData = storageExpansionConfigData
-                ?? throw new ArgumentNullException(nameof(storageExpansionConfigData));
+            _commissionEntries = commissionEntries
+                ?? throw new ArgumentNullException(nameof(commissionEntries));
+            _storageExpansionStageEntries = storageExpansionStageEntries
+                ?? throw new ArgumentNullException(nameof(storageExpansionStageEntries));
+            _storageExpansionRequirementEntries = storageExpansionRequirementEntries
+                ?? throw new ArgumentNullException(nameof(storageExpansionRequirementEntries));
             _backpackManager = backpackManager
                 ?? throw new ArgumentNullException(nameof(backpackManager));
             _storageManager = storageManager
@@ -92,7 +97,7 @@ namespace ProjectDR.Village.Core
                     "CommissionInstaller.Install: ctx.TimeProvider 未就位，請確認 CoreStorageInstaller 已在 CommissionInstaller 之前 Install。");
 
             // 1. 建構 CommissionManager（自管事件訂閱）
-            CommissionRecipesConfig recipesConfig = new CommissionRecipesConfig(_commissionRecipesConfigData);
+            CommissionRecipesConfig recipesConfig = new CommissionRecipesConfig(_commissionEntries);
             _commissionManager = new CommissionManager(
                 recipesConfig,
                 _backpackManager,
@@ -101,7 +106,8 @@ namespace ProjectDR.Village.Core
                 _allowedCommissionCharacterIds);
 
             // 2. 建構 StorageExpansionManager
-            StorageExpansionConfig expansionConfig = new StorageExpansionConfig(_storageExpansionConfigData);
+            StorageExpansionConfig expansionConfig = new StorageExpansionConfig(
+                _storageExpansionStageEntries, _storageExpansionRequirementEntries);
             _storageExpansionManager = new StorageExpansionManager(
                 _storageManager,
                 _backpackManager,

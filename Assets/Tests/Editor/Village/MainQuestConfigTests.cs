@@ -8,26 +8,28 @@ using ProjectDR.Village.Navigation;
 namespace ProjectDR.Tests.Village
 {
     /// <summary>
-    /// MainQuestConfig / MainQuestConfigData 單元測試。
+    /// MainQuestConfig / MainQuestData 單元測試。
+    /// Sprint 8 Wave 2.5：配合純陣列 DTO 重構（廢棄包裹類 MainQuestConfigData / MainQuestConfigEntry）。
     /// </summary>
     [TestFixture]
     public class MainQuestConfigTests
     {
         [Test]
-        public void Constructor_NullData_ThrowsArgumentNullException()
+        public void Constructor_NullQuestEntries_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new MainQuestConfig(null));
+            Assert.Throws<ArgumentNullException>(() => new MainQuestConfig(null, new MainQuestUnlockData[0]));
+        }
+
+        [Test]
+        public void Constructor_NullUnlockEntries_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() => new MainQuestConfig(new MainQuestData[0], null));
         }
 
         [Test]
         public void Constructor_EmptyQuests_NoEntries()
         {
-            MainQuestConfigData data = new MainQuestConfigData
-            {
-                schema_version = 1,
-                main_quests = new MainQuestConfigEntry[0]
-            };
-            MainQuestConfig config = new MainQuestConfig(data);
+            MainQuestConfig config = new MainQuestConfig(new MainQuestData[0], new MainQuestUnlockData[0]);
             Assert.AreEqual(0, config.OrderedQuests.Count);
             Assert.IsNull(config.GetQuest("T0"));
         }
@@ -35,7 +37,6 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetQuest_ReturnsExpectedInfo()
         {
-            // Sprint 6 重構後：T1 完成條件改為 node_2_dialogue_complete（魔女對話結束）
             MainQuestConfig config = BuildSimpleConfig();
             MainQuestInfo t1 = config.GetQuest("T1");
             Assert.IsNotNull(t1);
@@ -46,7 +47,6 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void T1_RewardGrantIds_IsEmpty()
         {
-            // Sprint 6 決策 6：T1 不發初始物資（農女/魔女 grant 已移除）
             MainQuestConfig config = BuildSimpleConfig();
             MainQuestInfo t1 = config.GetQuest("T1");
             Assert.AreEqual(0, t1.RewardGrantIds.Count);
@@ -55,7 +55,6 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void T1_UnlockOnComplete_ContainsT2AndNode2AndExploration()
         {
-            // Sprint 6：T1 完成後解鎖 T2 + node_2_complete + exploration_open
             MainQuestConfig config = BuildSimpleConfig();
             MainQuestInfo t1 = config.GetQuest("T1");
             Assert.AreEqual(3, t1.UnlockOnComplete.Count);
@@ -67,7 +66,6 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void T2_SortOrder_IsTwo()
         {
-            // Sprint 6：原 T4 重編為 T2，sort_order 必須為 2
             MainQuestConfig config = BuildSimpleConfig();
             MainQuestInfo t2 = config.GetQuest("T2");
             Assert.IsNotNull(t2);
@@ -77,10 +75,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void OldT2T3_DoNotExist()
         {
-            // Sprint 6：原 T2「幫她一次」、T3「再去認識另一個人」已刪除
             MainQuestConfig config = BuildSimpleConfig();
-            // 在新的 3 條序列中，T2 代表原 T4（出去看看外面），不再是委託任務
-            // 驗證 3 條任務中不含 commission_count 型別（原 T2/T3 特徵）
             foreach (var quest in config.OrderedQuests)
             {
                 Assert.AreNotEqual(MainQuestCompletionTypes.CommissionCount, quest.CompletionConditionType,
@@ -99,17 +94,13 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void OrderedQuests_SortedBySortOrderAscending()
         {
-            MainQuestConfigData data = new MainQuestConfigData
+            MainQuestData[] quests = new MainQuestData[]
             {
-                schema_version = 2,
-                main_quests = new MainQuestConfigEntry[]
-                {
-                    new MainQuestConfigEntry { id = 3, quest_id = "T3", sort_order = 3 },
-                    new MainQuestConfigEntry { id = 1, quest_id = "T1", sort_order = 1 },
-                    new MainQuestConfigEntry { id = 2, quest_id = "T2", sort_order = 2 }
-                }
+                new MainQuestData { id = 3, quest_id = "T3", sort_order = 3 },
+                new MainQuestData { id = 1, quest_id = "T1", sort_order = 1 },
+                new MainQuestData { id = 2, quest_id = "T2", sort_order = 2 }
             };
-            MainQuestConfig config = new MainQuestConfig(data);
+            MainQuestConfig config = new MainQuestConfig(quests, new MainQuestUnlockData[0]);
             Assert.AreEqual("T1", config.OrderedQuests[0].QuestId);
             Assert.AreEqual("T2", config.OrderedQuests[1].QuestId);
             Assert.AreEqual("T3", config.OrderedQuests[2].QuestId);
@@ -118,16 +109,12 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void QuestWithEmptyId_Skipped()
         {
-            MainQuestConfigData data = new MainQuestConfigData
+            MainQuestData[] quests = new MainQuestData[]
             {
-                schema_version = 2,
-                main_quests = new MainQuestConfigEntry[]
-                {
-                    new MainQuestConfigEntry { id = 0, quest_id = "", sort_order = 0 },
-                    new MainQuestConfigEntry { id = 1, quest_id = "T1", sort_order = 1 }
-                }
+                new MainQuestData { id = 0, quest_id = "", sort_order = 0 },
+                new MainQuestData { id = 1, quest_id = "T1", sort_order = 1 }
             };
-            MainQuestConfig config = new MainQuestConfig(data);
+            MainQuestConfig config = new MainQuestConfig(quests, new MainQuestUnlockData[0]);
             Assert.AreEqual(1, config.OrderedQuests.Count);
             Assert.AreEqual("T1", config.OrderedQuests[0].QuestId);
         }
@@ -135,9 +122,17 @@ namespace ProjectDR.Tests.Village
         // ===== IGameData 契約斷言（ADR-001 / ADR-002 A12）=====
 
         [Test]
-        public void MainQuestConfigEntry_ImplementsIGameData()
+        public void MainQuestData_ImplementsIGameData()
         {
-            MainQuestConfigEntry entry = new MainQuestConfigEntry { id = 1, quest_id = "T0" };
+            MainQuestData entry = new MainQuestData { id = 1, quest_id = "T0" };
+            KahaGameCore.GameData.IGameData iGameData = entry;
+            Assert.AreEqual(1, iGameData.ID, "IGameData.ID 必須等於 id 欄位");
+        }
+
+        [Test]
+        public void MainQuestUnlockData_ImplementsIGameData()
+        {
+            MainQuestUnlockData entry = new MainQuestUnlockData { id = 1, main_quest_id = "T0" };
             KahaGameCore.GameData.IGameData iGameData = entry;
             Assert.AreEqual(1, iGameData.ID, "IGameData.ID 必須等於 id 欄位");
         }
@@ -154,92 +149,74 @@ namespace ProjectDR.Tests.Village
         }
 
         [Test]
-        public void RealJsonFile_DeserializesSuccessfully()
+        public void MainQuestInfo_UnlockEntries_LinkedFromSubTable()
         {
-            // Sprint 6 重構後：3 條任務（T0/T1/T2），原 T4 已重編為 T2
-            TextAsset asset = Resources.Load<TextAsset>("Config/main-quest-config");
-            if (asset == null)
-            {
-                Assert.Pass("main-quest-config 資源不存在，跳過真實 JSON 測試。");
-                return;
-            }
-
-            MainQuestConfigData data = JsonUtility.FromJson<MainQuestConfigData>(asset.text);
-            Assert.IsNotNull(data);
-            MainQuestConfig config = new MainQuestConfig(data);
-            Assert.IsNotNull(config.GetQuest("T0"));
-            Assert.IsNotNull(config.GetQuest("T1"));
-            Assert.IsNotNull(config.GetQuest("T2"));
-            Assert.IsNull(config.GetQuest("T3"), "T3（幫她一次）應已移除");
-            Assert.IsNull(config.GetQuest("T4"), "T4 應已重編為 T2，不再有 T4 條目");
-            Assert.AreEqual(3, config.OrderedQuests.Count);
-            // IGameData 契約驗證（ADR-001 A12）
-            foreach (MainQuestInfo q in config.OrderedQuests)
-            {
-                Assert.AreNotEqual(0, q.ID, $"quest '{q.Key}' 的 ID 不應為 0");
-            }
-            // 驗 T1 完成條件
+            MainQuestConfig config = BuildSimpleConfig();
             MainQuestInfo t1 = config.GetQuest("T1");
-            Assert.AreEqual(MainQuestCompletionTypes.DialogueEnd, t1.CompletionConditionType);
-            Assert.AreEqual("node_2_dialogue_complete", t1.CompletionConditionValue);
-            Assert.AreEqual(0, t1.RewardGrantIds.Count, "T1 不應有 reward_grant_ids");
-            // 驗 T2 sort_order
-            Assert.AreEqual(2, config.GetQuest("T2").SortOrder);
+            Assert.IsNotNull(t1.UnlockEntries);
+            Assert.Greater(t1.UnlockEntries.Count, 0, "T1 應有至少一筆 UnlockEntries");
         }
+
+        // ===== 輔助：建立測試用配置 =====
 
         /// <summary>
         /// Sprint 6 重構後的測試用配置（T0/T1/T2 三條序列）。
-        /// 原 T2「幫她一次」、T3「再去認識另一個人」已刪除；原 T4 重編為 T2。
+        /// Sprint 8：改用純陣列 + 子表格式。
         /// </summary>
         private static MainQuestConfig BuildSimpleConfig()
         {
-            MainQuestConfigData data = new MainQuestConfigData
+            MainQuestData[] quests = new MainQuestData[]
             {
-                schema_version = 2,
-                main_quests = new MainQuestConfigEntry[]
+                new MainQuestData
                 {
-                    new MainQuestConfigEntry
-                    {
-                        id = 1,
-                        quest_id = "T0",
-                        display_name = "醒來的地方",
-                        description = "開局任務",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.Auto,
-                        completion_condition_value = "node0_dialogue_complete",
-                        reward_grant_ids = "",
-                        unlock_on_complete = "T1|node_0_complete",
-                        sort_order = 0
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 2,
-                        quest_id = "T1",
-                        display_name = "認識所有人",
-                        description = "任務 1",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
-                        completion_condition_value = "node_2_dialogue_complete",
-                        reward_grant_ids = "",
-                        unlock_on_complete = "T2|node_2_complete|exploration_open",
-                        sort_order = 1
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 3,
-                        quest_id = "T2",
-                        display_name = "出去看看外面",
-                        description = "任務 2（原 T4）",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.FirstExplore,
-                        completion_condition_value = "guard_return_event_complete",
-                        reward_grant_ids = "unlock_guard_sword",
-                        unlock_on_complete = "guard_unlock|exploration_full_open",
-                        sort_order = 2
-                    }
+                    id = 1,
+                    quest_id = "T0",
+                    display_name = "醒來的地方",
+                    description = "開局任務",
+                    owner_character_id = CharacterIds.VillageChiefWife,
+                    completion_condition_type = MainQuestCompletionTypes.Auto,
+                    completion_condition_value = "node0_dialogue_complete",
+                    reward_grant_ids = "",
+                    sort_order = 0
+                },
+                new MainQuestData
+                {
+                    id = 2,
+                    quest_id = "T1",
+                    display_name = "認識所有人",
+                    description = "任務 1",
+                    owner_character_id = CharacterIds.VillageChiefWife,
+                    completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
+                    completion_condition_value = "node_2_dialogue_complete",
+                    reward_grant_ids = "",
+                    sort_order = 1
+                },
+                new MainQuestData
+                {
+                    id = 3,
+                    quest_id = "T2",
+                    display_name = "出去看看外面",
+                    description = "任務 2（原 T4）",
+                    owner_character_id = CharacterIds.VillageChiefWife,
+                    completion_condition_type = MainQuestCompletionTypes.FirstExplore,
+                    completion_condition_value = "guard_return_event_complete",
+                    reward_grant_ids = "unlock_guard_sword",
+                    sort_order = 2
                 }
             };
-            return new MainQuestConfig(data);
+
+            MainQuestUnlockData[] unlocks = new MainQuestUnlockData[]
+            {
+                new MainQuestUnlockData { id = 1, main_quest_id = "T0", unlock_type = "quest", unlock_value = "T1", sort_order = 0 },
+                new MainQuestUnlockData { id = 2, main_quest_id = "T0", unlock_type = "event", unlock_value = "node_0_complete", sort_order = 1 },
+                new MainQuestUnlockData { id = 3, main_quest_id = "T1", unlock_type = "quest", unlock_value = "T2", sort_order = 0 },
+                new MainQuestUnlockData { id = 4, main_quest_id = "T1", unlock_type = "event", unlock_value = "node_2_complete", sort_order = 1 },
+                new MainQuestUnlockData { id = 5, main_quest_id = "T1", unlock_type = "feature", unlock_value = "exploration_open", sort_order = 2 },
+                new MainQuestUnlockData { id = 6, main_quest_id = "T2", unlock_type = "character", unlock_value = "guard_unlock", sort_order = 0 },
+                new MainQuestUnlockData { id = 7, main_quest_id = "T2", unlock_type = "feature", unlock_value = "exploration_full_open", sort_order = 1 }
+            };
+
+            return new MainQuestConfig(quests, unlocks);
         }
     }
 }

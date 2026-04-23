@@ -1,10 +1,13 @@
-// IdleChatConfigData — [閒聊] 問題池配置（Sprint 5 B12）。
-// 配置檔路徑：Assets/Game/Resources/Config/idle-chat-config.json
+// IdleChatConfigData — 閒聊問題池配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：IdleChat（主表）/ IdleChatAnswers（子表）
+// 對應 .txt 檔：idlechat.txt / idlechatanswers.txt
 //
-// 結構：4 角色 × 20 題，每題 3 個回答。
-// 玩家 40 題池耗盡後以此為 fallback：隨機抽一題 + 從該題 3 回答中隨機抽一句。
-// 不影響好感度、不累計已看。
-// ADR-002 A10：IdleChatTopicData 實作 IGameData；int id 為流水號主鍵，topic_id 為語意字串外鍵。
+// Sprint 8 Wave 2.5 重構：
+//   - IdleChatAnswerData 全面重寫：加 int id + topic_id FK + IGameData
+//   - IdleChatTopicData 保留（已有 IGameData），移除舊 answers[] 嵌套欄位
+//   - 廢棄包裹類 IdleChatConfigData（純陣列格式）
+//   - IdleChatConfig 建構子改為接受兩個獨立陣列
+// ADR-001 / ADR-002 A10
 
 using System;
 using System.Collections.Generic;
@@ -13,40 +16,64 @@ using ProjectDR.Village.CharacterUnlock;
 
 namespace ProjectDR.Village.IdleChat
 {
-    // ===== JSON DTO =====
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
-    [Serializable]
-    public class IdleChatAnswerData
-    {
-        public string answer_id;
-        public string text;
-    }
-
+    /// <summary>
+    /// 閒聊主題（JSON DTO，主表）。
+    /// 實作 IGameData，int id 為流水號主鍵，topic_id 為語意字串外鍵。
+    /// 對應 Sheets 分頁 IdleChat，.txt 檔 idlechat.txt。
+    /// </summary>
     [Serializable]
     public class IdleChatTopicData : IGameData
     {
         /// <summary>IGameData 主鍵（流水號）。對應 JSON 欄位 "id"。</summary>
         public int id;
-        public string character_id;
-        public string topic_id;
-        public string prompt;
-        public IdleChatAnswerData[] answers;
 
-        /// <summary>IGameData 契約實作。回傳 int id 流水號。</summary>
+        /// <summary>IGameData 契約實作。</summary>
         public int ID => id;
-        /// <summary>語意字串主鍵（唯一識別此閒聊題目）。</summary>
+
+        /// <summary>閒聊主題識別符語意字串。</summary>
+        public string topic_id;
+
+        /// <summary>語意字串 Key。</summary>
         public string Key => topic_id;
+
+        /// <summary>角色 ID。</summary>
+        public string character_id;
+
+        /// <summary>角色發問文字。</summary>
+        public string prompt;
     }
 
+    /// <summary>
+    /// 閒聊回答（JSON DTO，子表）。
+    /// 實作 IGameData，int id 為子表自身流水號主鍵。
+    /// FK：topic_id → IdleChat.topic_id。
+    /// 對應 Sheets 分頁 IdleChatAnswers，.txt 檔 idlechatanswers.txt。
+    /// </summary>
     [Serializable]
-    public class IdleChatConfigData
+    public class IdleChatAnswerData : IGameData
     {
-        public int schema_version;
-        public string note;
-        public IdleChatTopicData[] topics;
+        /// <summary>IGameData 主鍵（子表自身流水號）。對應 JSON 欄位 "id"。</summary>
+        public int id;
+
+        /// <summary>IGameData 契約實作。</summary>
+        public int ID => id;
+
+        /// <summary>回答識別符語意字串。</summary>
+        public string answer_id;
+
+        /// <summary>語意字串 Key。</summary>
+        public string Key => answer_id;
+
+        /// <summary>FK 至主表 IdleChat.topic_id。</summary>
+        public string topic_id;
+
+        /// <summary>回答文字。</summary>
+        public string text;
     }
 
-    // ===== 不可變 =====
+    // ===== 不可變資料物件 =====
 
     public class IdleChatAnswer
     {
@@ -76,30 +103,55 @@ namespace ProjectDR.Village.IdleChat
         }
     }
 
+    // ===== 不可變配置物件 =====
+
     public class IdleChatConfig
     {
         private readonly Dictionary<string, List<IdleChatTopic>> _byCharacter;
         private readonly Dictionary<string, IdleChatTopic> _byTopicId;
 
-        public IdleChatConfig(IdleChatConfigData data)
+        /// <summary>
+        /// 從純陣列 DTO 建構（主表 + 子表）。
+        /// </summary>
+        /// <param name="topicEntries">主表 JsonFx 反序列化後的陣列（不可為 null）。</param>
+        /// <param name="answerEntries">子表 JsonFx 反序列化後的陣列（不可為 null）。</param>
+        public IdleChatConfig(IdleChatTopicData[] topicEntries, IdleChatAnswerData[] answerEntries)
         {
-            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (topicEntries == null) throw new ArgumentNullException(nameof(topicEntries));
+            if (answerEntries == null) throw new ArgumentNullException(nameof(answerEntries));
+
             _byCharacter = new Dictionary<string, List<IdleChatTopic>>();
             _byTopicId = new Dictionary<string, IdleChatTopic>();
 
-            IdleChatTopicData[] topics = data.topics ?? Array.Empty<IdleChatTopicData>();
-            foreach (IdleChatTopicData t in topics)
+            // 依 topic_id 分組回答
+            Dictionary<string, List<IdleChatAnswerData>> answersByTopic =
+                new Dictionary<string, List<IdleChatAnswerData>>();
+            foreach (IdleChatAnswerData ans in answerEntries)
+            {
+                if (ans == null || string.IsNullOrEmpty(ans.topic_id)) continue;
+                if (!answersByTopic.TryGetValue(ans.topic_id, out List<IdleChatAnswerData> bucket))
+                {
+                    bucket = new List<IdleChatAnswerData>();
+                    answersByTopic[ans.topic_id] = bucket;
+                }
+                bucket.Add(ans);
+            }
+
+            // 建立 topic 不可變物件
+            foreach (IdleChatTopicData t in topicEntries)
             {
                 if (t == null || string.IsNullOrEmpty(t.topic_id) || string.IsNullOrEmpty(t.character_id)) continue;
+
                 List<IdleChatAnswer> answers = new List<IdleChatAnswer>();
-                IdleChatAnswerData[] ans = t.answers ?? Array.Empty<IdleChatAnswerData>();
-                foreach (IdleChatAnswerData a in ans)
+                if (answersByTopic.TryGetValue(t.topic_id, out List<IdleChatAnswerData> ansList))
                 {
-                    if (a == null) continue;
-                    answers.Add(new IdleChatAnswer(a.answer_id ?? string.Empty, a.text ?? string.Empty));
+                    foreach (IdleChatAnswerData a in ansList)
+                    {
+                        if (a == null) continue;
+                        answers.Add(new IdleChatAnswer(a.answer_id ?? string.Empty, a.text ?? string.Empty));
+                    }
                 }
 
-                // JSON snake_case → CharacterIds PascalCase
                 string canonical = CharacterIdSnakeCaseMapper.ToPascal(t.character_id);
                 IdleChatTopic topic = new IdleChatTopic(
                     canonical, t.topic_id, t.prompt ?? string.Empty, answers.AsReadOnly());

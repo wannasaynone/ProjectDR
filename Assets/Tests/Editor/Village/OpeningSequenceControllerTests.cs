@@ -180,18 +180,14 @@ namespace ProjectDR.Tests.Village
 
         private static NodeDialogueConfig BuildNodeConfig()
         {
-            return new NodeDialogueConfig(new NodeDialogueConfigData
+            return new NodeDialogueConfig(new NodeDialogueLineData[]
             {
-                schema_version = 1,
-                node_dialogue_lines = new NodeDialogueLineData[]
-                {
-                    new NodeDialogueLineData { line_id = "n0_1", node_id = "node_0", sequence = 1, text = "intro", line_type = "dialogue", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n0_2", node_id = "node_0", sequence = 2, text = "pick", line_type = "choice_prompt", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n0_c1", node_id = "node_0", sequence = 3, text = "A", line_type = "choice_option", choice_branch = "farm_girl" },
-                    new NodeDialogueLineData { line_id = "n0_c2", node_id = "node_0", sequence = 4, text = "B", line_type = "choice_option", choice_branch = "witch" },
-                    new NodeDialogueLineData { line_id = "n0_r1", node_id = "node_0", sequence = 5, text = "resp A", line_type = "choice_response", choice_branch = "farm_girl" },
-                    new NodeDialogueLineData { line_id = "n0_r2", node_id = "node_0", sequence = 6, text = "resp B", line_type = "choice_response", choice_branch = "witch" },
-                },
+                new NodeDialogueLineData { id=1, line_id = "n0_1",  node_id = "node_0", sequence = 1, text = "intro",  line_type = "dialogue",         choice_branch = "" },
+                new NodeDialogueLineData { id=2, line_id = "n0_2",  node_id = "node_0", sequence = 2, text = "pick",   line_type = "choice_prompt",    choice_branch = "" },
+                new NodeDialogueLineData { id=3, line_id = "n0_c1", node_id = "node_0", sequence = 3, text = "A",      line_type = "choice_option",   choice_branch = "farm_girl" },
+                new NodeDialogueLineData { id=4, line_id = "n0_c2", node_id = "node_0", sequence = 4, text = "B",      line_type = "choice_option",   choice_branch = "witch" },
+                new NodeDialogueLineData { id=5, line_id = "n0_r1", node_id = "node_0", sequence = 5, text = "resp A", line_type = "choice_response", choice_branch = "farm_girl" },
+                new NodeDialogueLineData { id=6, line_id = "n0_r2", node_id = "node_0", sequence = 6, text = "resp B", line_type = "choice_response", choice_branch = "witch" },
             });
         }
 

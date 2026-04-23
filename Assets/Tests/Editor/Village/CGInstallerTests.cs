@@ -26,9 +26,7 @@ namespace ProjectDR.Tests.Village
         public void SetUp()
         {
             EventBus.ForceClearAll();
-            // CGInstaller 現在需要 CGSceneConfigData（ADR-003 B5 重構後注入）
-            var emptyCgData = new CGSceneConfigData { scenes = new CGSceneConfigEntry[0] };
-            _sut = new CGInstaller(emptyCgData);
+            _sut = new CGInstaller(new CGSceneData[0]);
         }
 
         [TearDown]

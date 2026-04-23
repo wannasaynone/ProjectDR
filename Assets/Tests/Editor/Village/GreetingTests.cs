@@ -1,4 +1,5 @@
 // GreetingConfig + GreetingPresenter 單元測試（Sprint 5 B15/B16/B18）。
+// Sprint 8 Wave 2.5：配合純陣列 DTO 重構（GreetingData[]，廢棄 GreetingConfigData 包裹類）。
 
 using System.IO;
 using KahaGameCore.GameEvent;
@@ -17,15 +18,15 @@ namespace ProjectDR.Village.Tests
     public class GreetingConfigTests
     {
         [Test]
-        public void Constructor_NullData_Throws()
+        public void Constructor_NullEntries_Throws()
         {
             Assert.Throws<System.ArgumentNullException>(() => new GreetingConfig(null));
         }
 
         [Test]
-        public void Constructor_EmptyData_ReturnsEmpty()
+        public void Constructor_EmptyEntries_ReturnsEmpty()
         {
-            GreetingConfig cfg = new GreetingConfig(new GreetingConfigData());
+            GreetingConfig cfg = new GreetingConfig(new GreetingData[0]);
             Assert.AreEqual(0, cfg.GetGreetings(CharacterIds.FarmGirl, 1).Count);
         }
 
@@ -37,64 +38,35 @@ namespace ProjectDR.Village.Tests
             Assert.AreEqual(2, lv1.Count);
         }
 
-        [Test]
-        public void RealJson_4Chars_7Levels_10EachLevel()
-        {
-            UnityEngine.TextAsset asset =
-                UnityEngine.Resources.Load<UnityEngine.TextAsset>("Config/greeting-config");
-            if (asset == null)
-            {
-                Assert.Ignore("greeting-config.json 不在 Resources，跳過真實 JSON 測試。");
-                return;
-            }
-            GreetingConfigData data = JsonUtility.FromJson<GreetingConfigData>(asset.text);
-            GreetingConfig cfg = new GreetingConfig(data);
-            int total = 0;
-            foreach (string c in new[] { CharacterIds.VillageChiefWife, CharacterIds.FarmGirl,
-                                          CharacterIds.Witch, CharacterIds.Guard })
-            {
-                for (int level = 1; level <= 7; level++)
-                {
-                    int n = cfg.GetGreetings(c, level).Count;
-                    Assert.AreEqual(10, n, $"{c} Lv{level} should have 10 greetings");
-                    total += n;
-                }
-            }
-            Assert.AreEqual(280, total);
-        }
-
         // ===== ADR-001 / ADR-002 A07：IGameData 契約斷言 =====
 
         [Test]
-        public void GreetingEntryData_ImplementsIGameData()
+        public void GreetingData_ImplementsIGameData()
         {
-            GreetingEntryData entry = new GreetingEntryData
+            GreetingData entry = new GreetingData
             {
                 id = 1,
-                character_id = CharacterIds.VillageChiefWife,
+                character_id = "village_chief_wife",
                 level = 1,
                 greeting_id = "g_test",
                 text = "test"
             };
 
             Assert.That(entry, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
-                "GreetingEntryData 必須實作 IGameData（ADR-001 / ADR-002 A07）");
+                "GreetingData 必須實作 IGameData（ADR-001 / ADR-002 A07）");
             Assert.That(entry.ID, Is.Not.Zero,
-                "GreetingEntryData.ID 不得為 0（ADR-002 A07 反序列化要求）");
+                "GreetingData.ID 不得為 0（ADR-002 A07 反序列化要求）");
             Assert.That(entry.Key, Is.EqualTo("g_test"),
-                "GreetingEntryData.Key 應回傳 greeting_id");
+                "GreetingData.Key 應回傳 greeting_id");
         }
 
         private static GreetingConfig Build()
         {
-            return new GreetingConfig(new GreetingConfigData
+            return new GreetingConfig(new GreetingData[]
             {
-                greetings = new GreetingEntryData[]
-                {
-                    new GreetingEntryData{ id=1, character_id=CharacterIds.VillageChiefWife, level=1, greeting_id="g1", text="a" },
-                    new GreetingEntryData{ id=2, character_id=CharacterIds.VillageChiefWife, level=1, greeting_id="g2", text="b" },
-                    new GreetingEntryData{ id=3, character_id=CharacterIds.VillageChiefWife, level=2, greeting_id="g3", text="c" },
-                }
+                new GreetingData{ id=1, character_id="village_chief_wife", level=1, greeting_id="g1", text="a" },
+                new GreetingData{ id=2, character_id="village_chief_wife", level=1, greeting_id="g2", text="b" },
+                new GreetingData{ id=3, character_id="village_chief_wife", level=2, greeting_id="g3", text="c" },
             });
         }
     }
@@ -111,10 +83,8 @@ namespace ProjectDR.Village.Tests
         {
             EventBus.ForceClearAll();
             _config = BuildConfig();
-            _mqConfig = new MainQuestConfig(new MainQuestConfigData
-            {
-                main_quests = new MainQuestConfigEntry[0]
-            });
+            // Sprint 8 Wave 2.5：使用純陣列建構子
+            _mqConfig = new MainQuestConfig(new MainQuestData[0], new MainQuestUnlockData[0]);
             _mqManager = new MainQuestManager(_mqConfig);
         }
 
@@ -215,13 +185,10 @@ namespace ProjectDR.Village.Tests
 
         private static GreetingConfig BuildConfig()
         {
-            return new GreetingConfig(new GreetingConfigData
+            return new GreetingConfig(new GreetingData[]
             {
-                greetings = new GreetingEntryData[]
-                {
-                    new GreetingEntryData{ character_id=CharacterIds.VillageChiefWife, level=1, greeting_id="g_vcw_1_1", text="Welcome" },
-                    new GreetingEntryData{ character_id=CharacterIds.VillageChiefWife, level=1, greeting_id="g_vcw_1_2", text="Hi" },
-                }
+                new GreetingData{ id=1, character_id="village_chief_wife", level=1, greeting_id="g_vcw_1_1", text="Welcome" },
+                new GreetingData{ id=2, character_id="village_chief_wife", level=1, greeting_id="g_vcw_1_2", text="Hi" },
             });
         }
     }

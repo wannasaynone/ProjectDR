@@ -62,7 +62,9 @@ namespace ProjectDR.Village.Core
         [Header("Progression Config")]
         [SerializeField] private TextAsset _initialResourcesConfigJson;
         [SerializeField] private TextAsset _mainQuestConfigJson;
+        [SerializeField] private TextAsset _mainQuestUnlocksConfigJson;
         [SerializeField] private TextAsset _storageExpansionConfigJson;
+        [SerializeField] private TextAsset _storageExpansionRequirementsConfigJson;
         [Header("Commission Config")]
         [SerializeField] private TextAsset _commissionRecipesConfigJson;
         [Header("Commission UI")]
@@ -70,6 +72,7 @@ namespace ProjectDR.Village.Core
         [SerializeField] private CraftItemSelectorView _craftItemSelectorPrefab;
         [Header("Opening Config")]
         [SerializeField] private TextAsset _characterIntroConfigJson;
+        [SerializeField] private TextAsset _characterIntroLinesConfigJson;
         [SerializeField] private TextAsset _nodeDialogueConfigJson;
         // _guardReturnConfigJson 已移除（A09：GuardReturnConfigData dead code，E6 2026-04-22）
         [Header("CG Intro View")]
@@ -79,8 +82,12 @@ namespace ProjectDR.Village.Core
         [SerializeField] private PlayerQuestionsView _playerQuestionsViewPrefab;
         [Header("Dialogue Flow Config")]
         [SerializeField] private TextAsset _characterQuestionsConfigJson;
+        [SerializeField] private TextAsset _characterQuestionOptionsConfigJson;
+        [SerializeField] private TextAsset _characterProfilesConfigJson;
+        [SerializeField] private TextAsset _personalityAffinityRulesConfigJson;
         [SerializeField] private TextAsset _greetingConfigJson;
         [SerializeField] private TextAsset _idleChatConfigJson;
+        [SerializeField] private TextAsset _idleChatAnswersConfigJson;
         [SerializeField] private CharacterQuestionsView _characterQuestionsViewPrefab;
         [Header("Dialogue Timings")]
         [SerializeField] private float _characterQuestionCountdownSeconds = 60f;

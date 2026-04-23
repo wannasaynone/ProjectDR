@@ -1,7 +1,7 @@
 # 技術債登記 —— ProjectDR
 
-> 最後更新：2026-04-22（Sprint 7 D7 緊急修復：新增 TD-2026-011 gameDataAccess Sprint 8 真實實作）
-> 總計：11 筆（🔴 高 2 / 🟡 中 3 / 🟢 低 6）；其中 ✅ 已處置 2 筆（TD-2026-003、TD-2026-006）/ 🔄 未處理 9 筆
+> 最後更新：2026-04-22（Sprint 8 Wave 2.6a：TD-2026-011 已處置，新增 TD-2026-012/013 GiftSwords/Personalities 無 runtime 使用者）
+> 總計：13 筆（🔴 高 2 / 🟡 中 3 / 🟢 低 8）；其中 ✅ 已處置 3 筆（TD-2026-003、TD-2026-006、TD-2026-011）/ 🔄 未處理 10 筆
 > 建立者：dev-head（Sprint 7 D5 tech-debt 掃描首次建立）
 
 ## 掃描範圍與掃描條件
@@ -201,6 +201,32 @@
   - 建議與製作人確認 TBD 池是否已有對應條目；若無，登記 TBD-ui-<N>
 - **關聯 ADR**：無（UI 決策屬設計範疇）
 
+### TD-2026-012 GiftSwordData DTO 已定義但無 runtime 使用者
+
+- **位置**：`Assets/Game/Scripts/Village/Gift/Data/GiftSwordData.cs`
+- **對應 Sheets 分頁**：`GiftSwords`（資料已備妥）
+- **描述**：`GiftSwords.txt` 有資料，`GiftSwordData` DTO 實作 `IGameData`，但 VillageEntryPoint 無對應 `[SerializeField] TextAsset` 欄位，亦無任何 Installer 或 Manager 在 runtime 讀取此資料。Sprint 8 Wave 2.6a 檢查確認：全專案 Scripts（排除測試）中 `GiftSwordData` 只出現在其 DTO 定義本身。
+- **影響**：不阻擋現有功能。禮物劍系統待設計完成後才有 runtime 使用者。
+- **發現日**：2026-04-22（Sprint 8 Wave 2.6a 排查）
+- **預估處理時間**：1-2h（補 `[SerializeField] TextAsset _giftSwordsConfigJson`、Installer 載入邏輯、Inspector 綁定）
+- **狀態**：🔄 未處理
+- **建議處置**：**待禮物劍系統功能設計定案後補載入**
+  - 屆時同步補 `VillageEntryPoint` TextAsset 欄位 + Installer `Add<GiftSwordData>` 載入 + 測試
+- **關聯 ADR**：ADR-001（IGameData 契約；DTO 已符合，只缺載入）
+
+### TD-2026-013 PersonalityData DTO 已定義但無 runtime 使用者
+
+- **位置**：`Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs`
+- **對應 Sheets 分頁**：`Personalities`（資料已備妥）
+- **描述**：`Personalities.txt` 有資料，`PersonalityData` DTO 實作 `IGameData`，但 VillageEntryPoint 無對應 `[SerializeField] TextAsset` 欄位，亦無任何 Installer 或 Manager 在 runtime 讀取此主表資料。`PersonalityAffinityRuleData`（子表）已有載入，但 `PersonalityData`（個性主表）本身未被載入。Sprint 8 Wave 2.6a 確認：`new PersonalityData`、`GetGameData.*PersonalityData` 在 Scripts 中無 runtime 使用點。
+- **影響**：目前個性系統透過 `PersonalityAffinityRuleData`（`personality_id` FK）運作，個性主表名稱字串未有 runtime 消費者。若未來需要顯示個性名稱或篩選個性，才需要此主表。
+- **發現日**：2026-04-22（Sprint 8 Wave 2.6a 排查）
+- **預估處理時間**：1-2h（補 `[SerializeField] TextAsset _personalitiesConfigJson`、Installer 載入、Inspector 綁定）
+- **狀態**：🔄 未處理
+- **建議處置**：**待個性主表有 runtime 消費者後補載入**
+  - 若 VS 階段角色問答 UI 需要顯示個性名稱，屆時補載入即可
+- **關聯 ADR**：ADR-001（IGameData 契約；DTO 已符合，只缺載入）
+
 ### TD-2026-011 VillageContext.GameDataAccess 尚未注入真實 delegate（Sprint 7 placeholder）
 
 - **位置**：`Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs:79`（`gameDataAccess: null`）
@@ -211,10 +237,12 @@
   - Sprint 8 前的 Installer 若需消費 `IGameData` tabular data，必須走 ADR-002 IT 階段例外（constructor 注入 ConfigData）
 - **發現日**：2026-04-22（Sprint 7 D7 實機 playthrough）
 - **預估處理時間**：2-4h（建 `GameDataQuery<IGameData>` delegate 指向 `GameStaticDataManager.GetGameData<IGameData>(id)`；確認各 Installer 已移除 IT 例外的 constructor 直注；恢復 VillageContext ctor null check；新增整合測試驗證 delegate 正常回傳資料）
-- **狀態**：🔄 未處理（Sprint 8 ADR-002 退出後處理）
-- **建議處置**：**Sprint 8 ADR-002 退出批次處理**
-  - ADR-002 退出 Gate 時此項必須完成
-  - 具體做法：在 VillageEntryPoint 初始化 `_gameStaticDataManager` 後，建立並傳入 delegate；VillageContext ctor 加回 null check；各 Installer 移除 IT placeholder 的 constructor 直注，改走 `ctx.GameDataAccess`
+- **狀態**：✅ 已處置（2026-04-22，Sprint 8 Wave 2.6a）
+- **處置結果**：
+  - `VillageEntryPointInstallers.cs` `RunInstallers()` 中建立 `GameStaticDataManager gameStaticDataManager = new GameStaticDataManager()`，並以 `GameDataQuery<IGameData> gameDataAccess = (int id) => gameStaticDataManager.GetGameData<IGameData>(id)` 傳入 `VillageContext` ctor。
+  - `VillageContext.cs` ctor null check 已恢復為嚴格驗證（`gameDataAccess ?? throw new ArgumentNullException`）。
+  - Sprint 7 的 `TODO Sprint 8` 說明注釋已清除。
+  - 全量測試 1433/1433 PASS（測試中 `VillageContext` 使用 `(id) => null` non-null delegate，null check 通過）。
 - **關聯 ADR**：ADR-001（資料治理契約）、ADR-002（IT 階段例外退出 Gate）、ADR-003（VillageContext 欄位契約 D2.1）
 
 ---
@@ -252,10 +280,16 @@
 - TD-2026-009：GoogleSheet2Json API Key 硬編於 KGC 共用框架（🟢 低；KGC 跨專案議題；A6-4 識別）
 - TD-2026-010：Unity MCP 無法觸發 CustomEditor `Start Convert` 按鈕（🟢 低；KGC 小改即可；A6-4 識別）
 
-### 已解決（2 筆，2026-04-22）
+### 已解決（3 筆，2026-04-22）
 
 - **TD-2026-003**：ExplorationEntryPoint.Start() 拆分完成（Sprint 7 收尾批次）
 - **TD-2026-006**：HCGDialogueSetup 硬編碼對白登記為 ADR-002 A17 IT 階段例外（Sprint 7 收尾批次）
+- **TD-2026-011**：VillageContext.GameDataAccess 真實 delegate 接線完成（Sprint 8 Wave 2.6a）
+
+### 新增（2 筆，2026-04-22 Sprint 8 Wave 2.6a）
+
+- **TD-2026-012**：GiftSwordData DTO 已定義但無 runtime 使用者（🟢 低）
+- **TD-2026-013**：PersonalityData DTO 已定義但無 runtime 使用者（🟢 低）
 
 ---
 

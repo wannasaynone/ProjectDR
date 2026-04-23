@@ -410,65 +410,63 @@ namespace ProjectDR.Tests.Village
         /// </summary>
         private static MainQuestConfig BuildConfig()
         {
-            MainQuestConfigData data = new MainQuestConfigData
+            MainQuestData[] quests = new MainQuestData[]
             {
-                schema_version = 1,
-                main_quests = new MainQuestConfigEntry[]
+                new MainQuestData
                 {
-                    new MainQuestConfigEntry
-                    {
-                        id = 1,
-                        quest_id = "T0",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.Auto,
-                        completion_condition_value = "",
-                        unlock_on_complete = "T1",
-                        sort_order = 0
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 2,
-                        quest_id = "T1",
-                        owner_character_id = CharacterIds.FarmGirl,
-                        completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
-                        // Sprint 6：新 T1 completion_condition_value = node_2_dialogue_complete
-                        completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
-                        unlock_on_complete = "T2",
-                        sort_order = 1
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 3,
-                        quest_id = "T2",
-                        owner_character_id = CharacterIds.FarmGirl,
-                        completion_condition_type = MainQuestCompletionTypes.CommissionCount,
-                        completion_condition_value = "",
-                        unlock_on_complete = "T3",
-                        sort_order = 2
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 4,
-                        quest_id = "T3",
-                        owner_character_id = CharacterIds.Witch,
-                        completion_condition_type = MainQuestCompletionTypes.CommissionCount,
-                        completion_condition_value = "",
-                        unlock_on_complete = "T4",
-                        sort_order = 3
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 5,
-                        quest_id = "T4",
-                        owner_character_id = CharacterIds.Guard,
-                        completion_condition_type = MainQuestCompletionTypes.FirstExplore,
-                        completion_condition_value = "",
-                        unlock_on_complete = "",
-                        sort_order = 4
-                    }
+                    id = 1,
+                    quest_id = "T0",
+                    owner_character_id = CharacterIds.VillageChiefWife,
+                    completion_condition_type = MainQuestCompletionTypes.Auto,
+                    completion_condition_value = "",
+                    sort_order = 0
+                },
+                new MainQuestData
+                {
+                    id = 2,
+                    quest_id = "T1",
+                    owner_character_id = CharacterIds.FarmGirl,
+                    completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
+                    // Sprint 6：新 T1 completion_condition_value = node_2_dialogue_complete
+                    completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
+                    sort_order = 1
+                },
+                new MainQuestData
+                {
+                    id = 3,
+                    quest_id = "T2",
+                    owner_character_id = CharacterIds.FarmGirl,
+                    completion_condition_type = MainQuestCompletionTypes.CommissionCount,
+                    completion_condition_value = "",
+                    sort_order = 2
+                },
+                new MainQuestData
+                {
+                    id = 4,
+                    quest_id = "T3",
+                    owner_character_id = CharacterIds.Witch,
+                    completion_condition_type = MainQuestCompletionTypes.CommissionCount,
+                    completion_condition_value = "",
+                    sort_order = 3
+                },
+                new MainQuestData
+                {
+                    id = 5,
+                    quest_id = "T4",
+                    owner_character_id = CharacterIds.Guard,
+                    completion_condition_type = MainQuestCompletionTypes.FirstExplore,
+                    completion_condition_value = "",
+                    sort_order = 4
                 }
             };
-            return new MainQuestConfig(data);
+            MainQuestUnlockData[] unlocks = new MainQuestUnlockData[]
+            {
+                new MainQuestUnlockData { id = 1, main_quest_id = "T0", unlock_type = "quest", unlock_value = "T1", sort_order = 0 },
+                new MainQuestUnlockData { id = 2, main_quest_id = "T1", unlock_type = "quest", unlock_value = "T2", sort_order = 0 },
+                new MainQuestUnlockData { id = 3, main_quest_id = "T2", unlock_type = "quest", unlock_value = "T3", sort_order = 0 },
+                new MainQuestUnlockData { id = 4, main_quest_id = "T3", unlock_type = "quest", unlock_value = "T4", sort_order = 0 },
+            };
+            return new MainQuestConfig(quests, unlocks);
         }
     }
 }

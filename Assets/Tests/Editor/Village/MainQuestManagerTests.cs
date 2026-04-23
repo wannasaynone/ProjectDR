@@ -38,11 +38,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void Constructor_EmptyConfig_NoThrow()
         {
-            MainQuestConfig config = new MainQuestConfig(new MainQuestConfigData
-            {
-                schema_version = 1,
-                main_quests = new MainQuestConfigEntry[0]
-            });
+            MainQuestConfig config = new MainQuestConfig(new MainQuestData[0], new MainQuestUnlockData[0]);
             MainQuestManager sut = new MainQuestManager(config);
             Assert.IsNull(sut.GetActiveQuest());
         }
@@ -215,20 +211,18 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void TryAutoCompleteFirstAutoQuest_NoAutoAvailable_ReturnsFalse()
         {
-            MainQuestConfig config = new MainQuestConfig(new MainQuestConfigData
-            {
-                schema_version = 1,
-                main_quests = new MainQuestConfigEntry[]
+            MainQuestConfig config = new MainQuestConfig(
+                new MainQuestData[]
                 {
-                    new MainQuestConfigEntry
+                    new MainQuestData
                     {
                         id = 1,
                         quest_id = "T_dialogue",
                         completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
                         sort_order = 0
                     }
-                }
-            });
+                },
+                new MainQuestUnlockData[0]);
             MainQuestManager sut = new MainQuestManager(config);
             Assert.IsFalse(sut.TryAutoCompleteFirstAutoQuest());
         }
@@ -357,44 +351,47 @@ namespace ProjectDR.Tests.Village
         private static MainQuestConfig BuildThreeQuestConfig()
         {
             // 對應新 main-quest-config.json（Sprint 6 B1）：T0/T1/T2 三條任務
-            MainQuestConfigData data = new MainQuestConfigData
+            MainQuestData[] quests = new MainQuestData[]
             {
-                schema_version = 1,
-                main_quests = new MainQuestConfigEntry[]
+                new MainQuestData
                 {
-                    new MainQuestConfigEntry
-                    {
-                        id = 1,
-                        quest_id = "T0",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.Auto,
-                        completion_condition_value = MainQuestSignalValues.Node0DialogueComplete,
-                        unlock_on_complete = "T1|node_0_complete",
-                        sort_order = 0
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 2,
-                        quest_id = "T1",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
-                        completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
-                        unlock_on_complete = "T2|node_2_complete|exploration_open",
-                        sort_order = 1
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 3,
-                        quest_id = "T2",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.FirstExplore,
-                        completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete,
-                        unlock_on_complete = "guard_unlock|exploration_full_open",
-                        sort_order = 2
-                    }
+                    id = 1,
+                    quest_id = "T0",
+                    owner_character_id = CharacterIds.VillageChiefWife,
+                    completion_condition_type = MainQuestCompletionTypes.Auto,
+                    completion_condition_value = MainQuestSignalValues.Node0DialogueComplete,
+                    sort_order = 0
+                },
+                new MainQuestData
+                {
+                    id = 2,
+                    quest_id = "T1",
+                    owner_character_id = CharacterIds.VillageChiefWife,
+                    completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
+                    completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
+                    sort_order = 1
+                },
+                new MainQuestData
+                {
+                    id = 3,
+                    quest_id = "T2",
+                    owner_character_id = CharacterIds.VillageChiefWife,
+                    completion_condition_type = MainQuestCompletionTypes.FirstExplore,
+                    completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete,
+                    sort_order = 2
                 }
             };
-            return new MainQuestConfig(data);
+            MainQuestUnlockData[] unlocks = new MainQuestUnlockData[]
+            {
+                new MainQuestUnlockData { id = 1, main_quest_id = "T0", unlock_type = "quest",   unlock_value = "T1",            sort_order = 0 },
+                new MainQuestUnlockData { id = 2, main_quest_id = "T0", unlock_type = "event",   unlock_value = "node_0_complete", sort_order = 1 },
+                new MainQuestUnlockData { id = 3, main_quest_id = "T1", unlock_type = "quest",   unlock_value = "T2",              sort_order = 0 },
+                new MainQuestUnlockData { id = 4, main_quest_id = "T1", unlock_type = "event",   unlock_value = "node_2_complete", sort_order = 1 },
+                new MainQuestUnlockData { id = 5, main_quest_id = "T1", unlock_type = "feature", unlock_value = "exploration_open", sort_order = 2 },
+                new MainQuestUnlockData { id = 6, main_quest_id = "T2", unlock_type = "event",   unlock_value = "guard_unlock",    sort_order = 0 },
+                new MainQuestUnlockData { id = 7, main_quest_id = "T2", unlock_type = "feature", unlock_value = "exploration_full_open", sort_order = 1 },
+            };
+            return new MainQuestConfig(quests, unlocks);
         }
     }
 }

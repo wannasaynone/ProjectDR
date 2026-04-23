@@ -1,61 +1,79 @@
 using System;
 using NUnit.Framework;
-using UnityEngine;
 using ProjectDR.Village;
 using ProjectDR.Village.Storage;
 
 namespace ProjectDR.Tests.Village
 {
     /// <summary>
-    /// StorageExpansionConfig / StorageExpansionConfigData 單元測試。
-    /// 驗證 JSON 反序列化、物資字串解析、邊界條件。
+    /// StorageExpansionConfig / StorageExpansionStageData / StorageExpansionRequirementData 單元測試。
+    /// Sprint 8 Wave 2.5：配合純陣列 DTO 重構（廢棄包裹類 StorageExpansionConfigData、移除 required_items 管道符字串）。
+    /// 驗證 DTO 反序列化、子表需求分組、邊界條件。
     /// </summary>
     [TestFixture]
     public class StorageExpansionConfigTests
     {
         [Test]
-        public void Constructor_NullData_ThrowsArgumentNullException()
+        public void Constructor_NullStageEntries_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new StorageExpansionConfig(null));
+            Assert.Throws<ArgumentNullException>(() =>
+                new StorageExpansionConfig(null, new StorageExpansionRequirementData[0]));
+        }
+
+        [Test]
+        public void Constructor_NullRequirementEntries_ThrowsArgumentNullException()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new StorageExpansionConfig(new StorageExpansionStageData[0], null));
         }
 
         [Test]
         public void Constructor_EmptyStages_NoStages()
         {
-            StorageExpansionConfigData data = new StorageExpansionConfigData
-            {
-                schema_version = 1,
-                max_expansion_level = 0,
-                initial_capacity = 100,
-                stages = new StorageExpansionStageData[0]
-            };
-            StorageExpansionConfig config = new StorageExpansionConfig(data);
+            StorageExpansionConfig config = new StorageExpansionConfig(
+                new StorageExpansionStageData[0],
+                new StorageExpansionRequirementData[0]);
             Assert.AreEqual(0, config.Stages.Count);
             Assert.IsNull(config.GetStage(1));
         }
 
         [Test]
-        public void GetStage_ParsesRequiredItemsCorrectly()
+        public void Constructor_Level0Entry_SetsInitialCapacity()
         {
-            StorageExpansionConfigData data = new StorageExpansionConfigData
+            // level=0 entry 的 capacity_after 作為 InitialCapacity（Q7 拍板）
+            StorageExpansionStageData[] stages = new StorageExpansionStageData[]
             {
-                schema_version = 1,
-                max_expansion_level = 1,
-                initial_capacity = 100,
-                stages = new StorageExpansionStageData[]
+                new StorageExpansionStageData
                 {
-                    new StorageExpansionStageData
-                    {
-                        level = 1,
-                        capacity_before = 100,
-                        capacity_after = 150,
-                        required_items = "material_wood:10|material_cloth:5",
-                        duration_seconds = 90,
-                        description = "first stage"
-                    }
+                    id = 0, level = 0, capacity_before = 0, capacity_after = 100,
+                    duration_seconds = 0
                 }
             };
-            StorageExpansionConfig config = new StorageExpansionConfig(data);
+            StorageExpansionConfig config = new StorageExpansionConfig(stages, new StorageExpansionRequirementData[0]);
+            Assert.AreEqual(100, config.InitialCapacity);
+            // level=0 不進入擴建清單
+            Assert.AreEqual(0, config.Stages.Count);
+        }
+
+        [Test]
+        public void GetStage_WithRequirements_ParsesSubTableCorrectly()
+        {
+            StorageExpansionStageData[] stages = new StorageExpansionStageData[]
+            {
+                new StorageExpansionStageData
+                {
+                    id = 1, level = 1,
+                    capacity_before = 100, capacity_after = 150,
+                    duration_seconds = 90,
+                    description = "first stage"
+                }
+            };
+            StorageExpansionRequirementData[] requirements = new StorageExpansionRequirementData[]
+            {
+                new StorageExpansionRequirementData { id = 1, stage_level = 1, item_id = "material_wood", quantity = 10 },
+                new StorageExpansionRequirementData { id = 2, stage_level = 1, item_id = "material_cloth", quantity = 5 },
+            };
+            StorageExpansionConfig config = new StorageExpansionConfig(stages, requirements);
             StorageExpansionStage stage = config.GetStage(1);
             Assert.IsNotNull(stage);
             Assert.AreEqual(2, stage.RequiredItems.Count);
@@ -65,99 +83,37 @@ namespace ProjectDR.Tests.Village
         }
 
         [Test]
-        public void GetStage_EmptyRequiredItems_ReturnsEmptyDictionary()
+        public void GetStage_NoRequirements_ReturnsEmptyDictionary()
         {
-            StorageExpansionConfigData data = new StorageExpansionConfigData
+            StorageExpansionStageData[] stages = new StorageExpansionStageData[]
             {
-                schema_version = 1,
-                max_expansion_level = 1,
-                initial_capacity = 100,
-                stages = new StorageExpansionStageData[]
+                new StorageExpansionStageData
                 {
-                    new StorageExpansionStageData
-                    {
-                        level = 1,
-                        capacity_before = 100,
-                        capacity_after = 150,
-                        required_items = "",
-                        duration_seconds = 90,
-                        description = ""
-                    }
+                    id = 1, level = 1,
+                    capacity_before = 100, capacity_after = 150,
+                    duration_seconds = 90,
+                    description = ""
                 }
             };
-            StorageExpansionConfig config = new StorageExpansionConfig(data);
+            StorageExpansionConfig config = new StorageExpansionConfig(stages, new StorageExpansionRequirementData[0]);
             StorageExpansionStage stage = config.GetStage(1);
             Assert.AreEqual(0, stage.RequiredItems.Count);
         }
 
         [Test]
-        public void GetStage_MalformedRequiredItems_SkipsInvalidPairs()
-        {
-            StorageExpansionConfigData data = new StorageExpansionConfigData
-            {
-                schema_version = 1,
-                max_expansion_level = 1,
-                initial_capacity = 100,
-                stages = new StorageExpansionStageData[]
-                {
-                    new StorageExpansionStageData
-                    {
-                        level = 1,
-                        capacity_before = 100,
-                        capacity_after = 150,
-                        required_items = "material_wood:10|bad_pair|no_quantity:|:no_id|valid:5",
-                        duration_seconds = 90,
-                        description = ""
-                    }
-                }
-            };
-            StorageExpansionConfig config = new StorageExpansionConfig(data);
-            StorageExpansionStage stage = config.GetStage(1);
-            Assert.AreEqual(2, stage.RequiredItems.Count);
-            Assert.IsTrue(stage.RequiredItems.ContainsKey("material_wood"));
-            Assert.IsTrue(stage.RequiredItems.ContainsKey("valid"));
-        }
-
-        [Test]
         public void Stages_OrderedByLevel()
         {
-            StorageExpansionConfigData data = new StorageExpansionConfigData
+            StorageExpansionStageData[] stages = new StorageExpansionStageData[]
             {
-                schema_version = 1,
-                max_expansion_level = 3,
-                initial_capacity = 100,
-                stages = new StorageExpansionStageData[]
-                {
-                    new StorageExpansionStageData { level = 3, capacity_before = 200, capacity_after = 250, required_items = "", duration_seconds = 0 },
-                    new StorageExpansionStageData { level = 1, capacity_before = 100, capacity_after = 150, required_items = "", duration_seconds = 0 },
-                    new StorageExpansionStageData { level = 2, capacity_before = 150, capacity_after = 200, required_items = "", duration_seconds = 0 }
-                }
+                new StorageExpansionStageData { id = 3, level = 3, capacity_before = 200, capacity_after = 250, duration_seconds = 0 },
+                new StorageExpansionStageData { id = 1, level = 1, capacity_before = 100, capacity_after = 150, duration_seconds = 0 },
+                new StorageExpansionStageData { id = 2, level = 2, capacity_before = 150, capacity_after = 200, duration_seconds = 0 }
             };
-            StorageExpansionConfig config = new StorageExpansionConfig(data);
+            StorageExpansionConfig config = new StorageExpansionConfig(stages, new StorageExpansionRequirementData[0]);
             Assert.AreEqual(3, config.Stages.Count);
             Assert.AreEqual(1, config.Stages[0].Level);
             Assert.AreEqual(2, config.Stages[1].Level);
             Assert.AreEqual(3, config.Stages[2].Level);
-        }
-
-        [Test]
-        public void RealJsonFile_DeserializesSuccessfully()
-        {
-            string path = "Config/storage-expansion-config";
-            TextAsset asset = Resources.Load<TextAsset>(path);
-            if (asset == null)
-            {
-                Assert.Pass("storage-expansion-config 資源不存在，跳過真實 JSON 測試。");
-                return;
-            }
-
-            StorageExpansionConfigData data = JsonUtility.FromJson<StorageExpansionConfigData>(asset.text);
-            Assert.IsNotNull(data);
-            Assert.GreaterOrEqual(data.stages.Length, 1);
-
-            StorageExpansionConfig config = new StorageExpansionConfig(data);
-            Assert.GreaterOrEqual(config.Stages.Count, 1);
-            Assert.AreEqual(100, config.InitialCapacity);
         }
 
         // ===== ADR-001 / ADR-002 A16：IGameData 契約斷言 =====
@@ -167,17 +123,34 @@ namespace ProjectDR.Tests.Village
         {
             StorageExpansionStageData entry = new StorageExpansionStageData
             {
+                id = 1,
                 level = 1,
                 capacity_before = 100,
                 capacity_after = 150,
-                required_items = "",
                 duration_seconds = 90
             };
 
             Assert.That(entry, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
                 "StorageExpansionStageData 必須實作 IGameData（ADR-001 / ADR-002 A16）");
             Assert.That(entry.ID, Is.Not.Zero,
-                "StorageExpansionStageData.ID（=level）不得為 0（ADR-002 A16 反序列化要求）");
+                "StorageExpansionStageData.ID（=id）不得為 0（ADR-002 A16 反序列化要求）");
+        }
+
+        [Test]
+        public void StorageExpansionRequirementData_ImplementsIGameData()
+        {
+            StorageExpansionRequirementData entry = new StorageExpansionRequirementData
+            {
+                id = 1,
+                stage_level = 1,
+                item_id = "material_wood",
+                quantity = 5
+            };
+
+            Assert.That(entry, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
+                "StorageExpansionRequirementData 必須實作 IGameData（ADR-001）");
+            Assert.That(entry.ID, Is.Not.Zero,
+                "StorageExpansionRequirementData.ID 不得為 0");
         }
     }
 }

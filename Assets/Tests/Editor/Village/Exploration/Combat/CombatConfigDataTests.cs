@@ -1,16 +1,20 @@
 // CombatConfigDataTests — 戰鬥配置資料 IGameData 契約驗證測試。
-// ADR-001 / ADR-002 A05 改造後新增（2026-04-22）。
-// ADR-001 / ADR-002 A13 MonsterTypeJson IGameData 契約驗證（2026-04-22）。
-// 驗證：IGameData 實作、ID 非零、反序列化正確性。
+// ADR-001 / ADR-002 A05 改造後（Sprint 8 Wave 2.5）：
+//   - CombatConfigJson → CombatConfigData（欄位 snake_case 扁平化）
+//   - CombatConfig.Load() → new CombatConfig(CombatConfigData)
+//   - MonsterTypeJson → MonsterData（欄位 snake_case 扁平化）
+//   - MonsterConfig.Load() → new MonsterConfig(MonsterData[])
+//   - monsterConfig.GetType() → monsterConfig.GetMonsterType()
+// ADR-001 / ADR-002 A13 MonsterData IGameData 契約驗證（2026-04-22）。
 
 using NUnit.Framework;
+using JsonFx.Json;
 using ProjectDR.Village.Exploration.Combat;
-using UnityEngine;
 
 namespace ProjectDR.Tests.Village.Exploration.Combat
 {
     /// <summary>
-    /// CombatConfigJson / CombatConfig 的單元測試。
+    /// CombatConfigData / CombatConfig 的單元測試。
     /// 重點：ADR-001 IGameData 契約驗證 + 反序列化正確性。
     /// </summary>
     [TestFixture]
@@ -19,87 +23,91 @@ namespace ProjectDR.Tests.Village.Exploration.Combat
         // ===== ADR-001 IGameData 契約驗證 =====
 
         [Test]
-        public void CombatConfigJson_ImplementsIGameData()
+        public void CombatConfigData_ImplementsIGameData()
         {
-            // CombatConfigJson 必須實作 IGameData（ADR-001）
-            var dto = new CombatConfigJson
-            {
-                id = 1,
-                playerStats = new PlayerStatsJson { maxHp = 20, atk = 5, def = 2, spd = 10 },
-                sword = new SwordConfigJson { angleDegreesHalf = 45f, range = 1.5f, baseCooldownSeconds = 0.8f, spdCooldownFactor = 0.02f }
-            };
-
+            var dto = new CombatConfigData { id = 1 };
             Assert.IsInstanceOf<KahaGameCore.GameData.IGameData>(dto,
-                "CombatConfigJson 必須實作 IGameData（ADR-001）");
+                "CombatConfigData 必須實作 IGameData（ADR-001）");
         }
 
         [Test]
-        public void CombatConfigJson_ID_IsNonZero_WhenSetToOne()
+        public void CombatConfigData_ID_IsNonZero_WhenSetToOne()
         {
-            // Singleton 型配置：ID 固定設為 1（ADR-001 ID 非 0 斷言）
             const int SINGLETON_ID = 1;
-            var dto = new CombatConfigJson { id = SINGLETON_ID };
+            var dto = new CombatConfigData { id = SINGLETON_ID };
 
             Assert.AreNotEqual(0, dto.ID,
-                "CombatConfigJson.ID 不可為 0（ADR-001 IGameData 契約，singleton 型 ID=1）");
+                "CombatConfigData.ID 不可為 0（ADR-001 IGameData 契約，singleton 型 ID=1）");
             Assert.AreEqual(SINGLETON_ID, dto.ID);
         }
 
         [Test]
-        public void CombatConfigJson_ID_MapsToIdField()
+        public void CombatConfigData_ID_MapsToIdField()
         {
-            // 確認 IGameData.ID property 對應 int id 欄位
-            var dto = new CombatConfigJson { id = 1 };
-
+            var dto = new CombatConfigData { id = 1 };
             Assert.AreEqual(1, dto.ID, "ID property 應對應 int id 欄位");
         }
 
         // ===== 反序列化正確性 =====
 
         [Test]
-        public void CombatConfigJson_Deserialization_WithId_ParsesCorrectly()
+        public void CombatConfigData_Deserialization_WithId_ParsesCorrectly()
         {
-            // 包含 id 欄位的 JSON 應能正確反序列化（ADR-001 改造後 JSON 格式）
-            string json = @"{
+            // 扁平化 JSON 格式（Sprint 8 Wave 2.5 後）
+            string json = @"[{
                 ""id"": 1,
-                ""playerStats"": { ""maxHp"": 20, ""atk"": 5, ""def"": 2, ""spd"": 10 },
-                ""sword"": { ""angleDegreesHalf"": 45.0, ""range"": 1.5, ""baseCooldownSeconds"": 0.8, ""spdCooldownFactor"": 0.02 },
-                ""moveSpeedBase"": 0.2,
-                ""spdMoveSpeedFactor"": 0.005,
-                ""freeMovementBaseSpeed"": 3.0,
-                ""spdFreeMovementSpeedFactor"": 0.1,
-                ""knockbackDistance"": 1.5,
-                ""knockbackDuration"": 0.2
-            }";
+                ""player_max_hp"": 20,
+                ""player_atk"": 5,
+                ""player_def"": 2,
+                ""player_spd"": 10,
+                ""sword_angle_degrees_half"": 45.0,
+                ""sword_range"": 1.5,
+                ""sword_base_cooldown_seconds"": 0.8,
+                ""sword_spd_cooldown_factor"": 0.02,
+                ""move_speed_base"": 0.2,
+                ""spd_move_speed_factor"": 0.005,
+                ""free_movement_base_speed"": 3.0,
+                ""spd_free_movement_speed_factor"": 0.1,
+                ""knockback_distance"": 1.5,
+                ""knockback_duration"": 0.2
+            }]";
 
-            CombatConfigJson dto = JsonUtility.FromJson<CombatConfigJson>(json);
+            CombatConfigData[] arr = JsonReader.Deserialize<CombatConfigData[]>(json);
 
-            Assert.IsNotNull(dto);
+            Assert.IsNotNull(arr);
+            Assert.AreEqual(1, arr.Length);
+            CombatConfigData dto = arr[0];
             Assert.AreEqual(1, dto.id);
             Assert.AreEqual(1, dto.ID, "反序列化後 ID 應為 1（singleton 型）");
             Assert.AreNotEqual(0, dto.ID, "反序列化後 ID 不可為 0（ADR-001）");
-            Assert.IsNotNull(dto.playerStats);
-            Assert.AreEqual(20, dto.playerStats.maxHp);
-            Assert.AreEqual(5, dto.playerStats.atk);
+            Assert.AreEqual(20, dto.player_max_hp);
+            Assert.AreEqual(5, dto.player_atk);
         }
 
         [Test]
-        public void CombatConfig_Load_WithIdField_BuildsCorrectConfig()
+        public void CombatConfig_Constructor_WithValidData_BuildsCorrectConfig()
         {
-            // CombatConfig.Load 能從包含 id 欄位的 JSON 正確建構不可變配置
-            string json = @"{
-                ""id"": 1,
-                ""playerStats"": { ""maxHp"": 20, ""atk"": 5, ""def"": 2, ""spd"": 10 },
-                ""sword"": { ""angleDegreesHalf"": 45.0, ""range"": 1.5, ""baseCooldownSeconds"": 0.8, ""spdCooldownFactor"": 0.02 },
-                ""moveSpeedBase"": 0.2,
-                ""spdMoveSpeedFactor"": 0.005,
-                ""freeMovementBaseSpeed"": 3.0,
-                ""spdFreeMovementSpeedFactor"": 0.1,
-                ""knockbackDistance"": 1.5,
-                ""knockbackDuration"": 0.2
-            }";
+            // new CombatConfig(CombatConfigData) 取代舊 CombatConfig.Load(json)
+            var dto = new CombatConfigData
+            {
+                id = 1,
+                player_max_hp = 20,
+                player_atk = 5,
+                player_def = 2,
+                player_spd = 10,
+                sword_angle_degrees_half = 45f,
+                sword_range = 1.5f,
+                sword_base_cooldown_seconds = 0.8f,
+                sword_spd_cooldown_factor = 0.02f,
+                move_speed_base = 0.2f,
+                spd_move_speed_factor = 0.005f,
+                free_movement_base_speed = 3.0f,
+                spd_free_movement_speed_factor = 0.1f,
+                knockback_distance = 1.5f,
+                knockback_duration = 0.2f
+            };
 
-            CombatConfig config = CombatConfig.Load(json);
+            CombatConfig config = new CombatConfig(dto);
 
             Assert.IsNotNull(config);
             Assert.AreEqual(20, config.PlayerMaxHp);
@@ -108,55 +116,62 @@ namespace ProjectDR.Tests.Village.Exploration.Combat
         }
 
         [Test]
-        public void CombatConfig_Load_NullOrEmpty_ThrowsArgumentException()
+        public void CombatConfig_Constructor_NullData_Throws()
         {
-            Assert.Throws<System.ArgumentException>(() => CombatConfig.Load(null));
-            Assert.Throws<System.ArgumentException>(() => CombatConfig.Load(string.Empty));
+            Assert.Throws<System.ArgumentNullException>(() => new CombatConfig(null));
         }
 
-        // ===== A13: MonsterTypeJson IGameData 契約驗證 =====
+        // ===== A13: MonsterData IGameData 契約驗證 =====
 
         [Test]
-        public void MonsterTypeJson_ImplementsIGameData()
+        public void MonsterData_ImplementsIGameData()
         {
-            // MonsterTypeJson 必須實作 IGameData（ADR-001 A13）
-            var dto = new MonsterTypeJson { id = 1, typeId = "Slime" };
+            var dto = new MonsterData { id = 1, type_id = "Slime" };
             Assert.IsInstanceOf<KahaGameCore.GameData.IGameData>(dto,
-                "MonsterTypeJson 必須實作 IGameData（ADR-001 A13）");
+                "MonsterData 必須實作 IGameData（ADR-001 A13）");
         }
 
         [Test]
-        public void MonsterTypeJson_ID_IsNonZero_WhenIdSet()
+        public void MonsterData_ID_IsNonZero_WhenIdSet()
         {
             const int SAMPLE_ID = 1;
-            var dto = new MonsterTypeJson { id = SAMPLE_ID };
+            var dto = new MonsterData { id = SAMPLE_ID };
             Assert.AreNotEqual(0, dto.ID,
-                "MonsterTypeJson.ID 不可為 0（ADR-001）");
+                "MonsterData.ID 不可為 0（ADR-001）");
             Assert.AreEqual(SAMPLE_ID, dto.ID);
         }
 
         [Test]
-        public void MonsterConfig_Load_WithIdField_ParsesAllEntries()
+        public void MonsterConfig_Constructor_WithIdField_ParsesAllEntries()
         {
-            // MonsterConfig.Load 能從包含 id 欄位的 JSON 正確建構（A13 JSON 格式）
-            string json = @"{
-                ""monsterTypes"": [
-                    { ""id"": 1, ""typeId"": ""Slime"", ""maxHp"": 6, ""atk"": 3, ""def"": 1, ""spd"": 4,
-                      ""moveCooldownSeconds"": 2.0, ""visionRange"": 3, ""attackRange"": 1,
-                      ""attackAngleDegreesHalf"": 45, ""attackPrepareSeconds"": 1.0, ""attackCooldownSeconds"": 1.5,
-                      ""color"": { ""r"": 0.2, ""g"": 0.8, ""b"": 0.2, ""a"": 1.0 } },
-                    { ""id"": 2, ""typeId"": ""Bat"", ""maxHp"": 4, ""atk"": 4, ""def"": 0, ""spd"": 8,
-                      ""moveCooldownSeconds"": 1.2, ""visionRange"": 4, ""attackRange"": 1,
-                      ""attackAngleDegreesHalf"": 30, ""attackPrepareSeconds"": 0.6, ""attackCooldownSeconds"": 1.0,
-                      ""color"": { ""r"": 0.5, ""g"": 0.1, ""b"": 0.6, ""a"": 1.0 } }
-                ]
-            }";
+            // new MonsterConfig(MonsterData[]) 取代舊 MonsterConfig.Load(json)
+            var entries = new MonsterData[]
+            {
+                new MonsterData
+                {
+                    id = 1, type_id = "Slime", max_hp = 6, atk = 3, def = 1, spd = 4,
+                    move_cooldown_seconds = 2.0f, vision_range = 3, attack_range = 1,
+                    attack_angle_degrees_half = 45f, attack_prepare_seconds = 1.0f,
+                    attack_cooldown_seconds = 1.5f,
+                    color_r = 0.2f, color_g = 0.8f, color_b = 0.2f, color_a = 1.0f
+                },
+                new MonsterData
+                {
+                    id = 2, type_id = "Bat", max_hp = 4, atk = 4, def = 0, spd = 8,
+                    move_cooldown_seconds = 1.2f, vision_range = 4, attack_range = 1,
+                    attack_angle_degrees_half = 30f, attack_prepare_seconds = 0.6f,
+                    attack_cooldown_seconds = 1.0f,
+                    color_r = 0.5f, color_g = 0.1f, color_b = 0.6f, color_a = 1.0f
+                }
+            };
 
-            MonsterConfig config = MonsterConfig.Load(json);
+            MonsterConfig config = new MonsterConfig(entries);
 
             Assert.IsNotNull(config);
             Assert.AreEqual(2, config.AllTypes.Count);
-            MonsterTypeData slime = config.GetType("Slime");
+
+            // GetMonsterType 取代舊 GetType（避免與 System.Object.GetType 衝突）
+            MonsterTypeData slime = config.GetMonsterType("Slime");
             Assert.IsNotNull(slime);
             Assert.AreEqual(6, slime.MaxHp);
             Assert.AreEqual("Slime", slime.TypeId);

@@ -39,34 +39,43 @@ namespace ProjectDR.Tests.Village
 
         private static StorageExpansionConfig BuildTwoStageConfig()
         {
-            StorageExpansionConfigData data = new StorageExpansionConfigData
+            // level=0 entry 設定 InitialCapacity（capacity_after = initial_capacity）
+            StorageExpansionStageData[] stages = new StorageExpansionStageData[]
             {
-                schema_version = 1,
-                max_expansion_level = 2,
-                initial_capacity = 10,
-                stages = new StorageExpansionStageData[]
+                new StorageExpansionStageData
                 {
-                    new StorageExpansionStageData
-                    {
-                        level = 1,
-                        capacity_before = 10,
-                        capacity_after = 15,
-                        required_items = "wood:3|cloth:2",
-                        duration_seconds = 10,
-                        description = "stage 1"
-                    },
-                    new StorageExpansionStageData
-                    {
-                        level = 2,
-                        capacity_before = 15,
-                        capacity_after = 20,
-                        required_items = "wood:5",
-                        duration_seconds = 20,
-                        description = "stage 2"
-                    }
+                    id = 0,
+                    level = 0,
+                    capacity_before = 0,
+                    capacity_after = 10,
+                    duration_seconds = 0
+                },
+                new StorageExpansionStageData
+                {
+                    id = 1,
+                    level = 1,
+                    capacity_before = 10,
+                    capacity_after = 15,
+                    duration_seconds = 10,
+                    description = "stage 1"
+                },
+                new StorageExpansionStageData
+                {
+                    id = 2,
+                    level = 2,
+                    capacity_before = 15,
+                    capacity_after = 20,
+                    duration_seconds = 20,
+                    description = "stage 2"
                 }
             };
-            return new StorageExpansionConfig(data);
+            StorageExpansionRequirementData[] requirements = new StorageExpansionRequirementData[]
+            {
+                new StorageExpansionRequirementData { id = 1, stage_level = 1, item_id = "wood",  quantity = 3 },
+                new StorageExpansionRequirementData { id = 2, stage_level = 1, item_id = "cloth", quantity = 2 },
+                new StorageExpansionRequirementData { id = 3, stage_level = 2, item_id = "wood",  quantity = 5 },
+            };
+            return new StorageExpansionConfig(stages, requirements);
         }
 
         private StorageExpansionManager CreateSut()

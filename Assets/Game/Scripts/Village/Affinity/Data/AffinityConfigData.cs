@@ -1,26 +1,30 @@
-// AffinityConfigData — 好感度系統外部配置的 JSON DTO 與不可變配置物件。
-// 配置檔路徑：Assets/Game/Resources/Config/affinity-config.json
-// Sheets 對應分頁：affinity-config
+// AffinityConfigData — 好感度系統外部配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：Affinity
+// 對應 .txt 檔：affinity.txt
 //
-// ADR-001 / ADR-002 A01 改造（2026-04-22）：
-//   AffinityCharacterConfigData 實作 KahaGameCore.GameData.IGameData，
-//   加 int id 欄位（流水號）+ 保留 characterId（語意字串外鍵）。
-//   載入路徑改走 GameStaticDataManager.Add<AffinityCharacterConfigData>()。
+// Sprint 8 Wave 2.5 重構：
+//   - AffinityCharacterConfigData 改名為 AffinityCharacterData，欄位改 snake_case（character_id）
+//   - 廢棄包裹類 AffinityConfigData（純陣列格式，JsonFx 直接反序列化 AffinityCharacterData[]）
+//   - defaultThresholds 拆為 character_id="__default__" sentinel entry（Q7 拍板）
+//   - AffinityConfig 建構子改為接受 AffinityCharacterData[]
+// ADR-001 / ADR-002 A01
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ProjectDR.Village.Affinity
 {
-    // ===== JSON DTO（供 JsonUtility.FromJson 使用） =====
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
     /// <summary>
     /// 單一角色的好感度門檻配置（JSON DTO）。
-    /// 實作 IGameData，int id 為流水號主鍵，characterId 為語意字串外鍵。
-    /// 對應 Sheets 分頁：affinity-config / JSON：affinity-config.json。
+    /// 實作 IGameData，int id 為流水號主鍵，character_id 為語意字串外鍵。
+    /// 特殊值 character_id="__default__" 為 fallback entry（承接 Q7 拍板）。
+    /// 對應 Sheets 分頁 Affinity，.txt 檔 affinity.txt。
     /// </summary>
     [Serializable]
-    public class AffinityCharacterConfigData : KahaGameCore.GameData.IGameData
+    public class AffinityCharacterData : KahaGameCore.GameData.IGameData
     {
         /// <summary>IGameData 主鍵（流水號）。對應 JSON 欄位 "id"。</summary>
         public int id;
@@ -28,81 +32,106 @@ namespace ProjectDR.Village.Affinity
         /// <summary>IGameData 契約實作。回傳 int id 流水號。</summary>
         public int ID => id;
 
-        /// <summary>角色 ID（語意字串外鍵）。對應 JSON 欄位 "characterId"。</summary>
-        public string characterId;
+        /// <summary>
+        /// 角色 ID（語意字串外鍵）。對應 JSON 欄位 "character_id"。
+        /// 特殊值："__default__" 表示 fallback entry（取代舊 defaultThresholds）。
+        /// </summary>
+        public string character_id;
 
-        /// <summary>好感度門檻值陣列（升序排列）。</summary>
-        public int[] thresholds;
-    }
+        /// <summary>語意字串 Key。</summary>
+        public string Key => character_id;
 
-    /// <summary>好感度系統的完整外部配置（JSON DTO 頂層包裝）。</summary>
-    [Serializable]
-    public class AffinityConfigData
-    {
-        /// <summary>各角色的門檻配置。</summary>
-        public AffinityCharacterConfigData[] characters;
-
-        /// <summary>未明確配置角色使用的預設門檻。</summary>
-        public int[] defaultThresholds;
+        /// <summary>
+        /// 好感度升級門檻值（逗號分隔字串，C# 端 split 轉 int[]）。
+        /// 例："5,8,12,18,25"。
+        /// 對應 JSON 欄位 "thresholds"。
+        /// </summary>
+        public string thresholds;
     }
 
     // ===== 不可變配置物件 =====
 
     /// <summary>
     /// 好感度系統的不可變配置。
-    /// 從 AffinityConfigData（JSON DTO）建構，提供門檻查詢 API。
+    /// 從 AffinityCharacterData[]（純陣列 JSON DTO）建構，提供門檻查詢 API。
+    /// character_id="__default__" 的 entry 作為 fallback。
     /// </summary>
     public class AffinityConfig
     {
+        private const string DefaultKey = "__default__";
+
         private readonly Dictionary<string, IReadOnlyList<int>> _characterThresholds;
         private readonly IReadOnlyList<int> _defaultThresholds;
 
         /// <summary>
-        /// 從 JSON DTO 建構不可變配置。
+        /// 從純陣列 DTO 建構不可變配置。
         /// </summary>
-        /// <param name="data">JSON 反序列化後的 DTO。</param>
-        /// <exception cref="ArgumentNullException">data 為 null 時拋出。</exception>
-        public AffinityConfig(AffinityConfigData data)
+        /// <param name="entries">JsonFx 反序列化後的 AffinityCharacterData 陣列。</param>
+        /// <exception cref="ArgumentNullException">entries 為 null 時拋出。</exception>
+        public AffinityConfig(AffinityCharacterData[] entries)
         {
-            if (data == null)
+            if (entries == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw new ArgumentNullException(nameof(entries));
             }
 
-            _defaultThresholds = data.defaultThresholds != null
-                ? Array.AsReadOnly(data.defaultThresholds)
-                : Array.AsReadOnly(Array.Empty<int>());
-
             _characterThresholds = new Dictionary<string, IReadOnlyList<int>>();
+            _defaultThresholds = Array.AsReadOnly(Array.Empty<int>());
 
-            if (data.characters != null)
+            foreach (AffinityCharacterData entry in entries)
             {
-                foreach (AffinityCharacterConfigData characterConfig in data.characters)
+                if (entry == null || string.IsNullOrEmpty(entry.character_id))
                 {
-                    if (characterConfig == null || string.IsNullOrEmpty(characterConfig.characterId))
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    int[] thresholds = characterConfig.thresholds ?? Array.Empty<int>();
-                    _characterThresholds[characterConfig.characterId] = Array.AsReadOnly(thresholds);
+                int[] parsed = ParseThresholds(entry.thresholds);
+
+                if (entry.character_id == DefaultKey)
+                {
+                    _defaultThresholds = Array.AsReadOnly(parsed);
+                }
+                else
+                {
+                    _characterThresholds[entry.character_id] = Array.AsReadOnly(parsed);
                 }
             }
         }
 
         /// <summary>
         /// 取得指定角色的好感度門檻清單。
-        /// 若角色未明確配置，回傳 defaultThresholds。
+        /// 若角色未明確配置，回傳 __default__ entry 的門檻（Q7 拍板：sentinel fallback）。
         /// </summary>
         /// <param name="characterId">角色 ID。</param>
         /// <returns>門檻值的唯讀清單。</returns>
         public IReadOnlyList<int> GetThresholds(string characterId)
         {
-            if (_characterThresholds.TryGetValue(characterId, out IReadOnlyList<int> thresholds))
+            if (!string.IsNullOrEmpty(characterId) &&
+                _characterThresholds.TryGetValue(characterId, out IReadOnlyList<int> thresholds))
             {
                 return thresholds;
             }
             return _defaultThresholds;
+        }
+
+        /// <summary>解析逗號分隔的門檻字串為 int 陣列。</summary>
+        private static int[] ParseThresholds(string raw)
+        {
+            if (string.IsNullOrEmpty(raw))
+            {
+                return Array.Empty<int>();
+            }
+
+            string[] parts = raw.Split(',');
+            List<int> result = new List<int>(parts.Length);
+            foreach (string part in parts)
+            {
+                if (int.TryParse(part.Trim(), out int value))
+                {
+                    result.Add(value);
+                }
+            }
+            return result.ToArray();
         }
     }
 }

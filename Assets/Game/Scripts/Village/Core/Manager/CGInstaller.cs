@@ -25,7 +25,7 @@ namespace ProjectDR.Village.Core
     {
         // ===== 建構子注入（由 VillageEntryPoint 傳入） =====
 
-        private readonly CGSceneConfigData _cgSceneConfigData;
+        private readonly CGSceneData[] _cgSceneEntries;
 
         // ===== Install 後的 Manager 實例 =====
 
@@ -34,13 +34,13 @@ namespace ProjectDR.Village.Core
         private Action<CGUnlockedEvent> _onCGUnlocked;
 
         /// <summary>
-        /// 建構 CGInstaller，注入 CG 場景配置資料。
+        /// 建構 CGInstaller，注入 CG 場景配置純陣列。
         /// </summary>
-        /// <param name="cgSceneConfigData">CG 場景 JSON DTO（不可為 null）。</param>
-        public CGInstaller(CGSceneConfigData cgSceneConfigData)
+        /// <param name="cgSceneEntries">JsonFx 反序列化後的 CGSceneData 陣列（不可為 null）。</param>
+        public CGInstaller(CGSceneData[] cgSceneEntries)
         {
-            _cgSceneConfigData = cgSceneConfigData
-                ?? throw new ArgumentNullException(nameof(cgSceneConfigData));
+            _cgSceneEntries = cgSceneEntries
+                ?? throw new ArgumentNullException(nameof(cgSceneEntries));
         }
 
         // ===== IVillageInstaller =====
@@ -54,8 +54,8 @@ namespace ProjectDR.Village.Core
         {
             if (ctx == null) throw new InvalidOperationException("CGInstaller.Install: ctx 不可為 null");
 
-            // 建構 CGSceneConfig（由 VillageEntryPoint 注入 cgSceneConfigJson 反序列化後的 DTO）
-            _cgSceneConfig = new CGSceneConfig(_cgSceneConfigData);
+            // 建構 CGSceneConfig（由 VillageEntryPoint 注入純陣列 DTO）
+            _cgSceneConfig = new CGSceneConfig(_cgSceneEntries);
             Village.CG.CGSceneConfig sceneConfig = _cgSceneConfig;
 
             // 建構 CGUnlockManager（建構內部已訂閱 AffinityThresholdReachedEvent）

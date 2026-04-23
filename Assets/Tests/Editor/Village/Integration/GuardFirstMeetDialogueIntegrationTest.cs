@@ -283,26 +283,10 @@ namespace ProjectDR.Tests.Village.Integration
 
         private static InitialResourcesConfig BuildInitialResourcesConfig()
         {
-            return new InitialResourcesConfig(new InitialResourcesConfigData
+            return new InitialResourcesConfig(new InitialResourceGrantData[]
             {
-                schema_version = 1,
-                grants = new InitialResourceGrantData[]
-                {
-                    new InitialResourceGrantData
-                    {
-                        grant_id = "initial_backpack_node0",
-                        trigger_id = InitialResourcesTriggerIds.Node0Start,
-                        item_id = "",
-                        quantity = 0
-                    },
-                    new InitialResourceGrantData
-                    {
-                        grant_id = "unlock_guard_sword",
-                        trigger_id = InitialResourcesTriggerIds.GuardSwordAsked,
-                        item_id = "gift_sword_wooden",
-                        quantity = 1
-                    },
-                },
+                new InitialResourceGrantData { id = 1, grant_id = "initial_backpack_node0", trigger_id = InitialResourcesTriggerIds.Node0Start,    item_id = "",                quantity = 0 },
+                new InitialResourceGrantData { id = 2, grant_id = "unlock_guard_sword",     trigger_id = InitialResourcesTriggerIds.GuardSwordAsked, item_id = "gift_sword_wooden", quantity = 1 },
             });
         }
 
@@ -312,62 +296,19 @@ namespace ProjectDR.Tests.Village.Integration
         /// </summary>
         private static NodeDialogueConfig BuildNodeDialogueConfigWithGuardFirstMeet()
         {
-            return new NodeDialogueConfig(new NodeDialogueConfigData
+            return new NodeDialogueConfig(new NodeDialogueLineData[]
             {
-                schema_version = 2,
-                node_dialogue_lines = new NodeDialogueLineData[]
-                {
-                    new NodeDialogueLineData
-                    {
-                        id = 32,
-                        line_id = "guard_first_meet_001",
-                        node_id = "guard_first_meet",
-                        sequence = 1,
-                        speaker = "guard",
-                        text = "你終於來了。【test placeholder】",
-                        line_type = NodeDialogueLineTypes.Dialogue,
-                        choice_branch = ""
-                    },
-                    new NodeDialogueLineData
-                    {
-                        id = 33,
-                        line_id = "guard_first_meet_002",
-                        node_id = "guard_first_meet",
-                        sequence = 2,
-                        speaker = "guard",
-                        text = "出發前，你需要這個。拿好它。【test placeholder】",
-                        line_type = NodeDialogueLineTypes.Dialogue,
-                        choice_branch = ""
-                    },
-                    new NodeDialogueLineData
-                    {
-                        id = 34,
-                        line_id = "guard_first_meet_003",
-                        node_id = "guard_first_meet",
-                        sequence = 3,
-                        speaker = "narrator",
-                        text = "（守衛遞給你一把劍）",
-                        line_type = NodeDialogueLineTypes.Narration,
-                        choice_branch = ""
-                    },
-                    new NodeDialogueLineData
-                    {
-                        id = 35,
-                        line_id = "guard_first_meet_004",
-                        node_id = "guard_first_meet",
-                        sequence = 4,
-                        speaker = "guard",
-                        text = "在森林裡小心。【test placeholder】",
-                        line_type = NodeDialogueLineTypes.Dialogue,
-                        choice_branch = ""
-                    },
-                }
+                new NodeDialogueLineData { id = 32, line_id = "guard_first_meet_001", node_id = "guard_first_meet", sequence = 1, speaker = "guard",    text = "你終於來了。【test placeholder】",         line_type = NodeDialogueLineTypes.Dialogue,  choice_branch = "" },
+                new NodeDialogueLineData { id = 33, line_id = "guard_first_meet_002", node_id = "guard_first_meet", sequence = 2, speaker = "guard",    text = "出發前，你需要這個。拿好它。【test placeholder】", line_type = NodeDialogueLineTypes.Dialogue, choice_branch = "" },
+                new NodeDialogueLineData { id = 34, line_id = "guard_first_meet_003", node_id = "guard_first_meet", sequence = 3, speaker = "narrator", text = "（守衛遞給你一把劍）",                      line_type = NodeDialogueLineTypes.Narration, choice_branch = "" },
+                new NodeDialogueLineData { id = 35, line_id = "guard_first_meet_004", node_id = "guard_first_meet", sequence = 4, speaker = "guard",    text = "在森林裡小心。【test placeholder】",         line_type = NodeDialogueLineTypes.Dialogue,  choice_branch = "" },
             });
         }
 
         /// <summary>
         /// 建立守衛發問清單（不含 guard_ask_sword 特殊題）。
         /// 反映 Sprint 6 決策 6-13 後的 player-questions-config.json 結構。
+        /// PlayerQuestionsConfig 為 ADR-002 A15 豁免，保留包裹類建構子。
         /// </summary>
         private static PlayerQuestionsConfig BuildGuardQuestionsConfigWithoutSwordQuestion()
         {
@@ -404,42 +345,18 @@ namespace ProjectDR.Tests.Village.Integration
 
         private static MainQuestConfig BuildMainQuestConfig()
         {
-            return new MainQuestConfig(new MainQuestConfigData
-            {
-                main_quests = new MainQuestConfigEntry[]
+            return new MainQuestConfig(
+                new MainQuestData[]
                 {
-                    new MainQuestConfigEntry
-                    {
-                        id = 1,
-                        quest_id = "T0",
-                        display_name = "開始",
-                        description = "",
-                        completion_condition_type = MainQuestCompletionTypes.Auto,
-                        completion_condition_value = "",
-                        unlock_on_complete = "T1",
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 2,
-                        quest_id = "T1",
-                        display_name = "認識所有人",
-                        description = "",
-                        completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
-                        completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
-                        unlock_on_complete = "T2",
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 3,
-                        quest_id = "T2",
-                        display_name = "出去看看外面",
-                        description = "",
-                        completion_condition_type = MainQuestCompletionTypes.FirstExplore,
-                        completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete,
-                        unlock_on_complete = "",
-                    },
-                }
-            });
+                    new MainQuestData { id = 1, quest_id = "T0", display_name = "開始",         completion_condition_type = MainQuestCompletionTypes.Auto,        completion_condition_value = "" },
+                    new MainQuestData { id = 2, quest_id = "T1", display_name = "認識所有人",   completion_condition_type = MainQuestCompletionTypes.DialogueEnd,  completion_condition_value = MainQuestSignalValues.Node2DialogueComplete   },
+                    new MainQuestData { id = 3, quest_id = "T2", display_name = "出去看看外面", completion_condition_type = MainQuestCompletionTypes.FirstExplore, completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete },
+                },
+                new MainQuestUnlockData[]
+                {
+                    new MainQuestUnlockData { id = 1, main_quest_id = "T0", unlock_type = "quest", unlock_value = "T1" },
+                    new MainQuestUnlockData { id = 2, main_quest_id = "T1", unlock_type = "quest", unlock_value = "T2" },
+                });
         }
     }
 }

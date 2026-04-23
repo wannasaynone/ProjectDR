@@ -5,12 +5,14 @@ using NUnit.Framework;
 using ProjectDR.Village;
 using ProjectDR.Village.Affinity;
 using ProjectDR.Village.Navigation;
+using JsonFx.Json;
 
 namespace ProjectDR.Tests.Village
 {
     /// <summary>
     /// AffinityManager 的單元測試。
     /// 測試對象：建構驗證、好感度增減、門檻檢查、事件發布、JSON 配置反序列化。
+    /// Sprint 8 Wave 2.5：配合純陣列 DTO 重構（AffinityCharacterData[]，廢棄 AffinityConfigData 包裹類）。
     /// 此測試不依賴 MonoBehaviour 或 Unity 場景，為純邏輯測試。
     /// </summary>
     [TestFixture]
@@ -24,26 +26,16 @@ namespace ProjectDR.Tests.Village
         {
             EventBus.ForceClearAll();
 
-            // 預設配置：每個角色門檻 [5]，使用 defaultThresholds
-            AffinityConfigData configData = new AffinityConfigData
+            // 預設配置：使用純陣列 AffinityCharacterData
+            // VillageChiefWife: 門檻 [5], Guard: 門檻 [3, 7], __default__: 門檻 [10]
+            AffinityCharacterData[] entries = new AffinityCharacterData[]
             {
-                characters = new AffinityCharacterConfigData[]
-                {
-                    new AffinityCharacterConfigData
-                    {
-                        characterId = CharacterIds.VillageChiefWife,
-                        thresholds = new int[] { 5 }
-                    },
-                    new AffinityCharacterConfigData
-                    {
-                        characterId = CharacterIds.Guard,
-                        thresholds = new int[] { 3, 7 }
-                    }
-                },
-                defaultThresholds = new int[] { 10 }
+                new AffinityCharacterData { id = 1, character_id = CharacterIds.VillageChiefWife, thresholds = "5" },
+                new AffinityCharacterData { id = 2, character_id = CharacterIds.Guard, thresholds = "3,7" },
+                new AffinityCharacterData { id = 3, character_id = "__default__", thresholds = "10" }
             };
 
-            _defaultConfig = new AffinityConfig(configData);
+            _defaultConfig = new AffinityConfig(entries);
             _sut = new AffinityManager(_defaultConfig);
         }
 
@@ -290,7 +282,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetThresholds_UnconfiguredCharacter_ReturnsDefaultThresholds()
         {
-            // Witch 沒有在 config 中明確配置，應回傳 defaultThresholds
+            // Witch 沒有在 config 中明確配置，應回傳 __default__ 的門檻
             System.Collections.Generic.IReadOnlyList<int> thresholds =
                 _sut.GetThresholds(CharacterIds.Witch);
 
@@ -338,7 +330,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void AddAffinity_UnconfiguredCharacter_UsesDefaultThresholds()
         {
-            // Witch 未配置，使用 defaultThresholds [10]
+            // Witch 未配置，使用 __default__ entry 的門檻 [10]
             AffinityThresholdReachedEvent receivedEvent = null;
             EventBus.Subscribe<AffinityThresholdReachedEvent>(e => receivedEvent = e);
 
@@ -349,141 +341,94 @@ namespace ProjectDR.Tests.Village
             Assert.AreEqual(10, receivedEvent.ThresholdValue);
         }
 
-        // ===== AffinityConfig 與 AffinityConfigData JSON 反序列化 =====
+        // ===== AffinityConfig 與 AffinityCharacterData JSON 反序列化 =====
 
         [Test]
-        public void AffinityConfigData_Deserialization_CorrectValues()
+        public void AffinityCharacterData_Deserialization_CorrectValues()
         {
-            string json = @"{
-                ""characters"": [
-                    {
-                        ""characterId"": ""TestChar"",
-                        ""thresholds"": [3, 6, 9]
-                    }
-                ],
-                ""defaultThresholds"": [5]
-            }";
+            // Sprint 8 Wave 2.5：純陣列格式，使用 JsonFx 反序列化
+            string json = @"[
+                { ""id"": 1, ""character_id"": ""TestChar"", ""thresholds"": ""3,6,9"" }
+            ]";
 
-            AffinityConfigData data = UnityEngine.JsonUtility.FromJson<AffinityConfigData>(json);
+            AffinityCharacterData[] entries = JsonReader.Deserialize<AffinityCharacterData[]>(json);
 
-            Assert.IsNotNull(data);
-            Assert.IsNotNull(data.characters);
-            Assert.AreEqual(1, data.characters.Length);
-            Assert.AreEqual("TestChar", data.characters[0].characterId);
-            Assert.AreEqual(3, data.characters[0].thresholds.Length);
-            Assert.AreEqual(3, data.characters[0].thresholds[0]);
-            Assert.AreEqual(6, data.characters[0].thresholds[1]);
-            Assert.AreEqual(9, data.characters[0].thresholds[2]);
-            Assert.AreEqual(1, data.defaultThresholds.Length);
-            Assert.AreEqual(5, data.defaultThresholds[0]);
+            Assert.IsNotNull(entries);
+            Assert.AreEqual(1, entries.Length);
+            Assert.AreEqual("TestChar", entries[0].character_id);
+            Assert.AreEqual("3,6,9", entries[0].thresholds);
         }
 
         [Test]
-        public void AffinityConfig_FromData_CorrectThresholdsMapping()
+        public void AffinityConfig_FromEntries_CorrectThresholdsMapping()
         {
-            AffinityConfigData data = new AffinityConfigData
+            AffinityCharacterData[] entries = new AffinityCharacterData[]
             {
-                characters = new AffinityCharacterConfigData[]
-                {
-                    new AffinityCharacterConfigData
-                    {
-                        characterId = "A",
-                        thresholds = new int[] { 2, 4 }
-                    }
-                },
-                defaultThresholds = new int[] { 8 }
+                new AffinityCharacterData { id = 1, character_id = "A", thresholds = "2,4" },
+                new AffinityCharacterData { id = 2, character_id = "__default__", thresholds = "8" }
             };
 
-            AffinityConfig config = new AffinityConfig(data);
+            AffinityConfig config = new AffinityConfig(entries);
 
             Assert.AreEqual(2, config.GetThresholds("A").Count);
             Assert.AreEqual(2, config.GetThresholds("A")[0]);
             Assert.AreEqual(4, config.GetThresholds("A")[1]);
 
-            // 未配置角色使用 defaultThresholds
+            // 未配置角色使用 __default__
             Assert.AreEqual(1, config.GetThresholds("B").Count);
             Assert.AreEqual(8, config.GetThresholds("B")[0]);
         }
 
         [Test]
-        public void AffinityConfig_NullData_ThrowsArgumentNullException()
+        public void AffinityConfig_NullEntries_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new AffinityConfig(null));
         }
 
-        // ===== ADR-001 IGameData 契約驗證（ADR-002 A01 改造後新增）=====
+        // ===== ADR-001 IGameData 契約驗證 =====
 
         [Test]
-        public void AffinityCharacterConfigData_ImplementsIGameData()
+        public void AffinityCharacterData_ImplementsIGameData()
         {
-            // AffinityCharacterConfigData 必須實作 IGameData（ADR-001）
-            var data = new AffinityCharacterConfigData
+            AffinityCharacterData data = new AffinityCharacterData
             {
                 id = 1,
-                characterId = "test_char",
-                thresholds = new int[] { 5 }
+                character_id = "test_char",
+                thresholds = "5"
             };
 
             Assert.IsInstanceOf<KahaGameCore.GameData.IGameData>(data,
-                "AffinityCharacterConfigData 必須實作 IGameData（ADR-001）");
+                "AffinityCharacterData 必須實作 IGameData（ADR-001）");
         }
 
         [Test]
-        public void AffinityCharacterConfigData_ID_IsNonZero_WhenSetToPositive()
+        public void AffinityCharacterData_ID_IsNonZero_WhenSetToPositive()
         {
-            // IGameData.ID 非 0 斷言（ADR-001：ID 必須可區分資料行）
             const int EXPECTED_ID = 1;
-            var data = new AffinityCharacterConfigData
+            AffinityCharacterData data = new AffinityCharacterData
             {
                 id = EXPECTED_ID,
-                characterId = "village_chief_wife",
-                thresholds = new int[] { 5 }
+                character_id = "village_chief_wife",
+                thresholds = "5"
             };
 
             Assert.AreNotEqual(0, data.ID,
-                "AffinityCharacterConfigData.ID 不可為 0（ADR-001 IGameData 契約）");
+                "AffinityCharacterData.ID 不可為 0（ADR-001 IGameData 契約）");
             Assert.AreEqual(EXPECTED_ID, data.ID);
         }
 
         [Test]
-        public void AffinityCharacterConfigData_ID_MapsToIdField()
+        public void AffinityCharacterData_ID_MapsToIdField()
         {
-            // 確認 IGameData.ID property 對應 int id 欄位（雙欄位規則：ID + characterId）
-            var data = new AffinityCharacterConfigData
+            AffinityCharacterData data = new AffinityCharacterData
             {
                 id = 42,
-                characterId = "witch",
-                thresholds = new int[] { 3, 7 }
+                character_id = "witch",
+                thresholds = "3,7"
             };
 
             Assert.AreEqual(42, data.ID, "ID property 應對應 int id 欄位");
-            Assert.AreEqual("witch", data.characterId, "characterId 語意字串外鍵應獨立保留");
-        }
-
-        [Test]
-        public void AffinityConfigData_Deserialization_WithId_CorrectValues()
-        {
-            // 驗證包含 id 欄位的 JSON 可正確反序列化（ADR-001 改造後 JSON 格式）
-            string json = @"{
-                ""characters"": [
-                    {
-                        ""id"": 1,
-                        ""characterId"": ""TestChar"",
-                        ""thresholds"": [3, 6, 9]
-                    }
-                ],
-                ""defaultThresholds"": [5]
-            }";
-
-            AffinityConfigData data = UnityEngine.JsonUtility.FromJson<AffinityConfigData>(json);
-
-            Assert.IsNotNull(data);
-            Assert.AreEqual(1, data.characters.Length);
-            Assert.AreEqual(1, data.characters[0].id);
-            Assert.AreEqual(1, data.characters[0].ID);
-            Assert.AreEqual("TestChar", data.characters[0].characterId);
-            Assert.AreNotEqual(0, data.characters[0].ID,
-                "反序列化後 ID 不可為 0（ADR-001 IGameData 契約）");
+            Assert.AreEqual("witch", data.character_id, "character_id 語意字串外鍵應獨立保留");
         }
     }
 }

@@ -1,10 +1,12 @@
-// GreetingConfigData — 招呼語配置（Sprint 5 B15）。
-// 配置檔路徑：Assets/Game/Resources/Config/greeting-config.json
+// GreetingConfigData — 招呼語配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：Greeting
+// 對應 .txt 檔：greeting.txt
 //
-// 結構：4 角色 × 7 級 × 10 句 = 280 句
-// 進入角色互動畫面 Normal 狀態時自動播放一句（隨機從該等級池選取）。
-// 不消耗體力、不影響好感度、[L1/L4 紅點亮時跳過]、[L2/L3 紅點亮時仍播放]。
-// ADR-002 A07：GreetingEntryData 實作 IGameData；int id 為流水號主鍵，greeting_id 為語意字串外鍵。
+// Sprint 8 Wave 2.5 重構：
+//   - GreetingEntryData 改名為 GreetingData（去 Entry）
+//   - 廢棄包裹類 GreetingConfigData（純陣列格式）
+//   - GreetingConfig 建構子改為接受 GreetingData[]
+// ADR-001 / ADR-002 A07
 
 using System;
 using System.Collections.Generic;
@@ -13,33 +15,39 @@ using ProjectDR.Village.CharacterUnlock;
 
 namespace ProjectDR.Village.Greeting
 {
-    // ===== JSON DTO =====
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
+    /// <summary>
+    /// 單一招呼語（JSON DTO）。
+    /// 實作 IGameData，int id 為流水號主鍵，greeting_id 為語意字串外鍵。
+    /// 對應 Sheets 分頁 Greeting，.txt 檔 greeting.txt。
+    /// </summary>
     [Serializable]
-    public class GreetingEntryData : IGameData
+    public class GreetingData : IGameData
     {
         /// <summary>IGameData 主鍵（流水號）。對應 JSON 欄位 "id"。</summary>
         public int id;
-        public string character_id;
-        public int level;
-        public string greeting_id;
-        public string text;
 
-        /// <summary>IGameData 契約實作。回傳 int id 流水號。</summary>
+        /// <summary>IGameData 契約實作。</summary>
         public int ID => id;
-        /// <summary>語意字串主鍵（唯一識別此招呼語）。</summary>
+
+        /// <summary>招呼語識別符語意字串。</summary>
+        public string greeting_id;
+
+        /// <summary>語意字串 Key。</summary>
         public string Key => greeting_id;
+
+        /// <summary>角色 ID。</summary>
+        public string character_id;
+
+        /// <summary>好感度等級（1~7）。</summary>
+        public int level;
+
+        /// <summary>招呼語文字。</summary>
+        public string text;
     }
 
-    [Serializable]
-    public class GreetingConfigData
-    {
-        public int schema_version;
-        public string note;
-        public GreetingEntryData[] greetings;
-    }
-
-    // ===== 不可變 =====
+    // ===== 不可變資料物件 =====
 
     public class GreetingInfo
     {
@@ -57,23 +65,27 @@ namespace ProjectDR.Village.Greeting
         }
     }
 
+    // ===== 不可變配置物件 =====
+
     public class GreetingConfig
     {
         private readonly Dictionary<string, Dictionary<int, List<GreetingInfo>>> _byCharLevel;
         private readonly Dictionary<string, GreetingInfo> _byId;
 
-        public GreetingConfig(GreetingConfigData data)
+        /// <summary>
+        /// 從純陣列 DTO 建構不可變配置。
+        /// </summary>
+        /// <param name="entries">JsonFx 反序列化後的 GreetingData 陣列（不可為 null）。</param>
+        public GreetingConfig(GreetingData[] entries)
         {
-            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (entries == null) throw new ArgumentNullException(nameof(entries));
             _byCharLevel = new Dictionary<string, Dictionary<int, List<GreetingInfo>>>();
             _byId = new Dictionary<string, GreetingInfo>();
 
-            GreetingEntryData[] entries = data.greetings ?? Array.Empty<GreetingEntryData>();
-            foreach (GreetingEntryData e in entries)
+            foreach (GreetingData e in entries)
             {
                 if (e == null || string.IsNullOrEmpty(e.greeting_id) || string.IsNullOrEmpty(e.character_id)) continue;
 
-                // JSON 內 snake_case → CharacterIds 常數 (PascalCase)
                 string canonical = CharacterIdSnakeCaseMapper.ToPascal(e.character_id);
                 GreetingInfo info = new GreetingInfo(canonical, e.level, e.greeting_id, e.text ?? string.Empty);
                 _byId[e.greeting_id] = info;

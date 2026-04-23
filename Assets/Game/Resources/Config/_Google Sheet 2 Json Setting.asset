@@ -14,16 +14,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp-Editor::KahaGameCore.EditorTool.GoogleSheet2JsonSetting
   sheetID: 1WjvMHTtEZ-JIRE1hmKz0pQMfI78hVI9jXC7ZLKEpLoo
   sheetNames:
-  - AffinityConfig
-  - CGSceneConfig
-  - CharacterIntroConfig
-  - CharacterQuestionsConfig
-  - CombatConfig
+  - Affinity
+  - CGScene
+  - CharacterIntros
+  - CharacterIntroLines
+  - CharacterProfiles
+  - CharacterQuestions
+  - CharacterQuestionOptions
+  - Combat
   - CommissionRecipes
-  - GreetingConfig
-  - IdleChatConfig
-  - MainQuestConfig
-  - MonsterConfig
-  - NodeDialogueConfig
-  - StorageExpansionConfig
-  - InitialResourcesConfig
+  - GiftSwords
+  - Greeting
+  - IdleChat
+  - IdleChatAnswers
+  - InitialResourceGrants
+  - MainQuests
+  - MainQuestUnlocks
+  - Monster
+  - NodeDialogueLines
+  - Personalities
+  - PersonalityAffinityRules
+  - StorageExpansionStages
+  - StorageExpansionRequirements

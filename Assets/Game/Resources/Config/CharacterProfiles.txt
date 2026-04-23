@@ -1,0 +1,1 @@
+[{"id":1,"character_id":"village_chief_wife","preferred_personality_id":"personality_gentle"},{"id":2,"character_id":"farm_girl","preferred_personality_id":"personality_lively"},{"id":3,"character_id":"witch","preferred_personality_id":"personality_calm"},{"id":4,"character_id":"guard","preferred_personality_id":"personality_assertive"}]

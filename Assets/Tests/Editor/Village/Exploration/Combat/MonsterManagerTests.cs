@@ -18,22 +18,26 @@ namespace ProjectDR.Tests.Village.Exploration.Combat
 
         private MonsterTypeData CreateSlimeType()
         {
-            var json = new MonsterTypeJson
+            var data = new MonsterData
             {
-                typeId = "Slime",
-                maxHp = 6,
+                id = 1,
+                type_id = "Slime",
+                max_hp = 6,
                 atk = 3,
                 def = 1,
                 spd = 4,
-                moveCooldownSeconds = 2.0f,
-                visionRange = 3,
-                attackRange = 1,
-                attackAngleDegreesHalf = 45f,
-                attackPrepareSeconds = 1.0f,
-                attackCooldownSeconds = 1.5f,
-                color = new ColorJson { r = 0.2f, g = 0.8f, b = 0.2f, a = 1f }
+                move_cooldown_seconds = 2.0f,
+                vision_range = 3,
+                attack_range = 1,
+                attack_angle_degrees_half = 45f,
+                attack_prepare_seconds = 1.0f,
+                attack_cooldown_seconds = 1.5f,
+                color_r = 0.2f,
+                color_g = 0.8f,
+                color_b = 0.2f,
+                color_a = 1f
             };
-            return new MonsterTypeData(json);
+            return new MonsterTypeData(data);
         }
 
         private static CellType[] CreateAllExplorableCells(int width, int height)

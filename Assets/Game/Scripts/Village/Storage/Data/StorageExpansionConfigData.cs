@@ -1,7 +1,15 @@
-// StorageExpansionConfigData — 倉庫擴建系統外部配置的 JSON DTO 與不可變配置物件。
-// 配置檔路徑：Assets/Game/Resources/Config/storage-expansion-config.json
-// A16（ADR-002）：StorageExpansionStageData 實作 IGameData，level 作為 ID。
-// 已移除 // EXEMPT: ADR-002 A16 標記（改造完成）。
+// StorageExpansionConfigData — 倉庫擴建系統外部配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：StorageExpansionStages（主表）/ StorageExpansionRequirements（子表）
+// 對應 .txt 檔：storageexpansionstages.txt / storageexpansionrequirements.txt
+//
+// Sprint 8 Wave 2.5 重構：
+//   - StorageExpansionStageData：ID 改為 id 欄位（非 ID => level），移除 required_items 欄位
+//   - 廢棄包裹類 StorageExpansionConfigData（含 initial_capacity/max_expansion_level 等外層欄位）
+//   - initial_capacity：由 Sheets 中 level=0 entry 的 capacity_after 值取代（Q7 拍板）
+//   - max_expansion_level：移除（runtime 從最大 level 推導）
+//   - StorageExpansionConfig 建構子改為接受兩個純陣列 DTO
+//   - ParseRequiredItems 改為從 StorageExpansionRequirementData[] 子表取得
+// ADR-001 / ADR-002 A16
 
 using System;
 using System.Collections.Generic;
@@ -9,55 +17,37 @@ using KahaGameCore.GameData;
 
 namespace ProjectDR.Village.Storage
 {
-    // ===== JSON DTO（供 JsonUtility.FromJson 使用） =====
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
     /// <summary>
-    /// 單一擴建階段的配置項（JSON DTO）。
-    /// 實作 IGameData，以 level 欄位作為唯一識別 ID（ADR-002 A16）。
+    /// 單一擴建階段配置（JSON DTO，主表）。
+    /// 實作 IGameData，int id 為流水號主鍵（= level，便於 GetGameData(level) 查詢）。
+    /// level=0 entry 代表初始容量（capacity_after = initial_capacity，Q7 拍板）。
+    /// 對應 Sheets 分頁 StorageExpansionStages，.txt 檔 storageexpansionstages.txt。
     /// </summary>
     [Serializable]
     public class StorageExpansionStageData : IGameData
     {
-        /// <summary>擴建等級（從 1 起算），同時作為 IGameData.ID。</summary>
+        /// <summary>IGameData 主鍵（= level，流水號）。對應 JSON 欄位 "id"。</summary>
+        public int id;
+
+        /// <summary>IGameData 契約實作。</summary>
+        public int ID => id;
+
+        /// <summary>擴建等級（0 = 初始，1~N = 擴建後）。</summary>
         public int level;
 
-        /// <summary>IGameData 契約：唯一識別 ID，由 level 提供。</summary>
-        public int ID => level;
-
-        /// <summary>擴建前的容量格數。</summary>
+        /// <summary>擴建前容量格數（level=0 時為 0）。</summary>
         public int capacity_before;
 
-        /// <summary>擴建後的容量格數。</summary>
+        /// <summary>擴建後容量格數（level=0 時為 initial_capacity 值）。</summary>
         public int capacity_after;
 
-        /// <summary>
-        /// 所需物資（格式：itemId:quantity，多筆以 | 分隔）。
-        /// 範例："material_wood:10|material_cloth:5"。
-        /// </summary>
-        public string required_items;
-
-        /// <summary>擴建等待時間（秒）。</summary>
+        /// <summary>擴建等待時間秒數（level=0 時為 0）。</summary>
         public int duration_seconds;
 
-        /// <summary>階段描述（撰寫者備註）。</summary>
+        /// <summary>設計備忘（可為空）。</summary>
         public string description;
-    }
-
-    /// <summary>倉庫擴建配置的完整外部資料（JSON DTO）。</summary>
-    [Serializable]
-    public class StorageExpansionConfigData
-    {
-        /// <summary>資料結構版本。</summary>
-        public int schema_version;
-
-        /// <summary>最大擴建等級。</summary>
-        public int max_expansion_level;
-
-        /// <summary>初始容量格數。</summary>
-        public int initial_capacity;
-
-        /// <summary>所有擴建階段。</summary>
-        public StorageExpansionStageData[] stages;
     }
 
     // ===== 不可變資料物件 =====
@@ -65,25 +55,15 @@ namespace ProjectDR.Village.Storage
     /// <summary>單一擴建階段的不可變資訊。</summary>
     public class StorageExpansionStage
     {
-        /// <summary>擴建等級。</summary>
         public int Level { get; }
-
-        /// <summary>擴建前容量格數。</summary>
         public int CapacityBefore { get; }
-
-        /// <summary>擴建後容量格數。</summary>
         public int CapacityAfter { get; }
-
-        /// <summary>本次擴建增加的格數（= CapacityAfter - CapacityBefore）。</summary>
         public int CapacityDelta => CapacityAfter - CapacityBefore;
 
         /// <summary>所需物資（唯讀字典，key=itemId，value=quantity）。</summary>
         public IReadOnlyDictionary<string, int> RequiredItems { get; }
 
-        /// <summary>擴建等待時間（秒）。</summary>
         public int DurationSeconds { get; }
-
-        /// <summary>階段描述。</summary>
         public string Description { get; }
 
         public StorageExpansionStage(
@@ -107,106 +87,95 @@ namespace ProjectDR.Village.Storage
 
     /// <summary>
     /// 倉庫擴建系統的不可變配置。
-    /// 從 StorageExpansionConfigData（JSON DTO）建構，提供階段查詢 API。
+    /// 從兩個純陣列 DTO（主表 StorageExpansionStageData[] + 子表 StorageExpansionRequirementData[]）建構。
+    /// level=0 entry 的 capacity_after 即為初始容量（Q7 拍板取代舊 initial_capacity 欄位）。
     /// </summary>
     public class StorageExpansionConfig
     {
         private readonly Dictionary<int, StorageExpansionStage> _stagesByLevel;
         private readonly List<StorageExpansionStage> _orderedStages;
 
-        /// <summary>最大擴建等級。</summary>
+        /// <summary>最大擴建等級（從 stages 最大 level 推導；Q7 拍板移除 max_expansion_level 欄位）。</summary>
         public int MaxExpansionLevel { get; }
 
-        /// <summary>初始容量格數。</summary>
+        /// <summary>初始容量格數（= level=0 entry 的 capacity_after；Q7 拍板取代舊 initial_capacity 欄位）。</summary>
         public int InitialCapacity { get; }
 
         /// <summary>所有擴建階段（依 level 升序）。</summary>
         public IReadOnlyList<StorageExpansionStage> Stages => _orderedStages;
 
         /// <summary>
-        /// 從 JSON DTO 建構不可變配置。
+        /// 從純陣列 DTO 建構不可變配置。
         /// </summary>
-        /// <param name="data">JSON 反序列化後的 DTO。</param>
-        /// <exception cref="ArgumentNullException">data 為 null 時拋出。</exception>
-        public StorageExpansionConfig(StorageExpansionConfigData data)
+        /// <param name="stageEntries">主表 JsonFx 反序列化後的陣列（不可為 null）。</param>
+        /// <param name="requirementEntries">子表 JsonFx 反序列化後的陣列（不可為 null）。</param>
+        public StorageExpansionConfig(
+            StorageExpansionStageData[] stageEntries,
+            StorageExpansionRequirementData[] requirementEntries)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-
-            MaxExpansionLevel = data.max_expansion_level;
-            InitialCapacity = data.initial_capacity;
+            if (stageEntries == null) throw new ArgumentNullException(nameof(stageEntries));
+            if (requirementEntries == null) throw new ArgumentNullException(nameof(requirementEntries));
 
             _stagesByLevel = new Dictionary<int, StorageExpansionStage>();
             _orderedStages = new List<StorageExpansionStage>();
 
-            StorageExpansionStageData[] stages = data.stages ?? Array.Empty<StorageExpansionStageData>();
-            foreach (StorageExpansionStageData stage in stages)
+            // 分組需求子表（依 stage_level）
+            Dictionary<int, Dictionary<string, int>> requirementsByLevel =
+                new Dictionary<int, Dictionary<string, int>>();
+            foreach (StorageExpansionRequirementData req in requirementEntries)
+            {
+                if (req == null || string.IsNullOrEmpty(req.item_id) || req.quantity <= 0) continue;
+                if (!requirementsByLevel.TryGetValue(req.stage_level, out Dictionary<string, int> itemMap))
+                {
+                    itemMap = new Dictionary<string, int>();
+                    requirementsByLevel[req.stage_level] = itemMap;
+                }
+                itemMap[req.item_id] = req.quantity;
+            }
+
+            int maxLevel = 0;
+            int initialCapacity = StorageManager.DefaultInitialCapacity;
+
+            foreach (StorageExpansionStageData stage in stageEntries)
             {
                 if (stage == null) continue;
 
-                Dictionary<string, int> requiredItems = ParseRequiredItems(stage.required_items);
+                // level=0 entry → 取 capacity_after 作為 InitialCapacity
+                if (stage.level == 0)
+                {
+                    initialCapacity = stage.capacity_after;
+                    // level=0 不加入可選擴建清單
+                    continue;
+                }
+
+                Dictionary<string, int> reqMap = requirementsByLevel.TryGetValue(stage.level, out Dictionary<string, int> found)
+                    ? found
+                    : new Dictionary<string, int>();
 
                 StorageExpansionStage info = new StorageExpansionStage(
                     stage.level,
                     stage.capacity_before,
                     stage.capacity_after,
-                    requiredItems,
+                    reqMap,
                     stage.duration_seconds,
                     stage.description ?? string.Empty);
 
                 _stagesByLevel[stage.level] = info;
                 _orderedStages.Add(info);
+
+                if (stage.level > maxLevel) maxLevel = stage.level;
             }
 
             _orderedStages.Sort((a, b) => a.Level.CompareTo(b.Level));
+            MaxExpansionLevel = maxLevel;
+            InitialCapacity = initialCapacity;
         }
 
-        /// <summary>
-        /// 取得指定等級的擴建階段資料。若不存在則回傳 null。
-        /// </summary>
+        /// <summary>取得指定等級的擴建階段資料。若不存在則回傳 null。</summary>
         public StorageExpansionStage GetStage(int level)
         {
             _stagesByLevel.TryGetValue(level, out StorageExpansionStage stage);
             return stage;
-        }
-
-        /// <summary>
-        /// 解析所需物資字串為字典。
-        /// 格式：itemId:quantity，多筆以 | 分隔。
-        /// 空字串回傳空字典。
-        /// </summary>
-        private static Dictionary<string, int> ParseRequiredItems(string raw)
-        {
-            Dictionary<string, int> result = new Dictionary<string, int>();
-            if (string.IsNullOrEmpty(raw))
-            {
-                return result;
-            }
-
-            string[] pairs = raw.Split('|');
-            foreach (string pair in pairs)
-            {
-                if (string.IsNullOrEmpty(pair)) continue;
-
-                int colonIndex = pair.IndexOf(':');
-                if (colonIndex <= 0 || colonIndex == pair.Length - 1)
-                {
-                    continue;
-                }
-
-                string itemId = pair.Substring(0, colonIndex);
-                string quantityText = pair.Substring(colonIndex + 1);
-                if (!int.TryParse(quantityText, out int quantity) || quantity <= 0)
-                {
-                    continue;
-                }
-
-                result[itemId] = quantity;
-            }
-
-            return result;
         }
     }
 }

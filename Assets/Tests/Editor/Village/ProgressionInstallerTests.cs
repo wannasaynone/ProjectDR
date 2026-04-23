@@ -38,20 +38,33 @@ namespace ProjectDR.Tests.Village
         // ===== 建構防護 =====
 
         [Test]
-        public void Constructor_NullMainQuestConfig_Throws()
+        public void Constructor_NullMainQuestEntries_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => new ProgressionInstaller(
                 null,
-                BuildInitialResourcesConfigData(),
+                BuildMainQuestUnlockEntries(),
+                BuildInitialResourceGrantEntries(),
                 BuildBackpackManager(),
                 BuildStorageManager()));
         }
 
         [Test]
-        public void Constructor_NullInitialResourcesConfig_Throws()
+        public void Constructor_NullMainQuestUnlockEntries_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => new ProgressionInstaller(
-                BuildMainQuestConfigData(),
+                BuildMainQuestEntries(),
+                null,
+                BuildInitialResourceGrantEntries(),
+                BuildBackpackManager(),
+                BuildStorageManager()));
+        }
+
+        [Test]
+        public void Constructor_NullInitialResourceGrantEntries_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new ProgressionInstaller(
+                BuildMainQuestEntries(),
+                BuildMainQuestUnlockEntries(),
                 null,
                 BuildBackpackManager(),
                 BuildStorageManager()));
@@ -61,8 +74,9 @@ namespace ProjectDR.Tests.Village
         public void Constructor_NullBackpackManager_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => new ProgressionInstaller(
-                BuildMainQuestConfigData(),
-                BuildInitialResourcesConfigData(),
+                BuildMainQuestEntries(),
+                BuildMainQuestUnlockEntries(),
+                BuildInitialResourceGrantEntries(),
                 null,
                 BuildStorageManager()));
         }
@@ -71,8 +85,9 @@ namespace ProjectDR.Tests.Village
         public void Constructor_NullStorageManager_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => new ProgressionInstaller(
-                BuildMainQuestConfigData(),
-                BuildInitialResourcesConfigData(),
+                BuildMainQuestEntries(),
+                BuildMainQuestUnlockEntries(),
+                BuildInitialResourceGrantEntries(),
                 BuildBackpackManager(),
                 null));
         }
@@ -164,50 +179,71 @@ namespace ProjectDR.Tests.Village
 
         // ===== 輔助：建立測試依賴 =====
 
-        private static MainQuestConfigData BuildMainQuestConfigData()
+        private static MainQuestData[] BuildMainQuestEntries()
         {
-            return new MainQuestConfigData
+            return new MainQuestData[]
             {
-                schema_version = 2,
-                main_quests = new MainQuestConfigEntry[]
+                new MainQuestData
                 {
-                    new MainQuestConfigEntry
-                    {
-                        id = 1,
-                        quest_id = "T0",
-                        completion_condition_type = MainQuestCompletionTypes.Auto,
-                        completion_condition_value = MainQuestSignalValues.Node0DialogueComplete,
-                        unlock_on_complete = "T1",
-                        sort_order = 0
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 2,
-                        quest_id = "T1",
-                        completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
-                        completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
-                        unlock_on_complete = "T2|exploration_open",
-                        sort_order = 1
-                    }
+                    id = 1,
+                    quest_id = "T0",
+                    completion_condition_type = MainQuestCompletionTypes.Auto,
+                    completion_condition_value = MainQuestSignalValues.Node0DialogueComplete,
+                    sort_order = 0
+                },
+                new MainQuestData
+                {
+                    id = 2,
+                    quest_id = "T1",
+                    completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
+                    completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
+                    sort_order = 1
                 }
             };
         }
 
-        private static InitialResourcesConfigData BuildInitialResourcesConfigData()
+        private static MainQuestUnlockData[] BuildMainQuestUnlockEntries()
         {
-            return new InitialResourcesConfigData
+            return new MainQuestUnlockData[]
             {
-                schema_version = 2,
-                grants = new InitialResourceGrantData[]
+                new MainQuestUnlockData
                 {
-                    new InitialResourceGrantData
-                    {
-                        id = 1,
-                        grant_id = "initial_backpack_node0",
-                        trigger_id = InitialResourcesTriggerIds.Node0Start,
-                        item_id = "",
-                        quantity = 0
-                    }
+                    id = 1,
+                    main_quest_id = "T0",
+                    unlock_type = "quest",
+                    unlock_value = "T1",
+                    sort_order = 0
+                },
+                new MainQuestUnlockData
+                {
+                    id = 2,
+                    main_quest_id = "T1",
+                    unlock_type = "quest",
+                    unlock_value = "T2",
+                    sort_order = 0
+                },
+                new MainQuestUnlockData
+                {
+                    id = 3,
+                    main_quest_id = "T1",
+                    unlock_type = "feature",
+                    unlock_value = "exploration_open",
+                    sort_order = 1
+                }
+            };
+        }
+
+        private static InitialResourceGrantData[] BuildInitialResourceGrantEntries()
+        {
+            return new InitialResourceGrantData[]
+            {
+                new InitialResourceGrantData
+                {
+                    id = 1,
+                    grant_id = "initial_backpack_node0",
+                    trigger_id = InitialResourcesTriggerIds.Node0Start,
+                    item_id = "",
+                    quantity = 0
                 }
             };
         }
@@ -225,8 +261,9 @@ namespace ProjectDR.Tests.Village
         private static ProgressionInstaller BuildInstaller()
         {
             return new ProgressionInstaller(
-                BuildMainQuestConfigData(),
-                BuildInitialResourcesConfigData(),
+                BuildMainQuestEntries(),
+                BuildMainQuestUnlockEntries(),
+                BuildInitialResourceGrantEntries(),
                 BuildBackpackManager(),
                 BuildStorageManager());
         }

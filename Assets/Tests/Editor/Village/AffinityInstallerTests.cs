@@ -29,7 +29,7 @@ namespace ProjectDR.Tests.Village
         public void SetUp()
         {
             EventBus.ForceClearAll();
-            _sut = new AffinityInstaller(BuildAffinityConfigData());
+            _sut = new AffinityInstaller(BuildAffinityEntries());
         }
 
         [TearDown]
@@ -47,10 +47,10 @@ namespace ProjectDR.Tests.Village
             Assert.Throws<InvalidOperationException>(() => _sut.Install(null));
         }
 
-        // ===== T2: 建構子 affinityConfigData 為 null 拋出 ArgumentNullException =====
+        // ===== T2: 建構子 affinityEntries 為 null 拋出 ArgumentNullException =====
 
         [Test]
-        public void Constructor_NullAffinityConfigData_ThrowsArgumentNullException()
+        public void Constructor_NullAffinityEntries_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new AffinityInstaller(null));
         }
@@ -131,12 +131,9 @@ namespace ProjectDR.Tests.Village
 
         // ===== Helpers =====
 
-        private static AffinityConfigData BuildAffinityConfigData()
+        private static AffinityCharacterData[] BuildAffinityEntries()
         {
-            return new AffinityConfigData
-            {
-                characters = new AffinityCharacterConfigData[0]
-            };
+            return new AffinityCharacterData[0];
         }
 
         private static VillageContext BuildEmptyContext()

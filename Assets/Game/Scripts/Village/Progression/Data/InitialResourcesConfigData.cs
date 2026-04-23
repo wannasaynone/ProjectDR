@@ -1,13 +1,12 @@
-// InitialResourcesConfigData — 初始資源發放配置的 JSON DTO 與不可變配置物件。
-// 配置檔路徑：Assets/Game/Resources/Config/initial-resources-config.json
-// 此配置不經由 Google Sheets 管理，因為 IT 階段解鎖事件與贈送物資為簡易固定值，
-// 正式版本再視需求決定是否遷移至 Google Sheets。
+// InitialResourcesConfigData — 初始資源發放配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：InitialResources
+// 對應 .txt 檔：initialresources.txt
 //
-// ADR-001 / ADR-002 A11 改造（2026-04-22）：
-//   InitialResourceGrantData 實作 KahaGameCore.GameData.IGameData，
-//   加 int id 欄位（流水號主鍵）+ 保留 grant_id（語意字串外鍵）。
-//   InitialResourceGrant 新增 int ID + string Key 屬性。
-//   同時清除廢棄觸發器常數（UnlockFarmGirl / UnlockWitch / GuardReturnEvent）。
+// Sprint 8 Wave 2.5 重構：
+//   - 廢棄包裹類 InitialResourcesConfigData（schema_version/grants[]）
+//   - InitialResourceGrantData 已實作 IGameData（A11 改造已完成）
+//   - InitialResourcesConfig 建構子改為接受 InitialResourceGrantData[]（純陣列格式）
+// ADR-001 / ADR-002 A11
 
 using System;
 using System.Collections.Generic;
@@ -26,11 +25,12 @@ namespace ProjectDR.Village.Progression
         public const string GuardSwordAsked = "guard_sword_asked";
     }
 
-    // ===== JSON DTO（供 JsonUtility.FromJson 使用） =====
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
     /// <summary>
     /// 單筆資源發放的配置項（JSON DTO）。
     /// 實作 IGameData，int id 為流水號主鍵，grant_id 為語意字串外鍵。
+    /// 對應 Sheets 分頁 InitialResources，.txt 檔 initialresources.txt。
     /// </summary>
     [Serializable]
     public class InitialResourceGrantData : KahaGameCore.GameData.IGameData
@@ -55,17 +55,6 @@ namespace ProjectDR.Village.Progression
 
         /// <summary>描述（撰寫者備註）。</summary>
         public string description;
-    }
-
-    /// <summary>初始資源配置的完整外部資料（JSON DTO）。</summary>
-    [Serializable]
-    public class InitialResourcesConfigData
-    {
-        /// <summary>資料結構版本。</summary>
-        public int schema_version;
-
-        /// <summary>所有資源發放項。</summary>
-        public InitialResourceGrantData[] grants;
     }
 
     // ===== 不可變資料物件 =====
@@ -118,7 +107,7 @@ namespace ProjectDR.Village.Progression
 
     /// <summary>
     /// 初始資源配置（不可變）。
-    /// 從 InitialResourcesConfigData（JSON DTO）建構，提供依 GrantId / TriggerId 查詢 API。
+    /// 從純陣列 DTO（InitialResourceGrantData[]）建構，提供依 GrantId / TriggerId 查詢 API。
     /// </summary>
     public class InitialResourcesConfig
     {
@@ -126,22 +115,21 @@ namespace ProjectDR.Village.Progression
         private readonly Dictionary<string, List<InitialResourceGrant>> _grantsByTriggerId;
 
         /// <summary>
-        /// 從 JSON DTO 建構不可變配置。
+        /// 從純陣列 DTO 建構不可變配置。
         /// </summary>
-        /// <param name="data">JSON 反序列化後的 DTO。</param>
-        /// <exception cref="ArgumentNullException">data 為 null 時拋出。</exception>
-        public InitialResourcesConfig(InitialResourcesConfigData data)
+        /// <param name="entries">JsonFx 反序列化後的 InitialResourceGrantData 陣列（不可為 null）。</param>
+        /// <exception cref="ArgumentNullException">entries 為 null 時拋出。</exception>
+        public InitialResourcesConfig(InitialResourceGrantData[] entries)
         {
-            if (data == null)
+            if (entries == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw new ArgumentNullException(nameof(entries));
             }
 
             _grantsByGrantId = new Dictionary<string, InitialResourceGrant>();
             _grantsByTriggerId = new Dictionary<string, List<InitialResourceGrant>>();
 
-            InitialResourceGrantData[] grants = data.grants ?? Array.Empty<InitialResourceGrantData>();
-            foreach (InitialResourceGrantData grant in grants)
+            foreach (InitialResourceGrantData grant in entries)
             {
                 if (grant == null || string.IsNullOrEmpty(grant.grant_id))
                 {

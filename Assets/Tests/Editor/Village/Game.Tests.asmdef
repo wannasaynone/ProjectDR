@@ -15,7 +15,8 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "JsonFx.Json.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

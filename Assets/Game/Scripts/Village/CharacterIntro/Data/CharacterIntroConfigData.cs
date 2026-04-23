@@ -1,14 +1,13 @@
-// CharacterIntroConfigData — 角色登場 CG + 短劇情配置的 JSON DTO 與不可變配置物件。
-// 配置檔路徑：Assets/Game/Resources/Config/character-intro-config.json
-// 資料結構對應 A1 設計師產出：每位角色的登場資料（CG sprite_id + scene_description）
-// 與對話行（line_id / intro_id / sequence / speaker / text / line_type）。
+// CharacterIntroConfigData — 角色登場 CG + 短劇情配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：CharacterIntros（主表）/ CharacterIntroLines（子表）
+// 對應 .txt 檔：characterintros.txt / characterintrolines.txt
 //
-// B9 OpeningSequenceController 依此讀取村長夫人 intro 資料作為開場；
-// B13 登場 CG 播放系統將延伸使用此配置播放任一角色首次進入的登場 CG + 短劇情。
-//
-// ADR-001 / ADR-002 A03 改造（2026-04-22）：
-//   CharacterIntroData 實作 KahaGameCore.GameData.IGameData，
-//   加 int id 欄位（流水號）+ 保留 intro_id（語意字串外鍵 Key）。
+// Sprint 8 Wave 2.5 重構：
+//   - 廢棄包裹類 CharacterIntroConfigData（純陣列格式，JsonFx 各分頁獨立反序列化）
+//   - CharacterIntroData 保留（已有 IGameData + int id + intro_id）
+//   - CharacterIntroLineData 加 int id + IGameData 實作（子表自身流水號）
+//   - CharacterIntroConfig 建構子改為接受兩個獨立陣列
+// ADR-001 / ADR-002 A03
 
 using System;
 using System.Collections.Generic;
@@ -27,11 +26,12 @@ namespace ProjectDR.Village.CharacterIntro
         public const string Dialogue = "dialogue";
     }
 
-    // ===== JSON DTO（供 JsonUtility.FromJson 使用） =====
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
     /// <summary>
-    /// 單一角色的登場 CG + 場景描述資料（JSON DTO）。
-    /// 實作 IGameData，int id 為流水號主鍵，intro_id 為語意字串外鍵（Key）。
+    /// 單一角色的登場 CG + 場景描述資料（JSON DTO，主表）。
+    /// 實作 IGameData，int id 為流水號主鍵，intro_id 為語意字串外鍵。
+    /// 對應 Sheets 分頁 CharacterIntros，.txt 檔 characterintros.txt。
     /// </summary>
     [Serializable]
     public class CharacterIntroData : KahaGameCore.GameData.IGameData
@@ -42,42 +42,53 @@ namespace ProjectDR.Village.CharacterIntro
         /// <summary>IGameData 契約實作。回傳 int id 流水號。</summary>
         public int ID => id;
 
-        /// <summary>唯一 ID（例：intro_village_chief_wife）。語意字串外鍵（Key）。</summary>
+        /// <summary>登場識別符（語意字串外鍵）。</summary>
         public string intro_id;
 
-        /// <summary>語意字串主鍵（與 intro_id 相同，提供 IGameData 雙欄位語義）。</summary>
+        /// <summary>語意字串 Key。</summary>
         public string Key => intro_id;
 
         /// <summary>角色 ID（對應 CharacterIds）。</summary>
         public string character_id;
 
-        /// <summary>登場 CG sprite ID（B13 播放時用於載入 sprite）。</summary>
+        /// <summary>登場 CG sprite ID（播放時用於載入 sprite）。</summary>
         public string cg_sprite_id;
 
         /// <summary>場景描述（美術 CG 參考用）。</summary>
         public string scene_description;
 
-        /// <summary>字數目標（G5 規格 500~1500 字）。</summary>
+        /// <summary>字數目標。</summary>
         public int word_count_target;
     }
 
     /// <summary>
-    /// 角色登場劇情的單一對話行（JSON DTO）。
-    /// 欄位命名對應 character-intro-config.json。
+    /// 角色登場劇情的單一對話行（JSON DTO，子表）。
+    /// 實作 IGameData，int id 為子表自身流水號主鍵。
+    /// FK：intro_id → CharacterIntros.intro_id。
+    /// 對應 Sheets 分頁 CharacterIntroLines，.txt 檔 characterintrolines.txt。
     /// </summary>
     [Serializable]
-    public class CharacterIntroLineData
+    public class CharacterIntroLineData : KahaGameCore.GameData.IGameData
     {
-        /// <summary>對話行唯一識別。</summary>
+        /// <summary>IGameData 主鍵（子表自身流水號）。對應 JSON 欄位 "id"。</summary>
+        public int id;
+
+        /// <summary>IGameData 契約實作。</summary>
+        public int ID => id;
+
+        /// <summary>對話行識別符語意字串。</summary>
         public string line_id;
 
-        /// <summary>所屬 intro ID（對應 CharacterIntroData.intro_id）。</summary>
+        /// <summary>語意字串 Key。</summary>
+        public string Key => line_id;
+
+        /// <summary>FK 至主表 CharacterIntros.intro_id。</summary>
         public string intro_id;
 
         /// <summary>intro 內播放順序（升序）。</summary>
         public int sequence;
 
-        /// <summary>說話者（角色 ID 或 narrator）。</summary>
+        /// <summary>說話者（角色 ID 或 narrator / player）。</summary>
         public string speaker;
 
         /// <summary>對話文字。</summary>
@@ -85,23 +96,6 @@ namespace ProjectDR.Village.CharacterIntro
 
         /// <summary>行類型（CharacterIntroLineTypes）。</summary>
         public string line_type;
-    }
-
-    /// <summary>角色登場 CG + 短劇情的完整外部配置（JSON DTO）。</summary>
-    [Serializable]
-    public class CharacterIntroConfigData
-    {
-        /// <summary>資料結構版本。</summary>
-        public int schema_version;
-
-        /// <summary>配置說明（撰寫者備註）。</summary>
-        public string note;
-
-        /// <summary>所有角色的登場資料。</summary>
-        public CharacterIntroData[] character_intros;
-
-        /// <summary>所有角色的登場對話行。</summary>
-        public CharacterIntroLineData[] character_intro_lines;
     }
 
     // ===== 不可變配置物件 =====
@@ -118,7 +112,7 @@ namespace ProjectDR.Village.CharacterIntro
         /// <summary>角色 ID。</summary>
         public string CharacterId { get; }
 
-        /// <summary>登場 CG sprite ID（B13 使用）。</summary>
+        /// <summary>登場 CG sprite ID。</summary>
         public string CgSpriteId { get; }
 
         /// <summary>場景描述。</summary>
@@ -159,7 +153,7 @@ namespace ProjectDR.Village.CharacterIntro
 
     /// <summary>
     /// 角色登場 CG + 短劇情的不可變配置。
-    /// 從 CharacterIntroConfigData（JSON DTO）建構，提供依 intro_id / character_id 查詢 API。
+    /// 從兩個純陣列 DTO（主表 CharacterIntroData[] + 子表 CharacterIntroLineData[]）建構。
     /// </summary>
     public class CharacterIntroConfig
     {
@@ -170,26 +164,28 @@ namespace ProjectDR.Village.CharacterIntro
         public IReadOnlyCollection<string> IntroIds => _introsById.Keys;
 
         /// <summary>
-        /// 從 JSON DTO 建構不可變配置。
+        /// 從純陣列 DTO 建構不可變配置。
         /// </summary>
-        /// <param name="data">JSON 反序列化後的 DTO（不可為 null）。</param>
-        /// <exception cref="ArgumentNullException">data 為 null 時拋出。</exception>
-        public CharacterIntroConfig(CharacterIntroConfigData data)
+        /// <param name="introEntries">主表 JsonFx 反序列化後的陣列（不可為 null）。</param>
+        /// <param name="lineEntries">子表 JsonFx 反序列化後的陣列（不可為 null）。</param>
+        /// <exception cref="ArgumentNullException">任一陣列為 null 時拋出。</exception>
+        public CharacterIntroConfig(CharacterIntroData[] introEntries, CharacterIntroLineData[] lineEntries)
         {
-            if (data == null)
+            if (introEntries == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw new ArgumentNullException(nameof(introEntries));
+            }
+            if (lineEntries == null)
+            {
+                throw new ArgumentNullException(nameof(lineEntries));
             }
 
             _introsById = new Dictionary<string, CharacterIntroInfo>();
             _introsByCharacter = new Dictionary<string, CharacterIntroInfo>();
 
-            CharacterIntroData[] intros = data.character_intros ?? Array.Empty<CharacterIntroData>();
-            CharacterIntroLineData[] allLines = data.character_intro_lines ?? Array.Empty<CharacterIntroLineData>();
-
             // 依 intro_id 分組對話行並排序
             Dictionary<string, List<CharacterIntroLineData>> linesByIntro = new Dictionary<string, List<CharacterIntroLineData>>();
-            foreach (CharacterIntroLineData line in allLines)
+            foreach (CharacterIntroLineData line in lineEntries)
             {
                 if (line == null || string.IsNullOrEmpty(line.intro_id)) continue;
                 if (!linesByIntro.TryGetValue(line.intro_id, out List<CharacterIntroLineData> bucket))
@@ -207,7 +203,7 @@ namespace ProjectDR.Village.CharacterIntro
             }
 
             // 建立每位角色的 intro info
-            foreach (CharacterIntroData intro in intros)
+            foreach (CharacterIntroData intro in introEntries)
             {
                 if (intro == null || string.IsNullOrEmpty(intro.intro_id)) continue;
 

@@ -65,12 +65,7 @@ namespace ProjectDR.Village.Tests
         [Test]
         public void PlaceholderCGPlayer_PublishesCGPlaybackStartedEvent()
         {
-            var introData = new CharacterIntroConfigData
-            {
-                character_intros = new CharacterIntroData[0],
-                character_intro_lines = new CharacterIntroLineData[0],
-            };
-            var config = new CharacterIntroConfig(introData);
+            var config = new CharacterIntroConfig(new CharacterIntroData[0], new CharacterIntroLineData[0]);
             var placeholder = new PlaceholderCGPlayer(config);
 
             CGPlaybackStartedEvent received = null;
@@ -92,12 +87,7 @@ namespace ProjectDR.Village.Tests
         [Test]
         public void PlaceholderCGPlayer_PublishesCGPlaybackCompletedEvent()
         {
-            var introData = new CharacterIntroConfigData
-            {
-                character_intros = new CharacterIntroData[0],
-                character_intro_lines = new CharacterIntroLineData[0],
-            };
-            var config = new CharacterIntroConfig(introData);
+            var config = new CharacterIntroConfig(new CharacterIntroData[0], new CharacterIntroLineData[0]);
             var placeholder = new PlaceholderCGPlayer(config);
 
             CGPlaybackCompletedEvent received = null;
@@ -119,12 +109,7 @@ namespace ProjectDR.Village.Tests
         [Test]
         public void PlaceholderCGPlayer_EmptyCharacterId_InvokesOnCompleteWithoutCrash()
         {
-            var introData = new CharacterIntroConfigData
-            {
-                character_intros = new CharacterIntroData[0],
-                character_intro_lines = new CharacterIntroLineData[0],
-            };
-            var config = new CharacterIntroConfig(introData);
+            var config = new CharacterIntroConfig(new CharacterIntroData[0], new CharacterIntroLineData[0]);
             var placeholder = new PlaceholderCGPlayer(config);
 
             bool invoked = false;

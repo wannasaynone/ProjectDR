@@ -1,64 +1,63 @@
-// CombatConfigData — 戰鬥系統外部配置的 JSON DTO 與不可變配置物件。
-// 配置檔路徑：Assets/Game/Resources/Config/combat-config.json
-// Sheets 對應分頁：combat-config
+// CombatConfigData — 戰鬥系統外部配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：Combat
+// 對應 .txt 檔：combat.txt
 //
-// ADR-001 / ADR-002 A05 改造（2026-04-22）：
-//   CombatConfigJson 實作 KahaGameCore.GameData.IGameData（singleton 型，ID 固定為 1）。
-//   載入路徑改走 GameStaticDataManager.Add<CombatConfigJson>()。
-//   原 NOTE 關於「不使用 IGameData」的說明已撤除（豁免僅適用 IT 階段，ADR-002 規定）。
+// Sprint 8 Wave 2.5 重構：
+//   - CombatConfigJson 改名為 CombatConfigData，欄位扁平化（原 playerStats/sword 巢狀物件展開）
+//   - 廢棄 PlayerStatsJson / SwordConfigJson 子物件（純陣列 singleton 格式；1 筆資料）
+//   - CombatConfig 建構子改為接受新 CombatConfigData
+//   - singleton 格式：JsonFx 反序列化為 CombatConfigData[]，runtime 取 array[0]
+// ADR-001 / ADR-002 A05
 
 using System;
-using UnityEngine;
 
 namespace ProjectDR.Village.Exploration.Combat
 {
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
+
     /// <summary>
-    /// JSON DTO for combat configuration. Deserialized from combat-config.json.
-    /// 實作 IGameData（singleton 型配置，ID 固定為 1）。
-    /// 對應 Sheets 分頁：combat-config / JSON：combat-config.json。
+    /// 戰鬥系統配置（JSON DTO，singleton）。
+    /// 實作 IGameData，id 固定為 1（只有一筆資料）。
+    /// 欄位扁平化：原 playerStats/sword 巢狀物件展開為欄位前綴形式。
+    /// 對應 Sheets 分頁 Combat，.txt 檔 combat.txt。
     /// </summary>
     [Serializable]
-    public class CombatConfigJson : KahaGameCore.GameData.IGameData
+    public class CombatConfigData : KahaGameCore.GameData.IGameData
     {
-        /// <summary>
-        /// IGameData 主鍵（singleton 型配置，固定為 1）。
-        /// JSON 欄位 "id"，應在 JSON 中明確設定為 1。
-        /// </summary>
+        /// <summary>IGameData 主鍵（singleton，固定為 1）。</summary>
         public int id;
 
-        /// <summary>IGameData 契約實作。Singleton 型配置回傳固定值 1。</summary>
+        /// <summary>IGameData 契約實作。</summary>
         public int ID => id;
 
-        public PlayerStatsJson playerStats;
-        public SwordConfigJson sword;
-        public float moveSpeedBase;
-        public float spdMoveSpeedFactor;
-        public float freeMovementBaseSpeed;
-        public float spdFreeMovementSpeedFactor;
-        public float knockbackDistance;
-        public float knockbackDuration;
+        // --- 玩家基本屬性 ---
+        public int player_max_hp;
+        public int player_atk;
+        public int player_def;
+        public int player_spd;
+
+        // --- 劍攻擊屬性 ---
+        public float sword_angle_degrees_half;
+        public float sword_range;
+        public float sword_base_cooldown_seconds;
+        public float sword_spd_cooldown_factor;
+
+        // --- 移動 ---
+        public float move_speed_base;
+        public float spd_move_speed_factor;
+        public float free_movement_base_speed;
+        public float spd_free_movement_speed_factor;
+
+        // --- 擊退 ---
+        public float knockback_distance;
+        public float knockback_duration;
     }
 
-    [Serializable]
-    public class PlayerStatsJson
-    {
-        public int maxHp;
-        public int atk;
-        public int def;
-        public int spd;
-    }
-
-    [Serializable]
-    public class SwordConfigJson
-    {
-        public float angleDegreesHalf;
-        public float range;
-        public float baseCooldownSeconds;
-        public float spdCooldownFactor;
-    }
+    // ===== 不可變配置物件 =====
 
     /// <summary>
-    /// Immutable combat configuration loaded from JSON.
+    /// 戰鬥系統的不可變配置。
+    /// 從 CombatConfigData（扁平化 JSON DTO）建構。
     /// </summary>
     public class CombatConfig
     {
@@ -79,40 +78,29 @@ namespace ProjectDR.Village.Exploration.Combat
         public float KnockbackDistance { get; }
         public float KnockbackDuration { get; }
 
-        public CombatConfig(CombatConfigJson json)
-        {
-            if (json == null) throw new ArgumentNullException(nameof(json));
-            if (json.playerStats == null) throw new ArgumentException("playerStats is null.", nameof(json));
-            if (json.sword == null) throw new ArgumentException("sword is null.", nameof(json));
-
-            PlayerMaxHp = json.playerStats.maxHp;
-            PlayerAtk = json.playerStats.atk;
-            PlayerDef = json.playerStats.def;
-            PlayerSpd = json.playerStats.spd;
-
-            SwordAngleHalf = json.sword.angleDegreesHalf;
-            SwordRange = json.sword.range;
-            SwordBaseCooldown = json.sword.baseCooldownSeconds;
-            SwordSpdCooldownFactor = json.sword.spdCooldownFactor;
-
-            MoveSpeedBase = json.moveSpeedBase;
-            SpdMoveSpeedFactor = json.spdMoveSpeedFactor;
-            FreeMovementBaseSpeed = json.freeMovementBaseSpeed;
-            SpdFreeMovementSpeedFactor = json.spdFreeMovementSpeedFactor;
-            KnockbackDistance = json.knockbackDistance;
-            KnockbackDuration = json.knockbackDuration;
-        }
-
         /// <summary>
-        /// Loads a CombatConfig from a JSON string.
+        /// 從新 CombatConfigData（扁平化 DTO）建構。
         /// </summary>
-        public static CombatConfig Load(string json)
+        public CombatConfig(CombatConfigData data)
         {
-            if (string.IsNullOrEmpty(json))
-                throw new ArgumentException("json must not be null or empty.", nameof(json));
+            if (data == null) throw new ArgumentNullException(nameof(data));
 
-            CombatConfigJson dto = JsonUtility.FromJson<CombatConfigJson>(json);
-            return new CombatConfig(dto);
+            PlayerMaxHp = data.player_max_hp;
+            PlayerAtk = data.player_atk;
+            PlayerDef = data.player_def;
+            PlayerSpd = data.player_spd;
+
+            SwordAngleHalf = data.sword_angle_degrees_half;
+            SwordRange = data.sword_range;
+            SwordBaseCooldown = data.sword_base_cooldown_seconds;
+            SwordSpdCooldownFactor = data.sword_spd_cooldown_factor;
+
+            MoveSpeedBase = data.move_speed_base;
+            SpdMoveSpeedFactor = data.spd_move_speed_factor;
+            FreeMovementBaseSpeed = data.free_movement_base_speed;
+            SpdFreeMovementSpeedFactor = data.spd_free_movement_speed_factor;
+            KnockbackDistance = data.knockback_distance;
+            KnockbackDuration = data.knockback_duration;
         }
     }
 }

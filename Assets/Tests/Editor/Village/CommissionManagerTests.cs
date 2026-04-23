@@ -8,6 +8,7 @@ using ProjectDR.Village.Backpack;
 using ProjectDR.Village.Commission;
 using ProjectDR.Village.MainQuest;
 using ProjectDR.Village.Navigation;
+using ProjectDR.Village.Navigation;
 using ProjectDR.Village.TimeProvider;
 
 namespace ProjectDR.Tests.Village
@@ -555,11 +556,10 @@ namespace ProjectDR.Tests.Village
             // 此測試模擬 VillageEntryPoint.OnCommissionClaimedForMainQuest 的行為。
 
             // 設定一個 commission_count 類型的任務（signalValue=WitchId）
-            MainQuestConfig questConfig = new MainQuestConfig(new MainQuestConfigData
-            {
-                main_quests = new[]
+            MainQuestConfig questConfig = new MainQuestConfig(
+                new MainQuestData[]
                 {
-                    new MainQuestConfigEntry
+                    new MainQuestData
                     {
                         id = 1,
                         quest_id = "TC",
@@ -567,8 +567,8 @@ namespace ProjectDR.Tests.Village
                         completion_condition_value = WitchId,
                         sort_order = 0,
                     }
-                }
-            });
+                },
+                new MainQuestUnlockData[0]);
             MainQuestManager mqm = new MainQuestManager(questConfig);
             mqm.StartQuest("TC");
             Assert.AreEqual(MainQuestState.InProgress, mqm.GetState("TC"));
@@ -613,57 +613,58 @@ namespace ProjectDR.Tests.Village
 
         private static CommissionRecipesConfig BuildConfig()
         {
-            CommissionRecipesConfigData data = new CommissionRecipesConfigData
+            CommissionRecipeData[] entries = new CommissionRecipeData[]
             {
-                recipes = new[]
+                new CommissionRecipeData
                 {
-                    new CommissionRecipeEntry
-                    {
-                        recipe_id = WitchHealRecipe,
-                        character_id = WitchId,
-                        input_item_id = HerbId,
-                        input_quantity = 1,
-                        output_item_id = PotionId,
-                        output_quantity = 1,
-                        duration_seconds = 45f,
-                        workbench_slot_index_max = 2,
-                    },
-                    new CommissionRecipeEntry
-                    {
-                        recipe_id = WitchGoldcraftRecipe,
-                        character_id = WitchId,
-                        input_item_id = OreId,
-                        input_quantity = 3,
-                        output_item_id = GoldcraftId,
-                        output_quantity = 1,
-                        duration_seconds = 120f,
-                        workbench_slot_index_max = 2,
-                    },
-                    new CommissionRecipeEntry
-                    {
-                        recipe_id = GuardPatrolRecipe,
-                        character_id = GuardId,
-                        input_item_id = "",
-                        input_quantity = 0,
-                        output_item_id = "seed_tomato",
-                        output_quantity = 1,
-                        duration_seconds = 90f,
-                        workbench_slot_index_max = 2,
-                    },
-                    new CommissionRecipeEntry
-                    {
-                        recipe_id = FarmTomatoRecipe,
-                        character_id = FarmGirlId,
-                        input_item_id = "seed_tomato",
-                        input_quantity = 1,
-                        output_item_id = "crop_tomato",
-                        output_quantity = 1,
-                        duration_seconds = 30f,
-                        workbench_slot_index_max = 2,
-                    },
-                }
+                    id = 1,
+                    recipe_id = WitchHealRecipe,
+                    character_id = WitchId,
+                    input_item_id = HerbId,
+                    input_quantity = 1,
+                    output_item_id = PotionId,
+                    output_quantity = 1,
+                    duration_seconds = 45f,
+                    workbench_slot_index_max = 2,
+                },
+                new CommissionRecipeData
+                {
+                    id = 2,
+                    recipe_id = WitchGoldcraftRecipe,
+                    character_id = WitchId,
+                    input_item_id = OreId,
+                    input_quantity = 3,
+                    output_item_id = GoldcraftId,
+                    output_quantity = 1,
+                    duration_seconds = 120f,
+                    workbench_slot_index_max = 2,
+                },
+                new CommissionRecipeData
+                {
+                    id = 3,
+                    recipe_id = GuardPatrolRecipe,
+                    character_id = GuardId,
+                    input_item_id = "",
+                    input_quantity = 0,
+                    output_item_id = "seed_tomato",
+                    output_quantity = 1,
+                    duration_seconds = 90f,
+                    workbench_slot_index_max = 2,
+                },
+                new CommissionRecipeData
+                {
+                    id = 4,
+                    recipe_id = FarmTomatoRecipe,
+                    character_id = FarmGirlId,
+                    input_item_id = "seed_tomato",
+                    input_quantity = 1,
+                    output_item_id = "crop_tomato",
+                    output_quantity = 1,
+                    duration_seconds = 30f,
+                    workbench_slot_index_max = 2,
+                },
             };
-            return new CommissionRecipesConfig(data);
+            return new CommissionRecipesConfig(entries);
         }
     }
 }

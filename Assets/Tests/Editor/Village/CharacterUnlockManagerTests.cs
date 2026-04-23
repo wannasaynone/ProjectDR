@@ -481,31 +481,27 @@ namespace ProjectDR.Tests.Village
         private static InitialResourcesConfig BuildConfig()
         {
             // Sprint 6 B2：移除 unlock_farm_girl_seed、unlock_witch_herb；保留 initial_backpack_node0 與 unlock_guard_sword
-            // A11 改造（2026-04-22）：加 id 欄位，改 GuardReturnEvent → GuardSwordAsked
-            InitialResourcesConfigData data = new InitialResourcesConfigData
+            // Sprint 8 Wave 2.5：改用純陣列建構子
+            InitialResourceGrantData[] entries = new InitialResourceGrantData[]
             {
-                schema_version = 2,
-                grants = new InitialResourceGrantData[]
+                new InitialResourceGrantData
                 {
-                    new InitialResourceGrantData
-                    {
-                        id = 1,
-                        grant_id = "initial_backpack_node0",
-                        trigger_id = InitialResourcesTriggerIds.Node0Start,
-                        item_id = "",
-                        quantity = 0
-                    },
-                    new InitialResourceGrantData
-                    {
-                        id = 2,
-                        grant_id = "unlock_guard_sword",
-                        trigger_id = InitialResourcesTriggerIds.GuardSwordAsked,
-                        item_id = "gift_sword_wooden",
-                        quantity = 1
-                    }
+                    id = 1,
+                    grant_id = "initial_backpack_node0",
+                    trigger_id = InitialResourcesTriggerIds.Node0Start,
+                    item_id = "",
+                    quantity = 0
+                },
+                new InitialResourceGrantData
+                {
+                    id = 2,
+                    grant_id = "unlock_guard_sword",
+                    trigger_id = InitialResourcesTriggerIds.GuardSwordAsked,
+                    item_id = "gift_sword_wooden",
+                    quantity = 1
                 }
             };
-            return new InitialResourcesConfig(data);
+            return new InitialResourcesConfig(entries);
         }
 
         /// <summary>測試用的 IInitialResourceDispatcher，記錄所有派發的 grant。</summary>

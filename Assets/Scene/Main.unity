@@ -1227,28 +1227,34 @@ MonoBehaviour:
   _farmViewPrefab: {fileID: 7948227099758061155, guid: 5e731e623bd7e034f903dc9cdef1dbe0, type: 3}
   _villageCanvas: {fileID: 1931186607}
   _mapJson: {fileID: 4900000, guid: 7c6f77601131ac342be8125a229686cc, type: 3}
-  _combatConfigJson: {fileID: 4900000, guid: 0b886fe49a5996f49b490b2ddb5d4809, type: 3}
-  _monsterConfigJson: {fileID: 4900000, guid: 6cde131406476d548bd9d316a48ad7f3, type: 3}
-  _affinityConfigJson: {fileID: 4900000, guid: f21734a2aa6e8b44093085803457b466, type: 3}
+  _combatConfigJson: {fileID: 4900000, guid: 41e7076a1304b844dab704146eb6a242, type: 3}
+  _monsterConfigJson: {fileID: 4900000, guid: 41bbb44bdbf185b4cbad735d36c77509, type: 3}
+  _affinityConfigJson: {fileID: 4900000, guid: 7329dd647a1e40649ad11497f784cebe, type: 3}
   _giftViewPrefab: {fileID: 7923149134027617366, guid: e2ccc2398b723304ca616cc8509d4589, type: 3}
-  _cgSceneConfigJson: {fileID: 4900000, guid: f150cf269d03ce14dad1a3286c8fde02, type: 3}
+  _cgSceneConfigJson: {fileID: 4900000, guid: 2dad3ecd5fa534e41a640445fe7f513e, type: 3}
   _galleryViewPrefab: {fileID: 1490817430148580, guid: 41a7e07c0123a844a8e2d61a655d410f, type: 3}
   _kgcDialogueViewPrefab: {fileID: 8614997904038675671, guid: de4fb8fdcc9421b458fa3ab227de426c, type: 3}
-  _initialResourcesConfigJson: {fileID: 4900000, guid: ce81184476590d541a66d19765955317, type: 3}
-  _mainQuestConfigJson: {fileID: 4900000, guid: 041134fa2015e5842b5021b4926ac18d, type: 3}
-  _storageExpansionConfigJson: {fileID: 4900000, guid: 3c7efa50b8ed6074ab359f27c45e88cd, type: 3}
-  _commissionRecipesConfigJson: {fileID: 4900000, guid: 03fc0ba5d0441c549ae35925017a3851, type: 3}
+  _initialResourcesConfigJson: {fileID: 4900000, guid: b317cc9722998be4bb5a5c25a612617c, type: 3}
+  _mainQuestConfigJson: {fileID: 4900000, guid: 05740571ace2fef46bba61b94f861067, type: 3}
+  _mainQuestUnlocksConfigJson: {fileID: 4900000, guid: 3c423c50383c2be458de98b30eaaadfa, type: 3}
+  _storageExpansionConfigJson: {fileID: 4900000, guid: 8f28e9dca48421140a064481dce44d1e, type: 3}
+  _storageExpansionRequirementsConfigJson: {fileID: 4900000, guid: bb58b3d8b188ec54086176537a769a8f, type: 3}
+  _commissionRecipesConfigJson: {fileID: 4900000, guid: 00509f4a03dce8348ba3ccd707a32f93, type: 3}
   _craftWorkbenchPrefab: {fileID: 1809931845978114842, guid: 5182ffcf93382ca47a1ded3516297b35, type: 3}
   _craftItemSelectorPrefab: {fileID: 7596729357685783638, guid: c2dd8db2d9c562e4cbea2cad3c022fdd, type: 3}
-  _characterIntroConfigJson: {fileID: 4900000, guid: db370694f28caaf44843d605367e8b38, type: 3}
-  _nodeDialogueConfigJson: {fileID: 4900000, guid: 40df234ddf674984d80ad91f48b2e6ba, type: 3}
-  _guardReturnConfigJson: {fileID: 4900000, guid: 179505dd57a22704f820e43a42a444c9, type: 3}
+  _characterIntroConfigJson: {fileID: 4900000, guid: 04928df326887da40af91fbefe14c55f, type: 3}
+  _characterIntroLinesConfigJson: {fileID: 4900000, guid: 228cbbdc806cad34ca4d3fe08a50ec34, type: 3}
+  _nodeDialogueConfigJson: {fileID: 4900000, guid: 8c2f2e1a78e48f048a50fe17e2e9248f, type: 3}
   _characterIntroCGViewPrefab: {fileID: 8401461119991003136, guid: edaa4bad9e4c3634cb7af87642e91c56, type: 3}
   _playerQuestionsConfigJson: {fileID: 4900000, guid: 04fe571256b6fc6468b9033027655251, type: 3}
   _playerQuestionsViewPrefab: {fileID: 211561513315952322, guid: c2bc778498d0e464599c9b03238f4cc3, type: 3}
-  _characterQuestionsConfigJson: {fileID: 4900000, guid: ac1b745bae6b0fc419b8eb4afc748d68, type: 3}
-  _greetingConfigJson: {fileID: 4900000, guid: 7a25c0ac4eff85f4e907925ba96a6618, type: 3}
-  _idleChatConfigJson: {fileID: 4900000, guid: 955f604d8545e5741a0264d92a9adaf9, type: 3}
+  _characterQuestionsConfigJson: {fileID: 4900000, guid: 6e0217a1a539b18429c7e62a207313c0, type: 3}
+  _characterQuestionOptionsConfigJson: {fileID: 4900000, guid: 5b7622405be257f47b9f23448fbdb991, type: 3}
+  _characterProfilesConfigJson: {fileID: 4900000, guid: 2b89a85496089a04e8dda5adaac5bf9d, type: 3}
+  _personalityAffinityRulesConfigJson: {fileID: 4900000, guid: 63e21b45bedafb84b938f8b70ff00510, type: 3}
+  _greetingConfigJson: {fileID: 4900000, guid: 868a736400fe1f0429a547a347c9ac6c, type: 3}
+  _idleChatConfigJson: {fileID: 4900000, guid: ddd8ff4ef8a543241b5887021c1fb2af, type: 3}
+  _idleChatAnswersConfigJson: {fileID: 4900000, guid: 955002aed41005447bd2cd51165c0382, type: 3}
   _characterQuestionsViewPrefab: {fileID: 919447067015384157, guid: 837ac129ec6b61b4fac7ff84cb2d6d17, type: 3}
   _characterQuestionCountdownSeconds: 60
   _dialogueCooldownBaseSeconds: 60

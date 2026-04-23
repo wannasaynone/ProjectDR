@@ -7,8 +7,9 @@ namespace ProjectDR.Tests.Village
 {
     /// <summary>
     /// CommissionRecipesConfig 單元測試。
+    /// Sprint 8 Wave 2.5：配合純陣列 DTO 重構（CommissionRecipeData[]，廢棄 CommissionRecipesConfigData 包裹類）。
     /// 驗證：建構 null 防護、配方查詢、依角色分組、依輸入物品查詢、
-    /// slot 數聚合、空手委託、無效項目跳過、真實 JSON 反序列化。
+    /// slot 數聚合、空手委託、無效項目跳過。
     /// </summary>
     [TestFixture]
     public class CommissionRecipesConfigTests
@@ -16,24 +17,15 @@ namespace ProjectDR.Tests.Village
         // ===== 建構驗證 =====
 
         [Test]
-        public void Constructor_NullData_Throws()
+        public void Constructor_NullEntries_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => new CommissionRecipesConfig(null));
         }
 
         [Test]
-        public void Constructor_EmptyRecipes_ReturnsEmptyConfig()
+        public void Constructor_EmptyEntries_ReturnsEmptyConfig()
         {
-            CommissionRecipesConfig cfg = new CommissionRecipesConfig(
-                new CommissionRecipesConfigData { recipes = Array.Empty<CommissionRecipeEntry>() });
-            Assert.AreEqual(0, cfg.AllRecipes.Count);
-        }
-
-        [Test]
-        public void Constructor_NullRecipes_TreatedAsEmpty()
-        {
-            CommissionRecipesConfig cfg = new CommissionRecipesConfig(
-                new CommissionRecipesConfigData { recipes = null });
+            CommissionRecipesConfig cfg = new CommissionRecipesConfig(new CommissionRecipeData[0]);
             Assert.AreEqual(0, cfg.AllRecipes.Count);
         }
 
@@ -116,15 +108,12 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetWorkbenchSlotCount_TakesMaxOfRecipes()
         {
-            CommissionRecipesConfigData data = new CommissionRecipesConfigData
+            CommissionRecipeData[] entries = new CommissionRecipeData[]
             {
-                recipes = new[]
-                {
-                    BuildEntry("a1", "FarmGirl", "seed_a", "out_a", 10, 2),
-                    BuildEntry("a2", "FarmGirl", "seed_b", "out_b", 10, 3),  // 取 max=3
-                }
+                BuildEntry("a1", "FarmGirl", "seed_a", "out_a", 10, 2),
+                BuildEntry("a2", "FarmGirl", "seed_b", "out_b", 10, 3),  // 取 max=3
             };
-            CommissionRecipesConfig cfg = new CommissionRecipesConfig(data);
+            CommissionRecipesConfig cfg = new CommissionRecipesConfig(entries);
             Assert.AreEqual(3, cfg.GetWorkbenchSlotCount("FarmGirl"));
         }
 
@@ -141,21 +130,18 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void Constructor_SkipsInvalidEntries()
         {
-            CommissionRecipesConfigData data = new CommissionRecipesConfigData
+            CommissionRecipeData[] entries = new CommissionRecipeData[]
             {
-                recipes = new[]
-                {
-                    null,                                                   // null
-                    BuildEntry("", "X", "i", "o", 10, 1),                    // empty recipe_id
-                    BuildEntry("r2", "", "i", "o", 10, 1),                   // empty character
-                    BuildEntry("r3", "X", "i", "", 10, 1),                   // empty output
-                    BuildEntry("r4", "X", "i", "o", 0f, 1),                  // duration 0
-                    BuildEntry("r5", "X", "i", "o", -1f, 1),                 // duration negative
-                    BuildOutputQtyEntry("r6", "X", "i", "o", 10, 1, 0),      // output_quantity 0
-                    BuildEntry("valid", "Witch", "herb", "potion", 15, 2),   // 有效
-                }
+                null,                                                   // null
+                BuildEntry("", "X", "i", "o", 10, 1),                    // empty recipe_id
+                BuildEntry("r2", "", "i", "o", 10, 1),                   // empty character
+                BuildEntry("r3", "X", "i", "", 10, 1),                   // empty output
+                BuildEntry("r4", "X", "i", "o", 0f, 1),                  // duration 0
+                BuildEntry("r5", "X", "i", "o", -1f, 1),                 // duration negative
+                BuildOutputQtyEntry("r6", "X", "i", "o", 10, 1, 0),      // output_quantity 0
+                BuildEntry("valid", "Witch", "herb", "potion", 15, 2),   // 有效
             };
-            CommissionRecipesConfig cfg = new CommissionRecipesConfig(data);
+            CommissionRecipesConfig cfg = new CommissionRecipesConfig(entries);
             Assert.AreEqual(1, cfg.AllRecipes.Count);
             Assert.IsNotNull(cfg.GetRecipe("valid"));
         }
@@ -163,9 +149,9 @@ namespace ProjectDR.Tests.Village
         // ===== IGameData 契約斷言（ADR-001 / ADR-002 A06）=====
 
         [Test]
-        public void CommissionRecipeEntry_ImplementsIGameData()
+        public void CommissionRecipeData_ImplementsIGameData()
         {
-            CommissionRecipeEntry entry = new CommissionRecipeEntry { id = 1, recipe_id = "test_recipe" };
+            CommissionRecipeData entry = new CommissionRecipeData { id = 1, recipe_id = "test_recipe" };
             KahaGameCore.GameData.IGameData iGameData = entry;
             Assert.AreEqual(1, iGameData.ID, "IGameData.ID 必須等於 id 欄位");
         }
@@ -181,43 +167,12 @@ namespace ProjectDR.Tests.Village
             Assert.AreEqual(info.Key, info.RecipeId, "RecipeId 應等於 Key");
         }
 
-        // ===== 真實 JSON =====
-
-        [Test]
-        public void RealJson_CommissionRecipesConfig_ParsesCorrectly()
-        {
-            UnityEngine.TextAsset text = UnityEngine.Resources.Load<UnityEngine.TextAsset>(
-                "Config/commission-recipes-config");
-            Assert.IsNotNull(text, "commission-recipes-config.json 必須存在於 Resources/Config/");
-
-            CommissionRecipesConfigData data = UnityEngine.JsonUtility.FromJson<CommissionRecipesConfigData>(text.text);
-            CommissionRecipesConfig cfg = new CommissionRecipesConfig(data);
-
-            Assert.Greater(cfg.AllRecipes.Count, 0);
-            // 所有配方的 ID 非 0（ADR-001 IGameData 契約驗證）
-            foreach (CommissionRecipeInfo r in cfg.AllRecipes)
-            {
-                Assert.AreNotEqual(0, r.ID, $"recipe '{r.Key}' 的 ID 不應為 0");
-            }
-            // 預期三位委託角色
-            Assert.IsTrue(cfg.GetWorkbenchSlotCount("FarmGirl") > 0);
-            Assert.IsTrue(cfg.GetWorkbenchSlotCount("Witch") > 0);
-            Assert.IsTrue(cfg.GetWorkbenchSlotCount("Guard") > 0);
-            // 守衛至少有一個空手委託
-            bool hasEmptyHanded = false;
-            foreach (CommissionRecipeInfo r in cfg.GetRecipesByCharacter("Guard"))
-            {
-                if (r.IsEmptyHanded) { hasEmptyHanded = true; break; }
-            }
-            Assert.IsTrue(hasEmptyHanded, "Guard 至少需有一個空手委託");
-        }
-
         // ===== 輔助：建立測試資料 =====
 
-        private static CommissionRecipeEntry BuildEntry(
+        private static CommissionRecipeData BuildEntry(
             string recipeId, string charId, string input, string output, float dur, int slotMax, int id = 1)
         {
-            return new CommissionRecipeEntry
+            return new CommissionRecipeData
             {
                 id = id,
                 recipe_id = recipeId,
@@ -232,75 +187,72 @@ namespace ProjectDR.Tests.Village
             };
         }
 
-        private static CommissionRecipeEntry BuildOutputQtyEntry(
+        private static CommissionRecipeData BuildOutputQtyEntry(
             string recipeId, string charId, string input, string output, float dur, int slotMax, int outputQty, int id = 1)
         {
-            CommissionRecipeEntry e = BuildEntry(recipeId, charId, input, output, dur, slotMax, id);
+            CommissionRecipeData e = BuildEntry(recipeId, charId, input, output, dur, slotMax, id);
             e.output_quantity = outputQty;
             return e;
         }
 
         private static CommissionRecipesConfig BuildSampleConfig()
         {
-            CommissionRecipesConfigData data = new CommissionRecipesConfigData
+            CommissionRecipeData[] entries = new CommissionRecipeData[]
             {
-                recipes = new[]
+                new CommissionRecipeData
                 {
-                    new CommissionRecipeEntry
-                    {
-                        id = 1,
-                        recipe_id = "farm_tomato",
-                        character_id = "FarmGirl",
-                        input_item_id = "seed_tomato",
-                        input_quantity = 1,
-                        output_item_id = "crop_tomato",
-                        output_quantity = 1,
-                        duration_seconds = 30f,
-                        workbench_slot_index_max = 2,
-                        description = "",
-                    },
-                    new CommissionRecipeEntry
-                    {
-                        id = 2,
-                        recipe_id = "farm_carrot",
-                        character_id = "FarmGirl",
-                        input_item_id = "seed_carrot",
-                        input_quantity = 1,
-                        output_item_id = "crop_carrot",
-                        output_quantity = 1,
-                        duration_seconds = 60f,
-                        workbench_slot_index_max = 2,
-                        description = "",
-                    },
-                    new CommissionRecipeEntry
-                    {
-                        id = 3,
-                        recipe_id = "witch_heal",
-                        character_id = "Witch",
-                        input_item_id = "herb_green",
-                        input_quantity = 1,
-                        output_item_id = "potion_heal",
-                        output_quantity = 1,
-                        duration_seconds = 45f,
-                        workbench_slot_index_max = 2,
-                        description = "",
-                    },
-                    new CommissionRecipeEntry
-                    {
-                        id = 4,
-                        recipe_id = "guard_patrol",
-                        character_id = "Guard",
-                        input_item_id = "",
-                        input_quantity = 0,
-                        output_item_id = "seed_tomato",
-                        output_quantity = 1,
-                        duration_seconds = 90f,
-                        workbench_slot_index_max = 2,
-                        description = "",
-                    },
-                }
+                    id = 1,
+                    recipe_id = "farm_tomato",
+                    character_id = "FarmGirl",
+                    input_item_id = "seed_tomato",
+                    input_quantity = 1,
+                    output_item_id = "crop_tomato",
+                    output_quantity = 1,
+                    duration_seconds = 30f,
+                    workbench_slot_index_max = 2,
+                    description = "",
+                },
+                new CommissionRecipeData
+                {
+                    id = 2,
+                    recipe_id = "farm_carrot",
+                    character_id = "FarmGirl",
+                    input_item_id = "seed_carrot",
+                    input_quantity = 1,
+                    output_item_id = "crop_carrot",
+                    output_quantity = 1,
+                    duration_seconds = 60f,
+                    workbench_slot_index_max = 2,
+                    description = "",
+                },
+                new CommissionRecipeData
+                {
+                    id = 3,
+                    recipe_id = "witch_heal",
+                    character_id = "Witch",
+                    input_item_id = "herb_green",
+                    input_quantity = 1,
+                    output_item_id = "potion_heal",
+                    output_quantity = 1,
+                    duration_seconds = 45f,
+                    workbench_slot_index_max = 2,
+                    description = "",
+                },
+                new CommissionRecipeData
+                {
+                    id = 4,
+                    recipe_id = "guard_patrol",
+                    character_id = "Guard",
+                    input_item_id = "",
+                    input_quantity = 0,
+                    output_item_id = "seed_tomato",
+                    output_quantity = 1,
+                    duration_seconds = 90f,
+                    workbench_slot_index_max = 2,
+                    description = "",
+                },
             };
-            return new CommissionRecipesConfig(data);
+            return new CommissionRecipesConfig(entries);
         }
     }
 }

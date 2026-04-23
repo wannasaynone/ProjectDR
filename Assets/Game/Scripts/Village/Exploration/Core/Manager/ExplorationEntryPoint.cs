@@ -123,7 +123,7 @@ namespace ProjectDR.Village.Exploration.Core
             for (int i = 0; i < mapData.MonsterSpawnPoints.Count; i++)
             {
                 MonsterSpawnPoint sp = mapData.MonsterSpawnPoints[i];
-                MonsterTypeData typeData = monsterConfig.GetType(sp.TypeId);
+                MonsterTypeData typeData = monsterConfig.GetMonsterType(sp.TypeId);
                 if (typeData != null)
                 {
                     _monsterManager.SpawnMonster(typeData, sp.Position);
@@ -361,20 +361,23 @@ namespace ProjectDR.Village.Exploration.Core
 
         private CombatConfig LoadCombatConfig()
         {
-            if (_combatConfigJson != null)
-                return CombatConfig.Load(_combatConfigJson.text);
+            string json = _combatConfigJson != null
+                ? _combatConfigJson.text
+                : Resources.Load<TextAsset>("Config/Combat").text;
 
-            TextAsset asset = Resources.Load<TextAsset>("Config/combat-config");
-            return CombatConfig.Load(asset.text);
+            CombatConfigData[] arr = JsonFx.Json.JsonReader.Deserialize<CombatConfigData[]>(json);
+            CombatConfigData dto = (arr != null && arr.Length > 0) ? arr[0] : new CombatConfigData();
+            return new CombatConfig(dto);
         }
 
         private MonsterConfig LoadMonsterConfig()
         {
-            if (_monsterConfigJson != null)
-                return MonsterConfig.Load(_monsterConfigJson.text);
+            string json = _monsterConfigJson != null
+                ? _monsterConfigJson.text
+                : Resources.Load<TextAsset>("Config/Monster").text;
 
-            TextAsset asset = Resources.Load<TextAsset>("Config/monster-config");
-            return MonsterConfig.Load(asset.text);
+            MonsterData[] entries = JsonFx.Json.JsonReader.Deserialize<MonsterData[]>(json);
+            return new MonsterConfig(entries ?? new MonsterData[0]);
         }
     }
 }

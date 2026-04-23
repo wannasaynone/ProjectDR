@@ -1,0 +1,1 @@
+[{"id":1,"character_id":"VillageChiefWife","thresholds":5},{"id":2,"character_id":"Guard","thresholds":5},{"id":3,"character_id":"Witch","thresholds":5},{"id":4,"character_id":"FarmGirl","thresholds":5},{"id":5,"character_id":"__default__","thresholds":5}]

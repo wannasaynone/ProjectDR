@@ -24,11 +24,10 @@ namespace ProjectDR.Tests.Village
         public void SetUp()
         {
             EventBus.ForceClearAll();
-            _config = new MainQuestConfig(new MainQuestConfigData
-            {
-                main_quests = new MainQuestConfigEntry[]
+            _config = new MainQuestConfig(
+                new MainQuestData[]
                 {
-                    new MainQuestConfigEntry
+                    new MainQuestData
                     {
                         id = 1,
                         quest_id = "T0",
@@ -37,8 +36,8 @@ namespace ProjectDR.Tests.Village
                         owner_character_id = CharacterIds.VillageChiefWife,
                         sort_order = 0,
                     },
-                }
-            });
+                },
+                new MainQuestUnlockData[0]);
             _questManager = new MainQuestManager(_config);
         }
 

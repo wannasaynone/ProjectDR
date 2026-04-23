@@ -45,20 +45,33 @@ namespace ProjectDR.Tests.Village
         // ===== 建構防護 =====
 
         [Test]
-        public void Constructor_NullCommissionRecipesConfig_Throws()
+        public void Constructor_NullCommissionEntries_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => new CommissionInstaller(
                 null,
-                BuildStorageExpansionConfigData(),
+                BuildStorageExpansionStageEntries(),
+                BuildStorageExpansionRequirementEntries(),
                 BuildBackpackManager(),
                 BuildStorageManager()));
         }
 
         [Test]
-        public void Constructor_NullStorageExpansionConfig_Throws()
+        public void Constructor_NullStorageExpansionStageEntries_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => new CommissionInstaller(
-                BuildCommissionRecipesConfigData(),
+                BuildCommissionEntries(),
+                null,
+                BuildStorageExpansionRequirementEntries(),
+                BuildBackpackManager(),
+                BuildStorageManager()));
+        }
+
+        [Test]
+        public void Constructor_NullStorageExpansionRequirementEntries_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new CommissionInstaller(
+                BuildCommissionEntries(),
+                BuildStorageExpansionStageEntries(),
                 null,
                 BuildBackpackManager(),
                 BuildStorageManager()));
@@ -68,8 +81,9 @@ namespace ProjectDR.Tests.Village
         public void Constructor_NullBackpackManager_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => new CommissionInstaller(
-                BuildCommissionRecipesConfigData(),
-                BuildStorageExpansionConfigData(),
+                BuildCommissionEntries(),
+                BuildStorageExpansionStageEntries(),
+                BuildStorageExpansionRequirementEntries(),
                 null,
                 BuildStorageManager()));
         }
@@ -78,8 +92,9 @@ namespace ProjectDR.Tests.Village
         public void Constructor_NullStorageManager_Throws()
         {
             Assert.Throws<ArgumentNullException>(() => new CommissionInstaller(
-                BuildCommissionRecipesConfigData(),
-                BuildStorageExpansionConfigData(),
+                BuildCommissionEntries(),
+                BuildStorageExpansionStageEntries(),
+                BuildStorageExpansionRequirementEntries(),
                 BuildBackpackManager(),
                 null));
         }
@@ -151,47 +166,59 @@ namespace ProjectDR.Tests.Village
 
         // ===== 輔助：建立測試依賴 =====
 
-        private static CommissionRecipesConfigData BuildCommissionRecipesConfigData()
+        private static CommissionRecipeData[] BuildCommissionEntries()
         {
-            return new CommissionRecipesConfigData
+            return new CommissionRecipeData[]
             {
-                schema_version = 2,
-                recipes = new CommissionRecipeEntry[]
+                new CommissionRecipeData
                 {
-                    new CommissionRecipeEntry
-                    {
-                        id = 1,
-                        recipe_id = "witch_heal",
-                        character_id = "Witch",
-                        workbench_slot_index_max = 2,
-                        input_item_id = "herb_green",
-                        input_quantity = 1,
-                        output_item_id = "potion_heal",
-                        output_quantity = 1,
-                        duration_seconds = 60
-                    }
+                    id = 1,
+                    recipe_id = "witch_heal",
+                    character_id = "Witch",
+                    workbench_slot_index_max = 2,
+                    input_item_id = "herb_green",
+                    input_quantity = 1,
+                    output_item_id = "potion_heal",
+                    output_quantity = 1,
+                    duration_seconds = 60
                 }
             };
         }
 
-        private static StorageExpansionConfigData BuildStorageExpansionConfigData()
+        private static StorageExpansionStageData[] BuildStorageExpansionStageEntries()
         {
-            return new StorageExpansionConfigData
+            return new StorageExpansionStageData[]
             {
-                schema_version = 2,
-                max_expansion_level = 1,
-                initial_capacity = 10,
-                stages = new StorageExpansionStageData[]
+                new StorageExpansionStageData
                 {
-                    new StorageExpansionStageData
-                    {
-                        level = 1,
-                        capacity_before = 10,
-                        capacity_after = 20,
-                        required_items = "material_wood:5",
-                        duration_seconds = 30,
-                        description = "first expansion"
-                    }
+                    id = 0,
+                    level = 0,
+                    capacity_before = 0,
+                    capacity_after = 10,
+                    duration_seconds = 0
+                },
+                new StorageExpansionStageData
+                {
+                    id = 1,
+                    level = 1,
+                    capacity_before = 10,
+                    capacity_after = 20,
+                    duration_seconds = 30,
+                    description = "first expansion"
+                }
+            };
+        }
+
+        private static StorageExpansionRequirementData[] BuildStorageExpansionRequirementEntries()
+        {
+            return new StorageExpansionRequirementData[]
+            {
+                new StorageExpansionRequirementData
+                {
+                    id = 1,
+                    stage_level = 1,
+                    item_id = "material_wood",
+                    quantity = 5
                 }
             };
         }
@@ -209,8 +236,9 @@ namespace ProjectDR.Tests.Village
         private static CommissionInstaller BuildInstaller()
         {
             return new CommissionInstaller(
-                BuildCommissionRecipesConfigData(),
-                BuildStorageExpansionConfigData(),
+                BuildCommissionEntries(),
+                BuildStorageExpansionStageEntries(),
+                BuildStorageExpansionRequirementEntries(),
                 BuildBackpackManager(),
                 BuildStorageManager());
         }

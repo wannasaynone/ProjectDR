@@ -60,34 +60,46 @@ namespace ProjectDR.Tests.Village
         // ===== T2: 建構子必要參數為 null 拋出 ArgumentNullException =====
 
         [Test]
-        public void Constructor_NullCharacterQuestionsData_ThrowsArgumentNullException()
+        public void Constructor_NullQuestionEntries_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new DialogueFlowInstaller(
                 null,
-                BuildGreetingData(),
-                BuildIdleChatData(),
+                new CharacterQuestionOptionData[0],
+                new CharacterProfileData[0],
+                new PersonalityAffinityRuleData[0],
+                BuildGreetingEntries(),
+                new IdleChatTopicData[0],
+                new IdleChatAnswerData[0],
                 null,
                 60f, 60f));
         }
 
         [Test]
-        public void Constructor_NullGreetingData_ThrowsArgumentNullException()
+        public void Constructor_NullGreetingEntries_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new DialogueFlowInstaller(
-                BuildCharacterQuestionsData(),
+                new CharacterQuestionData[0],
+                new CharacterQuestionOptionData[0],
+                new CharacterProfileData[0],
+                new PersonalityAffinityRuleData[0],
                 null,
-                BuildIdleChatData(),
+                new IdleChatTopicData[0],
+                new IdleChatAnswerData[0],
                 null,
                 60f, 60f));
         }
 
         [Test]
-        public void Constructor_NullIdleChatData_ThrowsArgumentNullException()
+        public void Constructor_NullIdleChatTopicEntries_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new DialogueFlowInstaller(
-                BuildCharacterQuestionsData(),
-                BuildGreetingData(),
+                new CharacterQuestionData[0],
+                new CharacterQuestionOptionData[0],
+                new CharacterProfileData[0],
+                new PersonalityAffinityRuleData[0],
+                BuildGreetingEntries(),
                 null,
+                new IdleChatAnswerData[0],
                 null,
                 60f, 60f));
         }
@@ -245,9 +257,13 @@ namespace ProjectDR.Tests.Village
         private static DialogueFlowInstaller BuildInstaller()
         {
             return new DialogueFlowInstaller(
-                BuildCharacterQuestionsData(),
-                BuildGreetingData(),
-                BuildIdleChatData(),
+                new CharacterQuestionData[0],
+                new CharacterQuestionOptionData[0],
+                new CharacterProfileData[0],
+                new PersonalityAffinityRuleData[0],
+                BuildGreetingEntries(),
+                new IdleChatTopicData[0],
+                new IdleChatAnswerData[0],
                 null, // redDotManager（允許 null）
                 60f,
                 60f);
@@ -267,40 +283,16 @@ namespace ProjectDR.Tests.Village
 
             if (fillAffinity)
             {
-                AffinityConfigData acd = new AffinityConfigData
-                {
-                    characters = new AffinityCharacterConfigData[0]
-                };
-                AffinityConfig affinityConfig = new AffinityConfig(acd);
+                AffinityConfig affinityConfig = new AffinityConfig(new AffinityCharacterData[0]);
                 ctx.AffinityReadOnly = new AffinityManager(affinityConfig);
             }
 
             return ctx;
         }
 
-        private static CharacterQuestionsConfigData BuildCharacterQuestionsData()
+        private static GreetingData[] BuildGreetingEntries()
         {
-            return new CharacterQuestionsConfigData
-            {
-                personality_types = new PersonalityTypeData[0],
-                questions = new CharacterQuestionEntryData[0]
-            };
-        }
-
-        private static GreetingConfigData BuildGreetingData()
-        {
-            return new GreetingConfigData
-            {
-                greetings = new GreetingEntryData[0]
-            };
-        }
-
-        private static IdleChatConfigData BuildIdleChatData()
-        {
-            return new IdleChatConfigData
-            {
-                topics = new IdleChatTopicData[0]
-            };
+            return new GreetingData[0];
         }
     }
 }

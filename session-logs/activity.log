@@ -12283,3 +12283,1609 @@
 ?? tech-debt.md
 ?? tech/
 
+=== Session 結束 2026-04-22-214446 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+
+=== Session 結束 2026-04-22-215103 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M session-logs/activity.log
+?? sprint/
+
+=== Session 結束 2026-04-22-215530 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M project-status.md
+ M session-logs/activity.log
+?? sprint/
+
+=== Session 結束 2026-04-22-220652 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M project-status.md
+ M session-logs/activity.log
+?? dev-logs/2026-04-22-17.md
+?? sprint/
+
+=== Session 結束 2026-04-22-222115 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M project-status.md
+ M session-logs/activity.log
+?? dev-logs/2026-04-22-17.md
+?? sprint/
+
+=== Session 結束 2026-04-22-224058 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M FILE_MAP.md
+ M project-status.md
+ M session-logs/activity.log
+?? dev-logs/2026-04-22-17.md
+?? sprint/
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-002246 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M project-status.md
+ M session-logs/activity.log
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? sprint/
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-010522 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ D Assets/Game/Resources/Config/affinity-config.txt
+ D Assets/Game/Resources/Config/affinity-config.txt.meta
+ D Assets/Game/Resources/Config/cg-scene-config.txt
+ D Assets/Game/Resources/Config/cg-scene-config.txt.meta
+ D Assets/Game/Resources/Config/character-intro-config.txt
+ D Assets/Game/Resources/Config/character-intro-config.txt.meta
+ D Assets/Game/Resources/Config/character-questions-config.txt
+ D Assets/Game/Resources/Config/character-questions-config.txt.meta
+ D Assets/Game/Resources/Config/combat-config.txt
+ D Assets/Game/Resources/Config/combat-config.txt.meta
+ D Assets/Game/Resources/Config/commission-recipes-config.txt
+ D Assets/Game/Resources/Config/commission-recipes-config.txt.meta
+ D Assets/Game/Resources/Config/gift-sword-config.txt
+ D Assets/Game/Resources/Config/gift-sword-config.txt.meta
+ D Assets/Game/Resources/Config/greeting-config.txt
+ D Assets/Game/Resources/Config/greeting-config.txt.meta
+ D Assets/Game/Resources/Config/idle-chat-config.txt
+ D Assets/Game/Resources/Config/idle-chat-config.txt.meta
+ D Assets/Game/Resources/Config/initial-resources-config.txt
+ D Assets/Game/Resources/Config/initial-resources-config.txt.meta
+ D Assets/Game/Resources/Config/main-quest-config.txt
+ D Assets/Game/Resources/Config/main-quest-config.txt.meta
+ D Assets/Game/Resources/Config/monster-config.txt
+ D Assets/Game/Resources/Config/monster-config.txt.meta
+ D Assets/Game/Resources/Config/node-dialogue-config.txt
+ D Assets/Game/Resources/Config/node-dialogue-config.txt.meta
+ D Assets/Game/Resources/Config/storage-expansion-config.txt
+ D Assets/Game/Resources/Config/storage-expansion-config.txt.meta
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Data/VillageContext.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Scene/Main.unity
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M adrs/ADR-002-it-stage-exemption-exit.md
+ M project-status.md
+ M session-logs/activity.log
+ M tech-debt.md
+ M tech/control-manifest.md
+?? Assets/Game/Resources/Config/Affinity.txt
+?? Assets/Game/Resources/Config/Affinity.txt.meta
+?? Assets/Game/Resources/Config/CGScene.txt
+?? Assets/Game/Resources/Config/CGScene.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntros.txt
+?? Assets/Game/Resources/Config/CharacterIntros.txt.meta
+?? Assets/Game/Resources/Config/CharacterProfiles.txt
+?? Assets/Game/Resources/Config/CharacterProfiles.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestions.txt
+?? Assets/Game/Resources/Config/CharacterQuestions.txt.meta
+?? Assets/Game/Resources/Config/Combat.txt
+?? Assets/Game/Resources/Config/Combat.txt.meta
+?? Assets/Game/Resources/Config/CommissionRecipes.txt
+?? Assets/Game/Resources/Config/CommissionRecipes.txt.meta
+?? Assets/Game/Resources/Config/GiftSwords.txt
+?? Assets/Game/Resources/Config/GiftSwords.txt.meta
+?? Assets/Game/Resources/Config/Greeting.txt
+?? Assets/Game/Resources/Config/Greeting.txt.meta
+?? Assets/Game/Resources/Config/IdleChat.txt
+?? Assets/Game/Resources/Config/IdleChat.txt.meta
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt.meta
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt.meta
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt.meta
+?? Assets/Game/Resources/Config/MainQuests.txt
+?? Assets/Game/Resources/Config/MainQuests.txt.meta
+?? Assets/Game/Resources/Config/Monster.txt
+?? Assets/Game/Resources/Config/Monster.txt.meta
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt.meta
+?? Assets/Game/Resources/Config/Personalities.txt
+?? Assets/Game/Resources/Config/Personalities.txt.meta
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? dev-logs/2026-04-22-21.md
+?? dev-logs/2026-04-22-22.md
+?? dev-logs/2026-04-22-23.md
+?? sprint/
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-011041 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ D Assets/Game/Resources/Config/affinity-config.txt
+ D Assets/Game/Resources/Config/affinity-config.txt.meta
+ D Assets/Game/Resources/Config/cg-scene-config.txt
+ D Assets/Game/Resources/Config/cg-scene-config.txt.meta
+ D Assets/Game/Resources/Config/character-intro-config.txt
+ D Assets/Game/Resources/Config/character-intro-config.txt.meta
+ D Assets/Game/Resources/Config/character-questions-config.txt
+ D Assets/Game/Resources/Config/character-questions-config.txt.meta
+ D Assets/Game/Resources/Config/combat-config.txt
+ D Assets/Game/Resources/Config/combat-config.txt.meta
+ D Assets/Game/Resources/Config/commission-recipes-config.txt
+ D Assets/Game/Resources/Config/commission-recipes-config.txt.meta
+ D Assets/Game/Resources/Config/gift-sword-config.txt
+ D Assets/Game/Resources/Config/gift-sword-config.txt.meta
+ D Assets/Game/Resources/Config/greeting-config.txt
+ D Assets/Game/Resources/Config/greeting-config.txt.meta
+ D Assets/Game/Resources/Config/idle-chat-config.txt
+ D Assets/Game/Resources/Config/idle-chat-config.txt.meta
+ D Assets/Game/Resources/Config/initial-resources-config.txt
+ D Assets/Game/Resources/Config/initial-resources-config.txt.meta
+ D Assets/Game/Resources/Config/main-quest-config.txt
+ D Assets/Game/Resources/Config/main-quest-config.txt.meta
+ D Assets/Game/Resources/Config/monster-config.txt
+ D Assets/Game/Resources/Config/monster-config.txt.meta
+ D Assets/Game/Resources/Config/node-dialogue-config.txt
+ D Assets/Game/Resources/Config/node-dialogue-config.txt.meta
+ D Assets/Game/Resources/Config/storage-expansion-config.txt
+ D Assets/Game/Resources/Config/storage-expansion-config.txt.meta
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Data/VillageContext.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Scene/Main.unity
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M adrs/ADR-002-it-stage-exemption-exit.md
+ M project-status.md
+ M session-logs/activity.log
+ M tech-debt.md
+ M tech/control-manifest.md
+?? Assets/Game/Resources/Config/Affinity.txt
+?? Assets/Game/Resources/Config/Affinity.txt.meta
+?? Assets/Game/Resources/Config/CGScene.txt
+?? Assets/Game/Resources/Config/CGScene.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntros.txt
+?? Assets/Game/Resources/Config/CharacterIntros.txt.meta
+?? Assets/Game/Resources/Config/CharacterProfiles.txt
+?? Assets/Game/Resources/Config/CharacterProfiles.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestions.txt
+?? Assets/Game/Resources/Config/CharacterQuestions.txt.meta
+?? Assets/Game/Resources/Config/Combat.txt
+?? Assets/Game/Resources/Config/Combat.txt.meta
+?? Assets/Game/Resources/Config/CommissionRecipes.txt
+?? Assets/Game/Resources/Config/CommissionRecipes.txt.meta
+?? Assets/Game/Resources/Config/GiftSwords.txt
+?? Assets/Game/Resources/Config/GiftSwords.txt.meta
+?? Assets/Game/Resources/Config/Greeting.txt
+?? Assets/Game/Resources/Config/Greeting.txt.meta
+?? Assets/Game/Resources/Config/IdleChat.txt
+?? Assets/Game/Resources/Config/IdleChat.txt.meta
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt.meta
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt.meta
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt.meta
+?? Assets/Game/Resources/Config/MainQuests.txt
+?? Assets/Game/Resources/Config/MainQuests.txt.meta
+?? Assets/Game/Resources/Config/Monster.txt
+?? Assets/Game/Resources/Config/Monster.txt.meta
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt.meta
+?? Assets/Game/Resources/Config/Personalities.txt
+?? Assets/Game/Resources/Config/Personalities.txt.meta
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? dev-logs/2026-04-22-21.md
+?? dev-logs/2026-04-22-22.md
+?? dev-logs/2026-04-22-23.md
+?? session-state/
+?? sprint/
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-094528 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ D Assets/Game/Resources/Config/affinity-config.txt
+ D Assets/Game/Resources/Config/affinity-config.txt.meta
+ D Assets/Game/Resources/Config/cg-scene-config.txt
+ D Assets/Game/Resources/Config/cg-scene-config.txt.meta
+ D Assets/Game/Resources/Config/character-intro-config.txt
+ D Assets/Game/Resources/Config/character-intro-config.txt.meta
+ D Assets/Game/Resources/Config/character-questions-config.txt
+ D Assets/Game/Resources/Config/character-questions-config.txt.meta
+ D Assets/Game/Resources/Config/combat-config.txt
+ D Assets/Game/Resources/Config/combat-config.txt.meta
+ D Assets/Game/Resources/Config/commission-recipes-config.txt
+ D Assets/Game/Resources/Config/commission-recipes-config.txt.meta
+ D Assets/Game/Resources/Config/gift-sword-config.txt
+ D Assets/Game/Resources/Config/gift-sword-config.txt.meta
+ D Assets/Game/Resources/Config/greeting-config.txt
+ D Assets/Game/Resources/Config/greeting-config.txt.meta
+ D Assets/Game/Resources/Config/idle-chat-config.txt
+ D Assets/Game/Resources/Config/idle-chat-config.txt.meta
+ D Assets/Game/Resources/Config/initial-resources-config.txt
+ D Assets/Game/Resources/Config/initial-resources-config.txt.meta
+ D Assets/Game/Resources/Config/main-quest-config.txt
+ D Assets/Game/Resources/Config/main-quest-config.txt.meta
+ D Assets/Game/Resources/Config/monster-config.txt
+ D Assets/Game/Resources/Config/monster-config.txt.meta
+ D Assets/Game/Resources/Config/node-dialogue-config.txt
+ D Assets/Game/Resources/Config/node-dialogue-config.txt.meta
+ D Assets/Game/Resources/Config/storage-expansion-config.txt
+ D Assets/Game/Resources/Config/storage-expansion-config.txt.meta
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Data/VillageContext.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Scene/Main.unity
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M adrs/ADR-002-it-stage-exemption-exit.md
+ M project-status.md
+ M session-logs/activity.log
+ M tech-debt.md
+ M tech/control-manifest.md
+?? Assets/Game/Resources/Config/Affinity.txt
+?? Assets/Game/Resources/Config/Affinity.txt.meta
+?? Assets/Game/Resources/Config/CGScene.txt
+?? Assets/Game/Resources/Config/CGScene.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntros.txt
+?? Assets/Game/Resources/Config/CharacterIntros.txt.meta
+?? Assets/Game/Resources/Config/CharacterProfiles.txt
+?? Assets/Game/Resources/Config/CharacterProfiles.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestions.txt
+?? Assets/Game/Resources/Config/CharacterQuestions.txt.meta
+?? Assets/Game/Resources/Config/Combat.txt
+?? Assets/Game/Resources/Config/Combat.txt.meta
+?? Assets/Game/Resources/Config/CommissionRecipes.txt
+?? Assets/Game/Resources/Config/CommissionRecipes.txt.meta
+?? Assets/Game/Resources/Config/GiftSwords.txt
+?? Assets/Game/Resources/Config/GiftSwords.txt.meta
+?? Assets/Game/Resources/Config/Greeting.txt
+?? Assets/Game/Resources/Config/Greeting.txt.meta
+?? Assets/Game/Resources/Config/IdleChat.txt
+?? Assets/Game/Resources/Config/IdleChat.txt.meta
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt.meta
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt.meta
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt.meta
+?? Assets/Game/Resources/Config/MainQuests.txt
+?? Assets/Game/Resources/Config/MainQuests.txt.meta
+?? Assets/Game/Resources/Config/Monster.txt
+?? Assets/Game/Resources/Config/Monster.txt.meta
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt.meta
+?? Assets/Game/Resources/Config/Personalities.txt
+?? Assets/Game/Resources/Config/Personalities.txt.meta
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? dev-logs/2026-04-22-21.md
+?? dev-logs/2026-04-22-22.md
+?? dev-logs/2026-04-22-23.md
+?? session-state/
+?? sprint/
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-100607 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ D Assets/Game/Resources/Config/affinity-config.txt
+ D Assets/Game/Resources/Config/affinity-config.txt.meta
+ D Assets/Game/Resources/Config/cg-scene-config.txt
+ D Assets/Game/Resources/Config/cg-scene-config.txt.meta
+ D Assets/Game/Resources/Config/character-intro-config.txt
+ D Assets/Game/Resources/Config/character-intro-config.txt.meta
+ D Assets/Game/Resources/Config/character-questions-config.txt
+ D Assets/Game/Resources/Config/character-questions-config.txt.meta
+ D Assets/Game/Resources/Config/combat-config.txt
+ D Assets/Game/Resources/Config/combat-config.txt.meta
+ D Assets/Game/Resources/Config/commission-recipes-config.txt
+ D Assets/Game/Resources/Config/commission-recipes-config.txt.meta
+ D Assets/Game/Resources/Config/gift-sword-config.txt
+ D Assets/Game/Resources/Config/gift-sword-config.txt.meta
+ D Assets/Game/Resources/Config/greeting-config.txt
+ D Assets/Game/Resources/Config/greeting-config.txt.meta
+ D Assets/Game/Resources/Config/idle-chat-config.txt
+ D Assets/Game/Resources/Config/idle-chat-config.txt.meta
+ D Assets/Game/Resources/Config/initial-resources-config.txt
+ D Assets/Game/Resources/Config/initial-resources-config.txt.meta
+ D Assets/Game/Resources/Config/main-quest-config.txt
+ D Assets/Game/Resources/Config/main-quest-config.txt.meta
+ D Assets/Game/Resources/Config/monster-config.txt
+ D Assets/Game/Resources/Config/monster-config.txt.meta
+ D Assets/Game/Resources/Config/node-dialogue-config.txt
+ D Assets/Game/Resources/Config/node-dialogue-config.txt.meta
+ D Assets/Game/Resources/Config/storage-expansion-config.txt
+ D Assets/Game/Resources/Config/storage-expansion-config.txt.meta
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Data/VillageContext.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Scene/Main.unity
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M adrs/ADR-002-it-stage-exemption-exit.md
+ M project-status.md
+ M session-logs/activity.log
+ M tech-debt.md
+ M tech/control-manifest.md
+ M tech/google-sheet-export-tool-spec.md
+?? Assets/Game/Resources/Config/Affinity.txt
+?? Assets/Game/Resources/Config/Affinity.txt.meta
+?? Assets/Game/Resources/Config/CGScene.txt
+?? Assets/Game/Resources/Config/CGScene.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntros.txt
+?? Assets/Game/Resources/Config/CharacterIntros.txt.meta
+?? Assets/Game/Resources/Config/CharacterProfiles.txt
+?? Assets/Game/Resources/Config/CharacterProfiles.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestions.txt
+?? Assets/Game/Resources/Config/CharacterQuestions.txt.meta
+?? Assets/Game/Resources/Config/Combat.txt
+?? Assets/Game/Resources/Config/Combat.txt.meta
+?? Assets/Game/Resources/Config/CommissionRecipes.txt
+?? Assets/Game/Resources/Config/CommissionRecipes.txt.meta
+?? Assets/Game/Resources/Config/GiftSwords.txt
+?? Assets/Game/Resources/Config/GiftSwords.txt.meta
+?? Assets/Game/Resources/Config/Greeting.txt
+?? Assets/Game/Resources/Config/Greeting.txt.meta
+?? Assets/Game/Resources/Config/IdleChat.txt
+?? Assets/Game/Resources/Config/IdleChat.txt.meta
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt.meta
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt.meta
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt.meta
+?? Assets/Game/Resources/Config/MainQuests.txt
+?? Assets/Game/Resources/Config/MainQuests.txt.meta
+?? Assets/Game/Resources/Config/Monster.txt
+?? Assets/Game/Resources/Config/Monster.txt.meta
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt.meta
+?? Assets/Game/Resources/Config/Personalities.txt
+?? Assets/Game/Resources/Config/Personalities.txt.meta
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? dev-logs/2026-04-22-21.md
+?? dev-logs/2026-04-22-22.md
+?? dev-logs/2026-04-22-23.md
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-100923 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ D Assets/Game/Resources/Config/affinity-config.txt
+ D Assets/Game/Resources/Config/affinity-config.txt.meta
+ D Assets/Game/Resources/Config/cg-scene-config.txt
+ D Assets/Game/Resources/Config/cg-scene-config.txt.meta
+ D Assets/Game/Resources/Config/character-intro-config.txt
+ D Assets/Game/Resources/Config/character-intro-config.txt.meta
+ D Assets/Game/Resources/Config/character-questions-config.txt
+ D Assets/Game/Resources/Config/character-questions-config.txt.meta
+ D Assets/Game/Resources/Config/combat-config.txt
+ D Assets/Game/Resources/Config/combat-config.txt.meta
+ D Assets/Game/Resources/Config/commission-recipes-config.txt
+ D Assets/Game/Resources/Config/commission-recipes-config.txt.meta
+ D Assets/Game/Resources/Config/gift-sword-config.txt
+ D Assets/Game/Resources/Config/gift-sword-config.txt.meta
+ D Assets/Game/Resources/Config/greeting-config.txt
+ D Assets/Game/Resources/Config/greeting-config.txt.meta
+ D Assets/Game/Resources/Config/idle-chat-config.txt
+ D Assets/Game/Resources/Config/idle-chat-config.txt.meta
+ D Assets/Game/Resources/Config/initial-resources-config.txt
+ D Assets/Game/Resources/Config/initial-resources-config.txt.meta
+ D Assets/Game/Resources/Config/main-quest-config.txt
+ D Assets/Game/Resources/Config/main-quest-config.txt.meta
+ D Assets/Game/Resources/Config/monster-config.txt
+ D Assets/Game/Resources/Config/monster-config.txt.meta
+ D Assets/Game/Resources/Config/node-dialogue-config.txt
+ D Assets/Game/Resources/Config/node-dialogue-config.txt.meta
+ D Assets/Game/Resources/Config/storage-expansion-config.txt
+ D Assets/Game/Resources/Config/storage-expansion-config.txt.meta
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Data/VillageContext.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Scene/Main.unity
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M adrs/ADR-002-it-stage-exemption-exit.md
+ M project-status.md
+ M session-logs/activity.log
+ M tech-debt.md
+ M tech/control-manifest.md
+ M tech/google-sheet-export-tool-spec.md
+?? Assets/Game/Resources/Config/Affinity.txt
+?? Assets/Game/Resources/Config/Affinity.txt.meta
+?? Assets/Game/Resources/Config/CGScene.txt
+?? Assets/Game/Resources/Config/CGScene.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntros.txt
+?? Assets/Game/Resources/Config/CharacterIntros.txt.meta
+?? Assets/Game/Resources/Config/CharacterProfiles.txt
+?? Assets/Game/Resources/Config/CharacterProfiles.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestions.txt
+?? Assets/Game/Resources/Config/CharacterQuestions.txt.meta
+?? Assets/Game/Resources/Config/Combat.txt
+?? Assets/Game/Resources/Config/Combat.txt.meta
+?? Assets/Game/Resources/Config/CommissionRecipes.txt
+?? Assets/Game/Resources/Config/CommissionRecipes.txt.meta
+?? Assets/Game/Resources/Config/GiftSwords.txt
+?? Assets/Game/Resources/Config/GiftSwords.txt.meta
+?? Assets/Game/Resources/Config/Greeting.txt
+?? Assets/Game/Resources/Config/Greeting.txt.meta
+?? Assets/Game/Resources/Config/IdleChat.txt
+?? Assets/Game/Resources/Config/IdleChat.txt.meta
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt.meta
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt.meta
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt.meta
+?? Assets/Game/Resources/Config/MainQuests.txt
+?? Assets/Game/Resources/Config/MainQuests.txt.meta
+?? Assets/Game/Resources/Config/Monster.txt
+?? Assets/Game/Resources/Config/Monster.txt.meta
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt.meta
+?? Assets/Game/Resources/Config/Personalities.txt
+?? Assets/Game/Resources/Config/Personalities.txt.meta
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? dev-logs/2026-04-22-21.md
+?? dev-logs/2026-04-22-22.md
+?? dev-logs/2026-04-22-23.md
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-103634 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ D Assets/Game/Resources/Config/affinity-config.txt
+ D Assets/Game/Resources/Config/affinity-config.txt.meta
+ D Assets/Game/Resources/Config/cg-scene-config.txt
+ D Assets/Game/Resources/Config/cg-scene-config.txt.meta
+ D Assets/Game/Resources/Config/character-intro-config.txt
+ D Assets/Game/Resources/Config/character-intro-config.txt.meta
+ D Assets/Game/Resources/Config/character-questions-config.txt
+ D Assets/Game/Resources/Config/character-questions-config.txt.meta
+ D Assets/Game/Resources/Config/combat-config.txt
+ D Assets/Game/Resources/Config/combat-config.txt.meta
+ D Assets/Game/Resources/Config/commission-recipes-config.txt
+ D Assets/Game/Resources/Config/commission-recipes-config.txt.meta
+ D Assets/Game/Resources/Config/gift-sword-config.txt
+ D Assets/Game/Resources/Config/gift-sword-config.txt.meta
+ D Assets/Game/Resources/Config/greeting-config.txt
+ D Assets/Game/Resources/Config/greeting-config.txt.meta
+ D Assets/Game/Resources/Config/idle-chat-config.txt
+ D Assets/Game/Resources/Config/idle-chat-config.txt.meta
+ D Assets/Game/Resources/Config/initial-resources-config.txt
+ D Assets/Game/Resources/Config/initial-resources-config.txt.meta
+ D Assets/Game/Resources/Config/main-quest-config.txt
+ D Assets/Game/Resources/Config/main-quest-config.txt.meta
+ D Assets/Game/Resources/Config/monster-config.txt
+ D Assets/Game/Resources/Config/monster-config.txt.meta
+ D Assets/Game/Resources/Config/node-dialogue-config.txt
+ D Assets/Game/Resources/Config/node-dialogue-config.txt.meta
+ D Assets/Game/Resources/Config/storage-expansion-config.txt
+ D Assets/Game/Resources/Config/storage-expansion-config.txt.meta
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Data/VillageContext.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Scene/Main.unity
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M adrs/ADR-002-it-stage-exemption-exit.md
+ M project-status.md
+ M session-logs/activity.log
+ M tech-debt.md
+ M tech/control-manifest.md
+ M tech/google-sheet-export-tool-spec.md
+?? Assets/Game/Resources/Config/Affinity.txt
+?? Assets/Game/Resources/Config/Affinity.txt.meta
+?? Assets/Game/Resources/Config/CGScene.txt
+?? Assets/Game/Resources/Config/CGScene.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntros.txt
+?? Assets/Game/Resources/Config/CharacterIntros.txt.meta
+?? Assets/Game/Resources/Config/CharacterProfiles.txt
+?? Assets/Game/Resources/Config/CharacterProfiles.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestions.txt
+?? Assets/Game/Resources/Config/CharacterQuestions.txt.meta
+?? Assets/Game/Resources/Config/Combat.txt
+?? Assets/Game/Resources/Config/Combat.txt.meta
+?? Assets/Game/Resources/Config/CommissionRecipes.txt
+?? Assets/Game/Resources/Config/CommissionRecipes.txt.meta
+?? Assets/Game/Resources/Config/GiftSwords.txt
+?? Assets/Game/Resources/Config/GiftSwords.txt.meta
+?? Assets/Game/Resources/Config/Greeting.txt
+?? Assets/Game/Resources/Config/Greeting.txt.meta
+?? Assets/Game/Resources/Config/IdleChat.txt
+?? Assets/Game/Resources/Config/IdleChat.txt.meta
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt.meta
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt.meta
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt.meta
+?? Assets/Game/Resources/Config/MainQuests.txt
+?? Assets/Game/Resources/Config/MainQuests.txt.meta
+?? Assets/Game/Resources/Config/Monster.txt
+?? Assets/Game/Resources/Config/Monster.txt.meta
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt.meta
+?? Assets/Game/Resources/Config/Personalities.txt
+?? Assets/Game/Resources/Config/Personalities.txt.meta
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? dev-logs/2026-04-22-21.md
+?? dev-logs/2026-04-22-22.md
+?? dev-logs/2026-04-22-23.md
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-103726 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ D Assets/Game/Resources/Config/affinity-config.txt
+ D Assets/Game/Resources/Config/affinity-config.txt.meta
+ D Assets/Game/Resources/Config/cg-scene-config.txt
+ D Assets/Game/Resources/Config/cg-scene-config.txt.meta
+ D Assets/Game/Resources/Config/character-intro-config.txt
+ D Assets/Game/Resources/Config/character-intro-config.txt.meta
+ D Assets/Game/Resources/Config/character-questions-config.txt
+ D Assets/Game/Resources/Config/character-questions-config.txt.meta
+ D Assets/Game/Resources/Config/combat-config.txt
+ D Assets/Game/Resources/Config/combat-config.txt.meta
+ D Assets/Game/Resources/Config/commission-recipes-config.txt
+ D Assets/Game/Resources/Config/commission-recipes-config.txt.meta
+ D Assets/Game/Resources/Config/gift-sword-config.txt
+ D Assets/Game/Resources/Config/gift-sword-config.txt.meta
+ D Assets/Game/Resources/Config/greeting-config.txt
+ D Assets/Game/Resources/Config/greeting-config.txt.meta
+ D Assets/Game/Resources/Config/idle-chat-config.txt
+ D Assets/Game/Resources/Config/idle-chat-config.txt.meta
+ D Assets/Game/Resources/Config/initial-resources-config.txt
+ D Assets/Game/Resources/Config/initial-resources-config.txt.meta
+ D Assets/Game/Resources/Config/main-quest-config.txt
+ D Assets/Game/Resources/Config/main-quest-config.txt.meta
+ D Assets/Game/Resources/Config/monster-config.txt
+ D Assets/Game/Resources/Config/monster-config.txt.meta
+ D Assets/Game/Resources/Config/node-dialogue-config.txt
+ D Assets/Game/Resources/Config/node-dialogue-config.txt.meta
+ D Assets/Game/Resources/Config/storage-expansion-config.txt
+ D Assets/Game/Resources/Config/storage-expansion-config.txt.meta
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Data/VillageContext.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Scene/Main.unity
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M adrs/ADR-002-it-stage-exemption-exit.md
+ M project-status.md
+ M session-logs/activity.log
+ M tech-debt.md
+ M tech/control-manifest.md
+ M tech/google-sheet-export-tool-spec.md
+?? Assets/Game/Resources/Config/Affinity.txt
+?? Assets/Game/Resources/Config/Affinity.txt.meta
+?? Assets/Game/Resources/Config/CGScene.txt
+?? Assets/Game/Resources/Config/CGScene.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntros.txt
+?? Assets/Game/Resources/Config/CharacterIntros.txt.meta
+?? Assets/Game/Resources/Config/CharacterProfiles.txt
+?? Assets/Game/Resources/Config/CharacterProfiles.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestions.txt
+?? Assets/Game/Resources/Config/CharacterQuestions.txt.meta
+?? Assets/Game/Resources/Config/Combat.txt
+?? Assets/Game/Resources/Config/Combat.txt.meta
+?? Assets/Game/Resources/Config/CommissionRecipes.txt
+?? Assets/Game/Resources/Config/CommissionRecipes.txt.meta
+?? Assets/Game/Resources/Config/GiftSwords.txt
+?? Assets/Game/Resources/Config/GiftSwords.txt.meta
+?? Assets/Game/Resources/Config/Greeting.txt
+?? Assets/Game/Resources/Config/Greeting.txt.meta
+?? Assets/Game/Resources/Config/IdleChat.txt
+?? Assets/Game/Resources/Config/IdleChat.txt.meta
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt.meta
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt.meta
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt.meta
+?? Assets/Game/Resources/Config/MainQuests.txt
+?? Assets/Game/Resources/Config/MainQuests.txt.meta
+?? Assets/Game/Resources/Config/Monster.txt
+?? Assets/Game/Resources/Config/Monster.txt.meta
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt.meta
+?? Assets/Game/Resources/Config/Personalities.txt
+?? Assets/Game/Resources/Config/Personalities.txt.meta
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? dev-logs/2026-04-22-21.md
+?? dev-logs/2026-04-22-22.md
+?? dev-logs/2026-04-22-23.md
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-104034 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ D Assets/Game/Resources/Config/affinity-config.txt
+ D Assets/Game/Resources/Config/affinity-config.txt.meta
+ D Assets/Game/Resources/Config/cg-scene-config.txt
+ D Assets/Game/Resources/Config/cg-scene-config.txt.meta
+ D Assets/Game/Resources/Config/character-intro-config.txt
+ D Assets/Game/Resources/Config/character-intro-config.txt.meta
+ D Assets/Game/Resources/Config/character-questions-config.txt
+ D Assets/Game/Resources/Config/character-questions-config.txt.meta
+ D Assets/Game/Resources/Config/combat-config.txt
+ D Assets/Game/Resources/Config/combat-config.txt.meta
+ D Assets/Game/Resources/Config/commission-recipes-config.txt
+ D Assets/Game/Resources/Config/commission-recipes-config.txt.meta
+ D Assets/Game/Resources/Config/gift-sword-config.txt
+ D Assets/Game/Resources/Config/gift-sword-config.txt.meta
+ D Assets/Game/Resources/Config/greeting-config.txt
+ D Assets/Game/Resources/Config/greeting-config.txt.meta
+ D Assets/Game/Resources/Config/idle-chat-config.txt
+ D Assets/Game/Resources/Config/idle-chat-config.txt.meta
+ D Assets/Game/Resources/Config/initial-resources-config.txt
+ D Assets/Game/Resources/Config/initial-resources-config.txt.meta
+ D Assets/Game/Resources/Config/main-quest-config.txt
+ D Assets/Game/Resources/Config/main-quest-config.txt.meta
+ D Assets/Game/Resources/Config/monster-config.txt
+ D Assets/Game/Resources/Config/monster-config.txt.meta
+ D Assets/Game/Resources/Config/node-dialogue-config.txt
+ D Assets/Game/Resources/Config/node-dialogue-config.txt.meta
+ D Assets/Game/Resources/Config/storage-expansion-config.txt
+ D Assets/Game/Resources/Config/storage-expansion-config.txt.meta
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Data/VillageContext.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Scene/Main.unity
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M adrs/ADR-002-it-stage-exemption-exit.md
+ M project-status.md
+ M session-logs/activity.log
+ M tech-debt.md
+ M tech/control-manifest.md
+ M tech/google-sheet-export-tool-spec.md
+?? Assets/Game/Resources/Config/Affinity.txt
+?? Assets/Game/Resources/Config/Affinity.txt.meta
+?? Assets/Game/Resources/Config/CGScene.txt
+?? Assets/Game/Resources/Config/CGScene.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntros.txt
+?? Assets/Game/Resources/Config/CharacterIntros.txt.meta
+?? Assets/Game/Resources/Config/CharacterProfiles.txt
+?? Assets/Game/Resources/Config/CharacterProfiles.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestions.txt
+?? Assets/Game/Resources/Config/CharacterQuestions.txt.meta
+?? Assets/Game/Resources/Config/Combat.txt
+?? Assets/Game/Resources/Config/Combat.txt.meta
+?? Assets/Game/Resources/Config/CommissionRecipes.txt
+?? Assets/Game/Resources/Config/CommissionRecipes.txt.meta
+?? Assets/Game/Resources/Config/GiftSwords.txt
+?? Assets/Game/Resources/Config/GiftSwords.txt.meta
+?? Assets/Game/Resources/Config/Greeting.txt
+?? Assets/Game/Resources/Config/Greeting.txt.meta
+?? Assets/Game/Resources/Config/IdleChat.txt
+?? Assets/Game/Resources/Config/IdleChat.txt.meta
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt.meta
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt.meta
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt.meta
+?? Assets/Game/Resources/Config/MainQuests.txt
+?? Assets/Game/Resources/Config/MainQuests.txt.meta
+?? Assets/Game/Resources/Config/Monster.txt
+?? Assets/Game/Resources/Config/Monster.txt.meta
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt.meta
+?? Assets/Game/Resources/Config/Personalities.txt
+?? Assets/Game/Resources/Config/Personalities.txt.meta
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? dev-logs/2026-04-22-21.md
+?? dev-logs/2026-04-22-22.md
+?? dev-logs/2026-04-22-23.md
+?? tech/sprint-8-data-model-spec.md
+
+=== Session 結束 2026-04-23-104650 ===
+[ProjectDR] 分支: master
+[ProjectDR] 未提交變動:
+ M "Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset"
+ D Assets/Game/Resources/Config/affinity-config.txt
+ D Assets/Game/Resources/Config/affinity-config.txt.meta
+ D Assets/Game/Resources/Config/cg-scene-config.txt
+ D Assets/Game/Resources/Config/cg-scene-config.txt.meta
+ D Assets/Game/Resources/Config/character-intro-config.txt
+ D Assets/Game/Resources/Config/character-intro-config.txt.meta
+ D Assets/Game/Resources/Config/character-questions-config.txt
+ D Assets/Game/Resources/Config/character-questions-config.txt.meta
+ D Assets/Game/Resources/Config/combat-config.txt
+ D Assets/Game/Resources/Config/combat-config.txt.meta
+ D Assets/Game/Resources/Config/commission-recipes-config.txt
+ D Assets/Game/Resources/Config/commission-recipes-config.txt.meta
+ D Assets/Game/Resources/Config/gift-sword-config.txt
+ D Assets/Game/Resources/Config/gift-sword-config.txt.meta
+ D Assets/Game/Resources/Config/greeting-config.txt
+ D Assets/Game/Resources/Config/greeting-config.txt.meta
+ D Assets/Game/Resources/Config/idle-chat-config.txt
+ D Assets/Game/Resources/Config/idle-chat-config.txt.meta
+ D Assets/Game/Resources/Config/initial-resources-config.txt
+ D Assets/Game/Resources/Config/initial-resources-config.txt.meta
+ D Assets/Game/Resources/Config/main-quest-config.txt
+ D Assets/Game/Resources/Config/main-quest-config.txt.meta
+ D Assets/Game/Resources/Config/monster-config.txt
+ D Assets/Game/Resources/Config/monster-config.txt.meta
+ D Assets/Game/Resources/Config/node-dialogue-config.txt
+ D Assets/Game/Resources/Config/node-dialogue-config.txt.meta
+ D Assets/Game/Resources/Config/storage-expansion-config.txt
+ D Assets/Game/Resources/Config/storage-expansion-config.txt.meta
+ M Assets/Game/Scripts/Village/Affinity/Data/AffinityConfigData.cs
+ M Assets/Game/Scripts/Village/CG/Data/CGSceneConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterIntro/Data/CharacterIntroConfigData.cs
+ M Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterQuestionsConfigData.cs
+ M Assets/Game/Scripts/Village/Commission/Data/CommissionRecipesConfigData.cs
+ M Assets/Game/Scripts/Village/Core/Data/VillageContext.cs
+ M Assets/Game/Scripts/Village/Core/Manager/AffinityInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CGInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/CommissionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/DialogueFlowInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/ProgressionInstaller.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPoint.cs
+ M Assets/Game/Scripts/Village/Core/Manager/VillageEntryPointInstallers.cs
+ M Assets/Game/Scripts/Village/Dialogue/Data/NodeDialogueConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/CombatConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Combat/Data/MonsterConfigData.cs
+ M Assets/Game/Scripts/Village/Exploration/Core/Manager/ExplorationEntryPoint.cs
+ M Assets/Game/Scripts/Village/Greeting/Data/GreetingConfigData.cs
+ M Assets/Game/Scripts/Village/IdleChat/Data/IdleChatConfigData.cs
+ M Assets/Game/Scripts/Village/MainQuest/Data/MainQuestConfigData.cs
+ M Assets/Game/Scripts/Village/Progression/Data/InitialResourcesConfigData.cs
+ M Assets/Game/Scripts/Village/Storage/Data/StorageExpansionConfigData.cs
+ M Assets/Scene/Main.unity
+ M Assets/Tests/Editor/Village/AffinityInstallerTests.cs
+ M Assets/Tests/Editor/Village/AffinityManagerTests.cs
+ M Assets/Tests/Editor/Village/CGInstallerTests.cs
+ M Assets/Tests/Editor/Village/CGUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroCGPlayerTests.cs
+ M Assets/Tests/Editor/Village/CharacterIntroConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsConfigTests.cs
+ M Assets/Tests/Editor/Village/CharacterQuestionsManagerTests.cs
+ M Assets/Tests/Editor/Village/CharacterUnlockManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionInstallerTests.cs
+ M Assets/Tests/Editor/Village/CommissionManagerTests.cs
+ M Assets/Tests/Editor/Village/CommissionRecipesConfigTests.cs
+ M Assets/Tests/Editor/Village/DialogueFlowInstallerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatConfigDataTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/CombatManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterManagerTests.cs
+ M Assets/Tests/Editor/Village/Exploration/Combat/MonsterStateTests.cs
+ M Assets/Tests/Editor/Village/Game.Tests.asmdef
+ M Assets/Tests/Editor/Village/GiftManagerTests.cs
+ M Assets/Tests/Editor/Village/GreetingTests.cs
+ M Assets/Tests/Editor/Village/IdleChatTests.cs
+ M Assets/Tests/Editor/Village/InitialResourcesConfigTests.cs
+ M Assets/Tests/Editor/Village/Integration/DialogueFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/FullLoopIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardFirstMeetDialogueIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/GuardInteractViewDialogueRegressionTest.cs
+ M Assets/Tests/Editor/Village/Integration/NodeProgressionIntegrationTest.cs
+ M Assets/Tests/Editor/Village/Integration/OpeningFlowIntegrationTest.cs
+ M Assets/Tests/Editor/Village/MainQuestConfigTests.cs
+ M Assets/Tests/Editor/Village/MainQuestManagerTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueConfigTests.cs
+ M Assets/Tests/Editor/Village/NodeDialogueControllerTests.cs
+ M Assets/Tests/Editor/Village/OpeningSequenceControllerTests.cs
+ M Assets/Tests/Editor/Village/ProgressionInstallerTests.cs
+ M Assets/Tests/Editor/Village/RedDotLayerSubsinkTests.cs
+ M Assets/Tests/Editor/Village/RedDotManagerTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionConfigTests.cs
+ M Assets/Tests/Editor/Village/StorageExpansionManagerTests.cs
+ M FILE_MAP.md
+ M adrs/ADR-002-it-stage-exemption-exit.md
+ M project-status.md
+ M session-logs/activity.log
+ M tech-debt.md
+ M tech/control-manifest.md
+ M tech/google-sheet-export-tool-spec.md
+?? Assets/Game/Resources/Config/Affinity.txt
+?? Assets/Game/Resources/Config/Affinity.txt.meta
+?? Assets/Game/Resources/Config/CGScene.txt
+?? Assets/Game/Resources/Config/CGScene.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt
+?? Assets/Game/Resources/Config/CharacterIntroLines.txt.meta
+?? Assets/Game/Resources/Config/CharacterIntros.txt
+?? Assets/Game/Resources/Config/CharacterIntros.txt.meta
+?? Assets/Game/Resources/Config/CharacterProfiles.txt
+?? Assets/Game/Resources/Config/CharacterProfiles.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt
+?? Assets/Game/Resources/Config/CharacterQuestionOptions.txt.meta
+?? Assets/Game/Resources/Config/CharacterQuestions.txt
+?? Assets/Game/Resources/Config/CharacterQuestions.txt.meta
+?? Assets/Game/Resources/Config/Combat.txt
+?? Assets/Game/Resources/Config/Combat.txt.meta
+?? Assets/Game/Resources/Config/CommissionRecipes.txt
+?? Assets/Game/Resources/Config/CommissionRecipes.txt.meta
+?? Assets/Game/Resources/Config/GiftSwords.txt
+?? Assets/Game/Resources/Config/GiftSwords.txt.meta
+?? Assets/Game/Resources/Config/Greeting.txt
+?? Assets/Game/Resources/Config/Greeting.txt.meta
+?? Assets/Game/Resources/Config/IdleChat.txt
+?? Assets/Game/Resources/Config/IdleChat.txt.meta
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt
+?? Assets/Game/Resources/Config/IdleChatAnswers.txt.meta
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt
+?? Assets/Game/Resources/Config/InitialResourceGrants.txt.meta
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt
+?? Assets/Game/Resources/Config/MainQuestUnlocks.txt.meta
+?? Assets/Game/Resources/Config/MainQuests.txt
+?? Assets/Game/Resources/Config/MainQuests.txt.meta
+?? Assets/Game/Resources/Config/Monster.txt
+?? Assets/Game/Resources/Config/Monster.txt.meta
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt
+?? Assets/Game/Resources/Config/NodeDialogueLines.txt.meta
+?? Assets/Game/Resources/Config/Personalities.txt
+?? Assets/Game/Resources/Config/Personalities.txt.meta
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt
+?? Assets/Game/Resources/Config/PersonalityAffinityRules.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt
+?? Assets/Game/Resources/Config/StorageExpansionRequirements.txt.meta
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt
+?? Assets/Game/Resources/Config/StorageExpansionStages.txt.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/CharacterProfileData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityAffinityRuleData.cs.meta
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs
+?? Assets/Game/Scripts/Village/CharacterQuestions/Data/PersonalityData.cs.meta
+?? Assets/Game/Scripts/Village/Gift/Data/
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs
+?? Assets/Game/Scripts/Village/MainQuest/Data/MainQuestUnlockData.cs.meta
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs
+?? Assets/Game/Scripts/Village/Storage/Data/StorageExpansionRequirementData.cs.meta
+?? dev-logs/2026-04-22-17.md
+?? dev-logs/2026-04-22-18.md
+?? dev-logs/2026-04-22-19.md
+?? dev-logs/2026-04-22-20.md
+?? dev-logs/2026-04-22-21.md
+?? dev-logs/2026-04-22-22.md
+?? dev-logs/2026-04-22-23.md
+?? dev-logs/2026-04-23-1.md
+?? tech/sprint-8-data-model-spec.md
+

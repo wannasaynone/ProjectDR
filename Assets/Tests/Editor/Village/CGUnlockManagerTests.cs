@@ -5,13 +5,14 @@ using NUnit.Framework;
 using ProjectDR.Village;
 using ProjectDR.Village.Navigation;
 using ProjectDR.Village.CG;
-using UnityEngine;
+using JsonFx.Json;
 
 namespace ProjectDR.Tests.Village
 {
     /// <summary>
     /// CGUnlockManager 的單元測試。
     /// 測試對象：建構驗證、解鎖邏輯、事件發布、配置反序列化。
+    /// Sprint 8 Wave 2.5：配合純陣列 DTO 重構（CGSceneData[]，廢棄 CGSceneConfigData 包裹類）。
     /// </summary>
     [TestFixture]
     public class CGUnlockManagerTests
@@ -36,49 +37,46 @@ namespace ProjectDR.Tests.Village
 
         private static CGSceneConfig CreateDefaultConfig()
         {
-            CGSceneConfigData data = new CGSceneConfigData
+            CGSceneData[] entries = new CGSceneData[]
             {
-                scenes = new CGSceneConfigEntry[]
+                new CGSceneData
                 {
-                    new CGSceneConfigEntry
-                    {
-                        id = 1,
-                        cgSceneId = "vcw_scene_1",
-                        characterId = "VillageChiefWife",
-                        requiredThreshold = 5,
-                        dialogueId = 1001,
-                        displayName = "溫柔的夜晚"
-                    },
-                    new CGSceneConfigEntry
-                    {
-                        id = 2,
-                        cgSceneId = "guard_scene_1",
-                        characterId = "Guard",
-                        requiredThreshold = 5,
-                        dialogueId = 1002,
-                        displayName = "月下的告白"
-                    },
-                    new CGSceneConfigEntry
-                    {
-                        id = 3,
-                        cgSceneId = "witch_scene_1",
-                        characterId = "Witch",
-                        requiredThreshold = 5,
-                        dialogueId = 1003,
-                        displayName = "實驗室的秘密"
-                    },
-                    new CGSceneConfigEntry
-                    {
-                        id = 4,
-                        cgSceneId = "farmgirl_scene_1",
-                        characterId = "FarmGirl",
-                        requiredThreshold = 5,
-                        dialogueId = 1004,
-                        displayName = "田間的午後"
-                    }
+                    id = 1,
+                    cg_scene_id = "vcw_scene_1",
+                    character_id = "VillageChiefWife",
+                    required_threshold = 5,
+                    dialogue_id = 1001,
+                    display_name = "溫柔的夜晚"
+                },
+                new CGSceneData
+                {
+                    id = 2,
+                    cg_scene_id = "guard_scene_1",
+                    character_id = "Guard",
+                    required_threshold = 5,
+                    dialogue_id = 1002,
+                    display_name = "月下的告白"
+                },
+                new CGSceneData
+                {
+                    id = 3,
+                    cg_scene_id = "witch_scene_1",
+                    character_id = "Witch",
+                    required_threshold = 5,
+                    dialogue_id = 1003,
+                    display_name = "實驗室的秘密"
+                },
+                new CGSceneData
+                {
+                    id = 4,
+                    cg_scene_id = "farmgirl_scene_1",
+                    character_id = "FarmGirl",
+                    required_threshold = 5,
+                    dialogue_id = 1004,
+                    display_name = "田間的午後"
                 }
             };
-            return new CGSceneConfig(data);
+            return new CGSceneConfig(entries);
         }
 
         // ===== 建構驗證 =====
@@ -312,31 +310,28 @@ namespace ProjectDR.Tests.Village
     public class CGSceneConfigTests
     {
         [Test]
-        public void Constructor_NullData_ThrowsArgumentNullException()
+        public void Constructor_NullEntries_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new CGSceneConfig(null));
         }
 
         [Test]
-        public void Constructor_ValidData_ParsesScenes()
+        public void Constructor_ValidEntries_ParsesScenes()
         {
-            CGSceneConfigData data = new CGSceneConfigData
+            CGSceneData[] entries = new CGSceneData[]
             {
-                scenes = new CGSceneConfigEntry[]
+                new CGSceneData
                 {
-                    new CGSceneConfigEntry
-                    {
-                        id = 1,
-                        cgSceneId = "test_scene",
-                        characterId = "TestChar",
-                        requiredThreshold = 10,
-                        dialogueId = 2001,
-                        displayName = "測試場景"
-                    }
+                    id = 1,
+                    cg_scene_id = "test_scene",
+                    character_id = "TestChar",
+                    required_threshold = 10,
+                    dialogue_id = 2001,
+                    display_name = "測試場景"
                 }
             };
 
-            CGSceneConfig config = new CGSceneConfig(data);
+            CGSceneConfig config = new CGSceneConfig(entries);
 
             IReadOnlyList<CGSceneInfo> scenes = config.GetScenesForCharacter("TestChar");
             Assert.AreEqual(1, scenes.Count);
@@ -347,35 +342,33 @@ namespace ProjectDR.Tests.Village
         // ===== ADR-001 / ADR-002 A02：IGameData 契約斷言 =====
 
         [Test]
-        public void CGSceneConfigEntry_ImplementsIGameData()
+        public void CGSceneData_ImplementsIGameData()
         {
-            CGSceneConfigEntry entry = new CGSceneConfigEntry
+            CGSceneData entry = new CGSceneData
             {
                 id = 7,
-                cgSceneId = "vcw_scene_1",
-                characterId = "VillageChiefWife",
-                requiredThreshold = 5,
-                dialogueId = 1001,
-                displayName = "溫柔的夜晚"
+                cg_scene_id = "vcw_scene_1",
+                character_id = "VillageChiefWife",
+                required_threshold = 5,
+                dialogue_id = 1001,
+                display_name = "溫柔的夜晚"
             };
 
             // IGameData 介面斷言
             Assert.IsInstanceOf<KahaGameCore.GameData.IGameData>(entry,
-                "CGSceneConfigEntry 必須實作 IGameData（ADR-001 / ADR-002 A02）");
+                "CGSceneData 必須實作 IGameData（ADR-001 / ADR-002 A02）");
             // ID 非 0
             Assert.AreNotEqual(0, entry.ID,
-                "CGSceneConfigEntry.ID 不得為 0（ADR-002 A02 反序列化要求）");
-            // Key 與 cgSceneId 一致
-            Assert.AreEqual(entry.cgSceneId, entry.Key,
-                "CGSceneConfigEntry.Key 應回傳與 cgSceneId 相同的語意字串");
+                "CGSceneData.ID 不得為 0（ADR-002 A02 反序列化要求）");
+            // Key 與 cg_scene_id 一致
+            Assert.AreEqual(entry.cg_scene_id, entry.Key,
+                "CGSceneData.Key 應回傳與 cg_scene_id 相同的語意字串");
         }
 
         [Test]
-        public void Constructor_NullScenes_NoException()
+        public void Constructor_EmptyEntries_NoException()
         {
-            CGSceneConfigData data = new CGSceneConfigData { scenes = null };
-
-            CGSceneConfig config = new CGSceneConfig(data);
+            CGSceneConfig config = new CGSceneConfig(new CGSceneData[0]);
 
             IReadOnlyList<CGSceneInfo> scenes = config.GetScenesForCharacter("AnyChar");
             Assert.AreEqual(0, scenes.Count);
@@ -384,32 +377,29 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetScenesByThreshold_ReturnsMatchingScenes()
         {
-            CGSceneConfigData data = new CGSceneConfigData
+            CGSceneData[] entries = new CGSceneData[]
             {
-                scenes = new CGSceneConfigEntry[]
+                new CGSceneData
                 {
-                    new CGSceneConfigEntry
-                    {
-                        id = 1,
-                        cgSceneId = "scene_1",
-                        characterId = "Char1",
-                        requiredThreshold = 5,
-                        dialogueId = 1001,
-                        displayName = "場景一"
-                    },
-                    new CGSceneConfigEntry
-                    {
-                        id = 2,
-                        cgSceneId = "scene_2",
-                        characterId = "Char1",
-                        requiredThreshold = 10,
-                        dialogueId = 1002,
-                        displayName = "場景二"
-                    }
+                    id = 1,
+                    cg_scene_id = "scene_1",
+                    character_id = "Char1",
+                    required_threshold = 5,
+                    dialogue_id = 1001,
+                    display_name = "場景一"
+                },
+                new CGSceneData
+                {
+                    id = 2,
+                    cg_scene_id = "scene_2",
+                    character_id = "Char1",
+                    required_threshold = 10,
+                    dialogue_id = 1002,
+                    display_name = "場景二"
                 }
             };
 
-            CGSceneConfig config = new CGSceneConfig(data);
+            CGSceneConfig config = new CGSceneConfig(entries);
 
             IReadOnlyList<CGSceneInfo> scenes = config.GetScenesByThreshold("Char1", 5);
             Assert.AreEqual(1, scenes.Count);
@@ -419,23 +409,20 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetSceneInfo_ValidId_ReturnsInfo()
         {
-            CGSceneConfigData data = new CGSceneConfigData
+            CGSceneData[] entries = new CGSceneData[]
             {
-                scenes = new CGSceneConfigEntry[]
+                new CGSceneData
                 {
-                    new CGSceneConfigEntry
-                    {
-                        id = 1,
-                        cgSceneId = "test_scene",
-                        characterId = "TestChar",
-                        requiredThreshold = 5,
-                        dialogueId = 1001,
-                        displayName = "測試"
-                    }
+                    id = 1,
+                    cg_scene_id = "test_scene",
+                    character_id = "TestChar",
+                    required_threshold = 5,
+                    dialogue_id = 1001,
+                    display_name = "測試"
                 }
             };
 
-            CGSceneConfig config = new CGSceneConfig(data);
+            CGSceneConfig config = new CGSceneConfig(entries);
 
             CGSceneInfo info = config.GetSceneInfo("test_scene");
             Assert.IsNotNull(info);
@@ -445,12 +432,7 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetSceneInfo_UnknownId_ReturnsNull()
         {
-            CGSceneConfigData data = new CGSceneConfigData
-            {
-                scenes = new CGSceneConfigEntry[0]
-            };
-
-            CGSceneConfig config = new CGSceneConfig(data);
+            CGSceneConfig config = new CGSceneConfig(new CGSceneData[0]);
 
             Assert.IsNull(config.GetSceneInfo("unknown"));
         }
@@ -458,21 +440,20 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void JsonDeserialization_ValidJson_ParsesCorrectly()
         {
-            string json = @"{
-                ""scenes"": [
-                    {
-                        ""id"": 1,
-                        ""cgSceneId"": ""vcw_scene_1"",
-                        ""characterId"": ""VillageChiefWife"",
-                        ""requiredThreshold"": 5,
-                        ""dialogueId"": 1001,
-                        ""displayName"": ""溫柔的夜晚""
-                    }
-                ]
-            }";
+            // Sprint 8 Wave 2.5：純陣列格式，使用 JsonFx 反序列化
+            string json = @"[
+                {
+                    ""id"": 1,
+                    ""cg_scene_id"": ""vcw_scene_1"",
+                    ""character_id"": ""VillageChiefWife"",
+                    ""required_threshold"": 5,
+                    ""dialogue_id"": 1001,
+                    ""display_name"": ""溫柔的夜晚""
+                }
+            ]";
 
-            CGSceneConfigData data = JsonUtility.FromJson<CGSceneConfigData>(json);
-            CGSceneConfig config = new CGSceneConfig(data);
+            CGSceneData[] entries = JsonReader.Deserialize<CGSceneData[]>(json);
+            CGSceneConfig config = new CGSceneConfig(entries);
 
             CGSceneInfo info = config.GetSceneInfo("vcw_scene_1");
             Assert.IsNotNull(info);

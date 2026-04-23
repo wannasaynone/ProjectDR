@@ -1,11 +1,12 @@
-// NodeDialogueConfigData — 節點劇情對話外部配置的 JSON DTO 與不可變配置物件。
-// 配置檔路徑：Assets/Game/Resources/Config/node-dialogue-config.json
-// 資料結構對應 A2 設計師產出：每行帶 id, line_id, node_id, sequence, speaker, text,
-// line_type, choice_branch。支援 VN 式選項分支（choice_prompt / choice_option / choice_response）。
+// NodeDialogueConfigData — 節點劇情對話外部配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：NodeDialogue
+// 對應 .txt 檔：nodedialogue.txt
 //
-// ADR-001 / ADR-002 A14 改造（2026-04-22）：
-//   NodeDialogueLineData 實作 KahaGameCore.GameData.IGameData，
-//   加 int id 欄位（流水號主鍵）+ 保留 line_id（語意字串外鍵）。
+// Sprint 8 Wave 2.5 重構：
+//   - 廢棄包裹類 NodeDialogueConfigData（schema_version/note/node_dialogue_lines[]）
+//   - NodeDialogueLineData 已實作 IGameData（A14 改造已完成）
+//   - NodeDialogueConfig 建構子改為接受 NodeDialogueLineData[]（純陣列格式）
+// ADR-001 / ADR-002 A14
 
 using System;
 using System.Collections.Generic;
@@ -33,12 +34,12 @@ namespace ProjectDR.Village.Dialogue
         public const string ChoiceResponse = "choice_response";
     }
 
-    // ===== JSON DTO（供 JsonUtility.FromJson 使用） =====
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
     /// <summary>
     /// 節點劇情的單一對話行（JSON DTO）。
-    /// 欄位命名對應 node-dialogue-config.json。
-    /// 實作 IGameData：int id 為流水號主鍵，line_id 為語意字串外鍵。
+    /// 實作 IGameData，int id 為流水號主鍵，line_id 為語意字串外鍵。
+    /// 對應 Sheets 分頁 NodeDialogue，.txt 檔 nodedialogue.txt。
     /// </summary>
     [Serializable]
     public class NodeDialogueLineData : KahaGameCore.GameData.IGameData
@@ -76,20 +77,6 @@ namespace ProjectDR.Village.Dialogue
         /// - 非空：僅在該分支被選中時播放（choice_option 與 choice_response 使用）。
         /// </summary>
         public string choice_branch;
-    }
-
-    /// <summary>節點劇情對話的完整外部配置（JSON DTO）。</summary>
-    [Serializable]
-    public class NodeDialogueConfigData
-    {
-        /// <summary>資料結構版本。</summary>
-        public int schema_version;
-
-        /// <summary>配置說明（撰寫者備註）。</summary>
-        public string note;
-
-        /// <summary>所有節點的對話行。</summary>
-        public NodeDialogueLineData[] node_dialogue_lines;
     }
 
     // ===== 不可變配置物件 =====
@@ -163,7 +150,7 @@ namespace ProjectDR.Village.Dialogue
 
     /// <summary>
     /// 節點劇情對話的不可變配置。
-    /// 從 NodeDialogueConfigData（JSON DTO）建構，依 node_id 分組並依 sequence 排序。
+    /// 從純陣列 DTO（NodeDialogueLineData[]）建構，依 node_id 分組並依 sequence 排序。
     /// </summary>
     public class NodeDialogueConfig
     {
@@ -173,20 +160,20 @@ namespace ProjectDR.Village.Dialogue
         public IReadOnlyCollection<string> NodeIds => _nodesById.Keys;
 
         /// <summary>
-        /// 從 JSON DTO 建構不可變配置。
+        /// 從純陣列 DTO 建構不可變配置。
         /// </summary>
-        /// <param name="data">JSON 反序列化後的 DTO。</param>
-        /// <exception cref="ArgumentNullException">data 為 null 時拋出。</exception>
-        public NodeDialogueConfig(NodeDialogueConfigData data)
+        /// <param name="entries">JsonFx 反序列化後的 NodeDialogueLineData 陣列（不可為 null）。</param>
+        /// <exception cref="ArgumentNullException">entries 為 null 時拋出。</exception>
+        public NodeDialogueConfig(NodeDialogueLineData[] entries)
         {
-            if (data == null)
+            if (entries == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw new ArgumentNullException(nameof(entries));
             }
 
             _nodesById = new Dictionary<string, NodeDialogueData>();
 
-            NodeDialogueLineData[] allLines = data.node_dialogue_lines ?? Array.Empty<NodeDialogueLineData>();
+            NodeDialogueLineData[] allLines = entries;
 
             // 依 node_id 分組
             Dictionary<string, List<NodeDialogueLineData>> grouped = new Dictionary<string, List<NodeDialogueLineData>>();

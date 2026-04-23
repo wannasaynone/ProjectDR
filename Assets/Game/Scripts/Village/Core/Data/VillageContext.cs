@@ -76,15 +76,13 @@ namespace ProjectDR.Village.Core
 
         /// <summary>
         /// 建構 VillageContext，注入根級服務。
-        /// Canvas、UIContainer 為必要欄位，由 VillageEntryPoint 傳入。
-        /// GameDataAccess 在 Sprint 7 期間允許為 null（所有 Installer 仍透過 constructor 直接注入 ConfigData，尚未使用此委派）。
-        /// Sprint 8 ADR-002 退出後，此欄位將成為唯一資料入口，屆時再加回 null check。
+        /// Canvas、UIContainer、GameDataAccess 均為必要欄位，由 VillageEntryPoint 傳入。
         /// 其他欄位由各 Installer 在 Install() 內填入（internal set）。
         /// </summary>
         /// <param name="canvas">UGUI Canvas 根節點（不可為 null）。</param>
         /// <param name="uiContainer">UI 物件容器 Transform（不可為 null）。</param>
-        /// <param name="gameDataAccess">IGameData 查詢委派（Sprint 7 期間允許為 null；Sprint 8 完整實作後將轉為必要）。</param>
-        /// <exception cref="System.ArgumentNullException">canvas 或 uiContainer 為 null 時拋出。</exception>
+        /// <param name="gameDataAccess">IGameData 查詢委派，指向 GameStaticDataManager.GetGameData（不可為 null）。</param>
+        /// <exception cref="System.ArgumentNullException">任何必要參數為 null 時拋出。</exception>
         public VillageContext(
             Canvas canvas,
             Transform uiContainer,
@@ -92,9 +90,7 @@ namespace ProjectDR.Village.Core
         {
             Canvas = canvas ?? throw new System.ArgumentNullException(nameof(canvas));
             UIContainer = uiContainer ?? throw new System.ArgumentNullException(nameof(uiContainer));
-            // TODO Sprint 8：ADR-002 退出後，此處恢復 null check：
-            // GameDataAccess = gameDataAccess ?? throw new System.ArgumentNullException(nameof(gameDataAccess));
-            GameDataAccess = gameDataAccess;
+            GameDataAccess = gameDataAccess ?? throw new System.ArgumentNullException(nameof(gameDataAccess));
         }
     }
 }

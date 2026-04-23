@@ -1,64 +1,56 @@
-// CGSceneConfigData -- CG 場景配置的 JSON DTO 與不可變配置物件。
-// 配置檔路徑：Assets/Game/Resources/Config/cg-scene-config.json
-// 此配置不經由 Google Sheets 管理，因為 IT 階段 CG 場景為簡易固定配置，
-// 正式版本再視需求決定是否遷移至 Google Sheets。
+// CGSceneConfigData — CG 場景外部配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：CGScene
+// 對應 .txt 檔：cgscene.txt
 //
-// ADR-001 / ADR-002 A02 改造（2026-04-22）：
-//   CGSceneConfigEntry 實作 KahaGameCore.GameData.IGameData，
-//   加 int id 欄位（流水號）+ 保留 cgSceneId（語意字串外鍵 Key）。
+// Sprint 8 Wave 2.5 重構：
+//   - CGSceneConfigEntry 改名為 CGSceneData，欄位改 snake_case（cg_scene_id / character_id 等）
+//   - 廢棄包裹類 CGSceneConfigData（純陣列格式，JsonFx 直接反序列化 CGSceneData[]）
+//   - CGSceneConfig 建構子改為接受 CGSceneData[]，CGSceneInfo 保留不可變物件層
+// ADR-001 / ADR-002 A02
 
 using System;
 using System.Collections.Generic;
 
 namespace ProjectDR.Village.CG
 {
-    // ===== JSON DTO（供 JsonUtility.FromJson 使用） =====
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
     /// <summary>
-    /// 單一 CG 場景的配置項（JSON DTO）。
-    /// 實作 IGameData，int id 為流水號主鍵，cgSceneId 為語意字串外鍵（Key）。
+    /// 單一 CG 場景配置（JSON DTO）。
+    /// 實作 IGameData，int id 為流水號主鍵，cg_scene_id 為語意字串外鍵。
+    /// 對應 Sheets 分頁 CGScene，.txt 檔 cgscene.txt。
     /// </summary>
     [Serializable]
-    public class CGSceneConfigEntry : KahaGameCore.GameData.IGameData
+    public class CGSceneData : KahaGameCore.GameData.IGameData
     {
         /// <summary>IGameData 主鍵（流水號）。對應 JSON 欄位 "id"。</summary>
         public int id;
 
-        /// <summary>IGameData 契約實作。回傳 int id 流水號。</summary>
+        /// <summary>IGameData 契約實作。</summary>
         public int ID => id;
 
-        /// <summary>CG 場景語意字串唯一 ID（語意字串外鍵）。對應 JSON 欄位 "cgSceneId"。</summary>
-        public string cgSceneId;
+        /// <summary>CG 場景語意識別符。對應 JSON 欄位 "cg_scene_id"。</summary>
+        public string cg_scene_id;
 
-        /// <summary>語意字串主鍵（與 cgSceneId 相同，提供 IGameData 雙欄位語義）。</summary>
-        public string Key => cgSceneId;
+        /// <summary>語意字串 Key。</summary>
+        public string Key => cg_scene_id;
 
-        /// <summary>所屬角色 ID。</summary>
-        public string characterId;
+        /// <summary>主角角色 ID。</summary>
+        public string character_id;
 
-        /// <summary>解鎖所需的好感度門檻值。</summary>
-        public int requiredThreshold;
+        /// <summary>觸發所需好感度門檻。</summary>
+        public int required_threshold;
 
-        /// <summary>對應的 KGC DialogueSystem 對話 ID。</summary>
-        public int dialogueId;
+        /// <summary>對應對話識別符（int）。</summary>
+        public int dialogue_id;
 
-        /// <summary>場景顯示名稱。</summary>
-        public string displayName;
-    }
-
-    /// <summary>CG 場景配置的完整外部資料（JSON DTO）。</summary>
-    [Serializable]
-    public class CGSceneConfigData
-    {
-        /// <summary>所有 CG 場景配置。</summary>
-        public CGSceneConfigEntry[] scenes;
+        /// <summary>顯示名稱（繁中）。</summary>
+        public string display_name;
     }
 
     // ===== 不可變資料物件 =====
 
-    /// <summary>
-    /// 單一 CG 場景的不可變資訊。
-    /// </summary>
+    /// <summary>單一 CG 場景的不可變資訊。</summary>
     public class CGSceneInfo
     {
         public string CgSceneId { get; }
@@ -81,7 +73,7 @@ namespace ProjectDR.Village.CG
 
     /// <summary>
     /// CG 場景系統的不可變配置。
-    /// 從 CGSceneConfigData（JSON DTO）建構，提供場景查詢 API。
+    /// 從 CGSceneData[]（純陣列 JSON DTO）建構，提供場景查詢 API。
     /// </summary>
     public class CGSceneConfig
     {
@@ -89,51 +81,46 @@ namespace ProjectDR.Village.CG
         private readonly Dictionary<string, List<CGSceneInfo>> _scenesByCharacter;
 
         /// <summary>
-        /// 從 JSON DTO 建構不可變配置。
+        /// 從純陣列 DTO 建構不可變配置。
         /// </summary>
-        /// <param name="data">JSON 反序列化後的 DTO。</param>
-        /// <exception cref="ArgumentNullException">data 為 null 時拋出。</exception>
-        public CGSceneConfig(CGSceneConfigData data)
+        /// <param name="entries">JsonFx 反序列化後的 CGSceneData 陣列。</param>
+        /// <exception cref="ArgumentNullException">entries 為 null 時拋出。</exception>
+        public CGSceneConfig(CGSceneData[] entries)
         {
-            if (data == null)
+            if (entries == null)
             {
-                throw new ArgumentNullException(nameof(data));
+                throw new ArgumentNullException(nameof(entries));
             }
 
             _sceneById = new Dictionary<string, CGSceneInfo>();
             _scenesByCharacter = new Dictionary<string, List<CGSceneInfo>>();
 
-            if (data.scenes == null) return;
-
-            foreach (CGSceneConfigEntry entry in data.scenes)
+            foreach (CGSceneData entry in entries)
             {
-                if (entry == null || string.IsNullOrEmpty(entry.cgSceneId)) continue;
+                if (entry == null || string.IsNullOrEmpty(entry.cg_scene_id)) continue;
 
                 CGSceneInfo info = new CGSceneInfo(
-                    entry.cgSceneId,
-                    entry.characterId,
-                    entry.requiredThreshold,
-                    entry.dialogueId,
-                    entry.displayName
-                );
+                    entry.cg_scene_id,
+                    entry.character_id,
+                    entry.required_threshold,
+                    entry.dialogue_id,
+                    entry.display_name);
 
-                _sceneById[entry.cgSceneId] = info;
+                _sceneById[entry.cg_scene_id] = info;
 
-                if (!string.IsNullOrEmpty(entry.characterId))
+                if (!string.IsNullOrEmpty(entry.character_id))
                 {
-                    if (!_scenesByCharacter.TryGetValue(entry.characterId, out List<CGSceneInfo> list))
+                    if (!_scenesByCharacter.TryGetValue(entry.character_id, out List<CGSceneInfo> list))
                     {
                         list = new List<CGSceneInfo>();
-                        _scenesByCharacter[entry.characterId] = list;
+                        _scenesByCharacter[entry.character_id] = list;
                     }
                     list.Add(info);
                 }
             }
         }
 
-        /// <summary>
-        /// 取得指定角色的所有 CG 場景配置。
-        /// </summary>
+        /// <summary>取得指定角色的所有 CG 場景配置。</summary>
         public IReadOnlyList<CGSceneInfo> GetScenesForCharacter(string characterId)
         {
             if (_scenesByCharacter.TryGetValue(characterId, out List<CGSceneInfo> list))
@@ -143,9 +130,7 @@ namespace ProjectDR.Village.CG
             return Array.AsReadOnly(Array.Empty<CGSceneInfo>());
         }
 
-        /// <summary>
-        /// 取得指定角色在指定門檻值下解鎖的場景。
-        /// </summary>
+        /// <summary>取得指定角色在指定門檻值下解鎖的場景。</summary>
         public IReadOnlyList<CGSceneInfo> GetScenesByThreshold(string characterId, int thresholdValue)
         {
             if (!_scenesByCharacter.TryGetValue(characterId, out List<CGSceneInfo> list))
@@ -164,9 +149,7 @@ namespace ProjectDR.Village.CG
             return matched.AsReadOnly();
         }
 
-        /// <summary>
-        /// 依 cgSceneId 取得場景資訊。找不到時回傳 null。
-        /// </summary>
+        /// <summary>依 cg_scene_id 取得場景資訊。找不到時回傳 null。</summary>
         public CGSceneInfo GetSceneInfo(string cgSceneId)
         {
             if (_sceneById.TryGetValue(cgSceneId, out CGSceneInfo info))

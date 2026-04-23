@@ -42,9 +42,13 @@ namespace ProjectDR.Village.Core
     {
         // ===== 建構子注入（由 VillageEntryPoint 傳入） =====
 
-        private readonly CharacterQuestionsConfigData _characterQuestionsData;
-        private readonly GreetingConfigData _greetingData;
-        private readonly IdleChatConfigData _idleChatData;
+        private readonly CharacterQuestionData[] _questionEntries;
+        private readonly CharacterQuestionOptionData[] _questionOptionEntries;
+        private readonly CharacterProfileData[] _profileEntries;
+        private readonly PersonalityAffinityRuleData[] _affinityRuleEntries;
+        private readonly GreetingData[] _greetingEntries;
+        private readonly IdleChatTopicData[] _idleChatTopicEntries;
+        private readonly IdleChatAnswerData[] _idleChatAnswerEntries;
         private readonly RedDotManager _redDotManager;
         private readonly float _characterQuestionCountdownSeconds;
         private readonly float _dialogueCooldownBaseSeconds;
@@ -68,31 +72,46 @@ namespace ProjectDR.Village.Core
         private Action<CharacterUnlockedEvent> _onCharacterUnlocked;
 
         /// <summary>
-        /// 建構 DialogueFlowInstaller，注入所需配置與依賴。
+        /// 建構 DialogueFlowInstaller，注入所需配置純陣列與依賴。
         /// </summary>
-        /// <param name="characterQuestionsData">角色發問 JSON 反序列化後的 DTO。</param>
-        /// <param name="greetingData">招呼語 JSON 反序列化後的 DTO。</param>
-        /// <param name="idleChatData">閒聊 JSON 反序列化後的 DTO。</param>
+        /// <param name="questionEntries">角色發問主表 DTO 陣列（不可為 null）。</param>
+        /// <param name="questionOptionEntries">角色發問選項子表 DTO 陣列（不可為 null）。</param>
+        /// <param name="profileEntries">角色偏好個性 DTO 陣列（不可為 null）。</param>
+        /// <param name="affinityRuleEntries">個性好感度規則 DTO 陣列（不可為 null）。</param>
+        /// <param name="greetingEntries">招呼語 DTO 陣列（不可為 null）。</param>
+        /// <param name="idleChatTopicEntries">閒聊主題主表 DTO 陣列（不可為 null）。</param>
+        /// <param name="idleChatAnswerEntries">閒聊回答子表 DTO 陣列（不可為 null）。</param>
         /// <param name="redDotManager">
-        ///   紅點管理器（暫留 ProjectDR.Village namespace，待 E5 搬至 Progression 後改由 ctx 取得）。
-        ///   可傳 null；null 時 GreetingPresenter 視為沒有紅點（一律播招呼語）。
+        ///   紅點管理器。可傳 null；null 時 GreetingPresenter 視為沒有紅點（一律播招呼語）。
         /// </param>
         /// <param name="characterQuestionCountdownSeconds">角色發問倒數秒數（預設 60s）。</param>
         /// <param name="dialogueCooldownBaseSeconds">玩家發問 CD 基礎秒數（預設 60s）。</param>
         public DialogueFlowInstaller(
-            CharacterQuestionsConfigData characterQuestionsData,
-            GreetingConfigData greetingData,
-            IdleChatConfigData idleChatData,
+            CharacterQuestionData[] questionEntries,
+            CharacterQuestionOptionData[] questionOptionEntries,
+            CharacterProfileData[] profileEntries,
+            PersonalityAffinityRuleData[] affinityRuleEntries,
+            GreetingData[] greetingEntries,
+            IdleChatTopicData[] idleChatTopicEntries,
+            IdleChatAnswerData[] idleChatAnswerEntries,
             RedDotManager redDotManager,
             float characterQuestionCountdownSeconds,
             float dialogueCooldownBaseSeconds)
         {
-            _characterQuestionsData = characterQuestionsData
-                ?? throw new ArgumentNullException(nameof(characterQuestionsData));
-            _greetingData = greetingData
-                ?? throw new ArgumentNullException(nameof(greetingData));
-            _idleChatData = idleChatData
-                ?? throw new ArgumentNullException(nameof(idleChatData));
+            _questionEntries = questionEntries
+                ?? throw new ArgumentNullException(nameof(questionEntries));
+            _questionOptionEntries = questionOptionEntries
+                ?? throw new ArgumentNullException(nameof(questionOptionEntries));
+            _profileEntries = profileEntries
+                ?? throw new ArgumentNullException(nameof(profileEntries));
+            _affinityRuleEntries = affinityRuleEntries
+                ?? throw new ArgumentNullException(nameof(affinityRuleEntries));
+            _greetingEntries = greetingEntries
+                ?? throw new ArgumentNullException(nameof(greetingEntries));
+            _idleChatTopicEntries = idleChatTopicEntries
+                ?? throw new ArgumentNullException(nameof(idleChatTopicEntries));
+            _idleChatAnswerEntries = idleChatAnswerEntries
+                ?? throw new ArgumentNullException(nameof(idleChatAnswerEntries));
             _redDotManager = redDotManager; // 允許 null（GreetingPresenter 自行防守）
             _characterQuestionCountdownSeconds = characterQuestionCountdownSeconds > 0f
                 ? characterQuestionCountdownSeconds : 60f;
@@ -114,7 +133,8 @@ namespace ProjectDR.Village.Core
                 throw new InvalidOperationException("DialogueFlowInstaller.Install: ctx 不可為 null");
 
             // ===== 角色發問 =====
-            _characterQuestionsConfig = new CharacterQuestionsConfig(_characterQuestionsData);
+            _characterQuestionsConfig = new CharacterQuestionsConfig(
+                _questionEntries, _questionOptionEntries, _profileEntries, _affinityRuleEntries);
 
             // AffinityInstaller（B4c）已將 AffinityManager 以 IAffinityQuery 暴露至 ctx.AffinityReadOnly。
             // CharacterQuestionsManager 需要寫入好感度（AddAffinity），因此 cast 回具體型別。
@@ -134,11 +154,11 @@ namespace ProjectDR.Village.Core
                 new CharacterQuestionCountdownManager(_characterQuestionCountdownSeconds);
 
             // ===== 招呼語 =====
-            _greetingConfig = new GreetingConfig(_greetingData);
+            _greetingConfig = new GreetingConfig(_greetingEntries);
             _greetingPresenter = new GreetingPresenter(_greetingConfig, _redDotManager);
 
             // ===== 閒聊 =====
-            _idleChatConfig = new IdleChatConfig(_idleChatData);
+            _idleChatConfig = new IdleChatConfig(_idleChatTopicEntries, _idleChatAnswerEntries);
             _idleChatPresenter = new IdleChatPresenter(_idleChatConfig);
 
             // ===== 對話 CD / 體力 =====

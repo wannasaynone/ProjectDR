@@ -1,33 +1,28 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using UnityEngine;
 using ProjectDR.Village;
 using ProjectDR.Village.Progression;
 
 namespace ProjectDR.Tests.Village
 {
     /// <summary>
-    /// InitialResourcesConfig / InitialResourcesConfigData 單元測試。
+    /// InitialResourcesConfig / InitialResourceGrantData 單元測試。
+    /// Sprint 8 Wave 2.5：配合純陣列 DTO 重構（InitialResourceGrantData[]，廢棄 InitialResourcesConfigData 包裹類）。
     /// </summary>
     [TestFixture]
     public class InitialResourcesConfigTests
     {
         [Test]
-        public void Constructor_NullData_ThrowsArgumentNullException()
+        public void Constructor_NullEntries_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new InitialResourcesConfig(null));
         }
 
         [Test]
-        public void Constructor_EmptyGrants_NoEntries()
+        public void Constructor_EmptyEntries_NoEntries()
         {
-            InitialResourcesConfigData data = new InitialResourcesConfigData
-            {
-                schema_version = 1,
-                grants = new InitialResourceGrantData[0]
-            };
-            InitialResourcesConfig config = new InitialResourcesConfig(data);
+            InitialResourcesConfig config = new InitialResourcesConfig(new InitialResourceGrantData[0]);
             Assert.IsNull(config.GetGrant("any"));
             Assert.AreEqual(0, config.GetGrantsByTrigger("any").Count);
         }
@@ -35,7 +30,6 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetGrant_ExistingGrantId_ReturnsEntry()
         {
-            // Sprint 6 重構後：unlock_farm_girl_seed 已移除，改測試仍存在的 unlock_guard_sword
             InitialResourcesConfig config = BuildConfig();
             InitialResourceGrant grant = config.GetGrant("unlock_guard_sword");
             Assert.IsNotNull(grant);
@@ -63,16 +57,12 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GetGrantsByTrigger_MultipleInOneTrigger()
         {
-            InitialResourcesConfigData data = new InitialResourcesConfigData
+            InitialResourceGrantData[] entries = new InitialResourceGrantData[]
             {
-                schema_version = 1,
-                grants = new InitialResourceGrantData[]
-                {
-                    new InitialResourceGrantData { grant_id = "g1", trigger_id = "shared_trigger", item_id = "a", quantity = 1 },
-                    new InitialResourceGrantData { grant_id = "g2", trigger_id = "shared_trigger", item_id = "b", quantity = 2 }
-                }
+                new InitialResourceGrantData { id = 1, grant_id = "g1", trigger_id = "shared_trigger", item_id = "a", quantity = 1 },
+                new InitialResourceGrantData { id = 2, grant_id = "g2", trigger_id = "shared_trigger", item_id = "b", quantity = 2 }
             };
-            InitialResourcesConfig config = new InitialResourcesConfig(data);
+            InitialResourcesConfig config = new InitialResourcesConfig(entries);
             IReadOnlyList<InitialResourceGrant> grants = config.GetGrantsByTrigger("shared_trigger");
             Assert.AreEqual(2, grants.Count);
         }
@@ -80,15 +70,11 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GrantWithEmptyItemId_HasItemIsFalse()
         {
-            InitialResourcesConfigData data = new InitialResourcesConfigData
+            InitialResourceGrantData[] entries = new InitialResourceGrantData[]
             {
-                schema_version = 1,
-                grants = new InitialResourceGrantData[]
-                {
-                    new InitialResourceGrantData { grant_id = "empty", trigger_id = "t", item_id = "", quantity = 0 }
-                }
+                new InitialResourceGrantData { id = 1, grant_id = "empty", trigger_id = "t", item_id = "", quantity = 0 }
             };
-            InitialResourcesConfig config = new InitialResourcesConfig(data);
+            InitialResourcesConfig config = new InitialResourcesConfig(entries);
             InitialResourceGrant grant = config.GetGrant("empty");
             Assert.IsFalse(grant.HasItem);
         }
@@ -96,15 +82,11 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GrantWithNullItemId_IsTreatedAsEmpty()
         {
-            InitialResourcesConfigData data = new InitialResourcesConfigData
+            InitialResourceGrantData[] entries = new InitialResourceGrantData[]
             {
-                schema_version = 1,
-                grants = new InitialResourceGrantData[]
-                {
-                    new InitialResourceGrantData { grant_id = "null_item", trigger_id = "t", item_id = null, quantity = 5 }
-                }
+                new InitialResourceGrantData { id = 1, grant_id = "null_item", trigger_id = "t", item_id = null, quantity = 5 }
             };
-            InitialResourcesConfig config = new InitialResourcesConfig(data);
+            InitialResourcesConfig config = new InitialResourcesConfig(entries);
             InitialResourceGrant grant = config.GetGrant("null_item");
             Assert.IsNotNull(grant);
             Assert.AreEqual("", grant.ItemId);
@@ -114,16 +96,12 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void GrantWithNullGrantId_Skipped()
         {
-            InitialResourcesConfigData data = new InitialResourcesConfigData
+            InitialResourceGrantData[] entries = new InitialResourceGrantData[]
             {
-                schema_version = 1,
-                grants = new InitialResourceGrantData[]
-                {
-                    new InitialResourceGrantData { grant_id = null, trigger_id = "t", item_id = "a", quantity = 1 },
-                    new InitialResourceGrantData { grant_id = "g1", trigger_id = "t", item_id = "a", quantity = 1 }
-                }
+                new InitialResourceGrantData { id = 1, grant_id = null, trigger_id = "t", item_id = "a", quantity = 1 },
+                new InitialResourceGrantData { id = 2, grant_id = "g1", trigger_id = "t", item_id = "a", quantity = 1 }
             };
-            InitialResourcesConfig config = new InitialResourcesConfig(data);
+            InitialResourcesConfig config = new InitialResourcesConfig(entries);
             Assert.IsNotNull(config.GetGrant("g1"));
             IReadOnlyList<InitialResourceGrant> grants = config.GetGrantsByTrigger("t");
             Assert.AreEqual(1, grants.Count);
@@ -167,26 +145,6 @@ namespace ProjectDR.Tests.Village
                 "initial_backpack_node0 應保留");
         }
 
-        [Test]
-        public void RealJsonFile_DeserializesSuccessfully()
-        {
-            // Sprint 6 重構後：移除 unlock_farm_girl_seed / unlock_witch_herb；保留 unlock_guard_sword / initial_backpack_node0
-            TextAsset asset = Resources.Load<TextAsset>("Config/initial-resources-config");
-            if (asset == null)
-            {
-                Assert.Pass("initial-resources-config 資源不存在，跳過真實 JSON 測試。");
-                return;
-            }
-
-            InitialResourcesConfigData data = JsonUtility.FromJson<InitialResourcesConfigData>(asset.text);
-            Assert.IsNotNull(data);
-            InitialResourcesConfig config = new InitialResourcesConfig(data);
-            Assert.IsNull(config.GetGrant("unlock_farm_girl_seed"), "unlock_farm_girl_seed 應已從 JSON 中移除");
-            Assert.IsNull(config.GetGrant("unlock_witch_herb"), "unlock_witch_herb 應已從 JSON 中移除");
-            Assert.IsNotNull(config.GetGrant("unlock_guard_sword"), "unlock_guard_sword 應保留");
-            Assert.IsNotNull(config.GetGrant("initial_backpack_node0"), "initial_backpack_node0 應保留");
-        }
-
         // ===== IGameData 契約斷言（ADR-001 / ADR-002 A11）=====
 
         [Test]
@@ -209,36 +167,32 @@ namespace ProjectDR.Tests.Village
         }
 
         /// <summary>
-        /// Sprint 6 重構後的測試用配置（A11 改造：加 id 欄位）。
+        /// Sprint 8 Wave 2.5 改用純陣列建構。
         /// 移除 unlock_farm_girl_seed / unlock_witch_herb（決策 6：物資完全依賴探索）。
         /// 保留 initial_backpack_node0 / unlock_guard_sword。
         /// </summary>
         private static InitialResourcesConfig BuildConfig()
         {
-            InitialResourcesConfigData data = new InitialResourcesConfigData
+            InitialResourceGrantData[] entries = new InitialResourceGrantData[]
             {
-                schema_version = 2,
-                grants = new InitialResourceGrantData[]
+                new InitialResourceGrantData
                 {
-                    new InitialResourceGrantData
-                    {
-                        id = 1,
-                        grant_id = "initial_backpack_node0",
-                        trigger_id = InitialResourcesTriggerIds.Node0Start,
-                        item_id = "",
-                        quantity = 0
-                    },
-                    new InitialResourceGrantData
-                    {
-                        id = 2,
-                        grant_id = "unlock_guard_sword",
-                        trigger_id = InitialResourcesTriggerIds.GuardSwordAsked,
-                        item_id = "gift_sword_wooden",
-                        quantity = 1
-                    }
+                    id = 1,
+                    grant_id = "initial_backpack_node0",
+                    trigger_id = InitialResourcesTriggerIds.Node0Start,
+                    item_id = "",
+                    quantity = 0
+                },
+                new InitialResourceGrantData
+                {
+                    id = 2,
+                    grant_id = "unlock_guard_sword",
+                    trigger_id = InitialResourcesTriggerIds.GuardSwordAsked,
+                    item_id = "gift_sword_wooden",
+                    quantity = 1
                 }
             };
-            return new InitialResourcesConfig(data);
+            return new InitialResourcesConfig(entries);
         }
     }
 }

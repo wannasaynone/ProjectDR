@@ -6,27 +6,28 @@
 |------|------|
 | `project-status.md` | 專案狀態檔（當前階段、階段焦點、活躍 Sprint、待決事項、已知阻塞） |
 | `project-tbd.md` | 專案級 TBD 池（跨 Sprint 累積的製作人待拍板 placeholder 清單，2026-04-20 建立；類別：intro/node/quest/resource/recipe/storage/balance） |
-| `tech-debt.md` | 技術債登記（Sprint 7 D5 首次建立；當前 11 條追蹤；含 Sprint 8 候選項：A8 消費點改造、資料層 IGameData 重構、KGC API Key 硬編等） |
+| `tech-debt.md` | 技術債登記（Sprint 7 D5 首次建立；Sprint 8 D4/E1 更新：TD-2026-011 VillageContext.gameDataAccess 接線閉環；新增 TD-2026-012 GiftSwords / TD-2026-013 Personalities 無 runtime 使用者待未來） |
 
 ## ADR 技術決策記錄
 
 | 檔案 | 用途 |
 |------|------|
 | `adrs/ADR-001-data-governance-contract.md` | ADR-001：資料治理契約（IGameData 介面 + GameStaticDataManager 註冊；Accepted） |
-| `adrs/ADR-002-it-stage-exemption-exit.md` | ADR-002：IT 階段豁免退出 Gate（[A][B][C][D] 四區塊清單，退出條件：全 ✅ + DEV-DATA-INTAKE-REVIEW PASS；2026-04-22 加註 ADR-004 路徑引用） |
+| `adrs/ADR-002-it-stage-exemption-exit.md` | ADR-002：IT 階段豁免退出 Gate（[A][B][C][D] 四區塊清單，退出條件：全 ✅ + DEV-DATA-INTAKE-REVIEW PASS；Sprint 8 v1.7 Executed Full Exit 2026-04-22；VS 啟動封鎖已解除） |
 | `adrs/ADR-003-village-composition-root-contract.md` | ADR-003：Village Composition Root 契約（IVillageInstaller + VillageContext + VillageEntryPoint 瘦身三元契約；Install 順序鐵律；2026-04-22 Accepted） |
 | `adrs/ADR-004-script-organization-structure-contract.md` | ADR-004：Script 組織結構契約（21 模組 × 5 型別層、Namespace 跟資料夾、新檔決策樹、70+ 檔案分配表；2026-04-22 Accepted） |
 | `adrs/index.md` | ADR 總表索引（列出所有 ADR 狀態與主題分類；2026-04-22 建立） |
-| `adrs/tr-registry.yaml` | 技術需求登記表（TR-ID 與 ADR 綁定；2026-04-22 新增 TR-arch-001~004） |
+| `adrs/tr-registry.yaml` | 技術需求登記表（TR-ID 與 ADR 綁定；2026-04-22 新增 TR-arch-001~004；Sprint 8 D2：TR-data-001/002/003 + TR-save-001 狀態 pending→covered） |
 
 ## 專案技術文件（tech/）
 
 | 檔案 | 用途 |
 |------|------|
-| `tech/control-manifest.md` | Control Manifest — 從 4 條 Accepted ADR 抽取的平面化規則清單（必做 22 / 禁做 20 / 護欄 4；Manifest Version 2026-04-22；dev-agent 實作前必讀） |
+| `tech/control-manifest.md` | Control Manifest — 從 4 條 Accepted ADR 抽取的平面化規則清單（Sprint 8 v1.1 重建 2026-04-22；50 條：必做/禁做/護欄；dev-agent 實作前必讀） |
 | `tech/data-governance-workflow-patches.md` | 資料治理工作流補丁文件（IGameData 規格補丁記錄） |
 | `tech/sprint-7-workflow-retro.md` | Sprint 7 新 /development-flow Phase 2 首次實測 Retro（6 項觀察、6 項流程修補建議清單；2026-04-22 建立）|
-| `tech/google-sheet-export-tool-spec.md` | Google Sheet Export Tool 使用規範（KGC 工具串接、13 分頁對應表、首次設定 + 日常操作 + 疑難排解 + 已知限制；Sprint 7 A6-4；對應 ADR-002 [C02]；2026-04-22 建立） |
+| `tech/google-sheet-export-tool-spec.md` | Google Sheet Export Tool 使用規範（KGC 工具串接、首次設定 + 日常操作 + 疑難排解 + 已知限制；對應 ADR-002 [C02]；Sprint 7 A6-4 建立 v1.0；Sprint 8 C1 升版 v1.1 2026-04-23：§ 2 對應表重寫為 22 個 PascalCase 分頁純陣列 + 主表↔子表一對多映射規則 + § 2.3 廢棄清單；移除 Sprint 7 狀態警告段） |
+| `tech/sprint-8-data-model-spec.md` | Sprint 8 資料模型 Spec — 6 技術決策拍板（Q2~Q7）+ 22 個 IGameData DTO 結構定案 + 22 個 Sheets 分頁 header 設計 + 舊資料遷移計畫 + ADR-001/002/004 合規檢查 + 未來維護守則；Sprint 8 Wave 2；dev-head 主筆；2026-04-22 建立 |
 
 ## GDD 設計文件
 
@@ -276,27 +277,38 @@
 
 ## 戰鬥配置資料（Assets/Game/Resources/Config）
 
+Sprint 8（2026-04-22）ADR-002 Full Exit 重構後狀態：22 個 PascalCase 純陣列 IGameData `.txt` + 1 個豁免 `.txt` + Setting.asset。舊 13 個 kebab-case `*-config.txt` 已刪除（Wave 2.6 B4 Convert + 2026-04-22 dev-log-21）；完整分頁↔檔名↔DTO↔IGameData 主鍵對應見 [`tech/google-sheet-export-tool-spec.md`](tech/google-sheet-export-tool-spec.md) § 2.2。
+
 | 檔案 | 用途 |
 |------|------|
-| `Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset` | KGC GoogleSheet2JsonSetting ScriptableObject（A6-1 搬入 2026-04-22）；sheetID 已填入；sheetNames 含 13 個分頁；Inspector 「Start Convert」按鈕可觸發 Sheets → TXT 匯出 |
-| `Assets/Game/Resources/Config/combat-config.txt` | 玩家初始數值（HP/ATK/DEF/SPD）、劍攻擊參數（角度、範圍、冷卻）、移動速度參數（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/monster-config.txt` | 魔物種類定義（Slime、Bat：HP/ATK/DEF/SPD、移動冷卻、視野、攻擊參數、顏色）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/affinity-config.txt` | 好感度門檻配置（各角色門檻值陣列，IT 階段四角色各 [5]）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/cg-scene-config.txt` | CG 場景配置（角色對應 CG 場景 ID、門檻值、對話 ID、顯示名稱）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/commission-recipes-config.txt` | 委託配方表（A7 placeholder：農女 3 + 魔女 3 + 守衛 3 條配方，含輸入/產出/時間/格子上限）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/storage-expansion-config.txt` | 倉庫擴建階段表（A6 placeholder：5 級擴建 100→350，物資與等待時間遞增曲線）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/initial-resources-config.txt` | 初始資源配置表（A4 placeholder：節點 0 空背包、農女解鎖/魔女解鎖/守衛歸來事件贈送物）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/gift-sword-config.txt` | 贈劍屬性表（A4-3 placeholder：木劍 ATK+3，守衛歸來事件贈送）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/character-intro-config.txt` | 角色登場 CG + 短劇情（A1 placeholder：4 位角色場景描述 + 對話行，village_chief_wife/farm_girl/witch/guard）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/player-questions-config.txt` | 玩家發問配置（B14 placeholder：28 題，VCW 12/農女 9/魔女 9/守衛 0（F12 決策 6-13 移除 guard_ask_sword），分 stage 0/1/2 三批解鎖，待製作人撰寫正式回答）（A6-2 由 .json 改名 2026-04-22） |
-<!-- guard-first-meet-dialogue-config.json 已刪除（A08 併入 NodeDialogueConfig，2026-04-22）；內容移至 node-dialogue-config.json node_id="guard_first_meet" -->
-| `Assets/Game/Resources/Config/character-questions-config.txt` | 角色發問配置（Sprint 5 A1~A3 placeholder：4 個性類型定義 personality_gentle/lively/calm/assertive、4 角色個性偏好對應、280 題角色發問 4 角色 × 7 級 × 10 題 × 4 個性選項；所有文字程式化 placeholder 待製作人後續撰寫）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/greeting-config.txt` | 招呼語配置（Sprint 5 A4 placeholder：280 句 4 角色 × 7 級 × 10 句；進入角色互動畫面自動播放、L1/L4 紅點亮時跳過、L2/L3 仍播放）（A6-2 由 .json 改名 2026-04-22） |
-| `Assets/Game/Resources/Config/idle-chat-config.txt` | [閒聊] 問題池配置（Sprint 5 A5 placeholder：4 角色 × 20 題 × 3 回答；玩家 40 題池耗盡後觸發的隨機問答 fallback）（A6-2 由 .json 改名 2026-04-22） |
+| `Assets/Game/Resources/Config/_Google Sheet 2 Json Setting.asset` | KGC GoogleSheet2JsonSetting ScriptableObject（A6-1 搬入 2026-04-22；Sprint 8 B3 `sheetNames[]` 擴充至 22 筆 PascalCase 分頁）；sheetID 已填入；Inspector 「Start Convert」按鈕可觸發 Sheets → 22 個 `.txt` 匯出 |
+| `Assets/Game/Resources/Config/Affinity.txt` | 好感度門檻配置（主表；AffinityCharacterData；5 筆：4 角色 + 1 default）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/CGScene.txt` | CG 場景配置（主表；CGSceneData；4 筆角色對應 CG 場景）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/CharacterIntros.txt` | 角色登場 CG + 短劇情主表（CharacterIntroData；4 位角色場景 metadata）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/CharacterIntroLines.txt` | 角色登場劇情對話行子表（CharacterIntroLineData；FK `intro_id` → CharacterIntros；69 筆對話行；dev-log-21 欄位錯位修復後）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/CharacterProfiles.txt` | 角色個性偏好對應表（主表，Q7 新增；CharacterProfileData；4 筆）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/CharacterQuestions.txt` | 角色發問主表（CharacterQuestionData；4 角色 × 7 級 × 10 題 = 280 題 placeholder）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/CharacterQuestionOptions.txt` | 角色發問選項子表（CharacterQuestionOptionData；FK `question_id`；1120 筆 = 280 題 × 4 個性選項）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/Combat.txt` | 戰鬥系統 singleton config（CombatConfigData；id=1 固定；玩家數值、劍攻擊、移動速度、擊退）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/CommissionRecipes.txt` | 委託配方表（主表；CommissionRecipeData；9 筆：農女 3 + 魔女 3 + 守衛 3）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/GiftSwords.txt` | 贈劍屬性主表（GiftSwordData；1 筆木劍 placeholder，守衛歸來事件贈送）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/Greeting.txt` | 招呼語主表（GreetingData；4 角色 × 7 級 × 10 句 = 280 句 placeholder）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/IdleChat.txt` | 閒聊話題主表（IdleChatTopicData；4 角色 × 20 題 = 80 筆）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/IdleChatAnswers.txt` | 閒聊回答子表（IdleChatAnswerData；FK `topic_id`；240 筆 = 80 題 × 3 回答）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/InitialResourceGrants.txt` | 初始資源發放主表（InitialResourceGrantData；節點 0 + 角色解鎖事件贈送物）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/MainQuests.txt` | 主線任務序列主表（MainQuestData；T0~T2；Q3 拍板後 `unlock_on_complete` 已拆入子表）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/MainQuestUnlocks.txt` | 主線任務解鎖規則子表（MainQuestUnlockData；FK `main_quest_id`；Q3 新增；7 筆 unlock_type=quest/event/feature）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/Monster.txt` | 魔物種類主表（MonsterData；Slime、Bat；HP/ATK/DEF/SPD、移動冷卻、視野、攻擊參數、顏色）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/NodeDialogueLines.txt` | 節點劇情對話行子表（NodeDialogueLineData；軟綁定 `node_id`，無對應主表；35 筆：node_0/1/2 + guard_first_meet 合併）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/Personalities.txt` | 個性類型主表（PersonalityData，Q7 新增；4 筆：gentle/lively/calm/assertive）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/PersonalityAffinityRules.txt` | 角色×個性好感度增量規則表（PersonalityAffinityRuleData，Q7 新增；16 筆 = 4 角色 × 4 個性）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/StorageExpansionStages.txt` | 倉庫擴建階段主表（StorageExpansionStageData；ID = `level`；6 筆 level 0~5）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/StorageExpansionRequirements.txt` | 倉庫擴建物資需求子表（StorageExpansionRequirementData；FK `stage_level`；Q4 新增；~15 筆）— Sprint 8 純陣列 IGameData |
+| `Assets/Game/Resources/Config/player-questions-config.txt` | 玩家發問配置（PlayerQuestionsConfigData；28 題 placeholder；**EXEMPT: ADR-002 A15**；IT 階段保留舊 kebab-case 命名與手動 JSON 格式；不在 `sheetNames[]`，VS 階段評估後重構） |
 | `Assets/Game/Resources/CG/` | 登場 CG Sprite 存放目錄（IT 階段空目錄，找不到 Sprite 時顯示深紫色 placeholder 色塊） |
-| `Assets/Game/Resources/Config/node-dialogue-config.txt` | 節點 0/1/2 劇情對話（A2 placeholder：村長夫人三節點對話、VN 選項、選擇後回應；choice_branch 標記農女/魔女分支；id 32~35 guard_first_meet 並入）（A6-2 由 .json 改名 2026-04-22） |
-| ~~`Assets/Game/Resources/Config/guard-return-config.json`~~ | ~~守衛歸來事件劇情~~ — **已刪除**（E6 2026-04-22，A09 GuardReturnConfigData dead code 整包移除）|
-| `Assets/Game/Resources/Config/main-quest-config.txt` | 主線任務序列 T0~T4（A5 placeholder：5 個任務，名稱/描述/完成條件/獎勵 grant_id/解鎖事件）（A6-2 由 .json 改名 2026-04-22） |
+<!-- guard-first-meet-dialogue-config.json 已刪除（A08 併入 NodeDialogueLines，2026-04-22）；內容移至 NodeDialogueLines.txt node_id="guard_first_meet" -->
+<!-- ~~guard-return-config.json~~ 已刪除（E6 2026-04-22，A09 GuardReturnConfigData dead code 整包移除）-->
+<!-- 舊 13 個 kebab-case *-config.txt（affinity/cg-scene/character-intro/character-questions/combat/commission-recipes/gift-sword/greeting/idle-chat/initial-resources/main-quest/monster/node-dialogue/storage-expansion）於 Sprint 8 Wave 2.6 B4 dev-log-21 由新 22 個 PascalCase 純陣列取代 -->
 <!-- Assets/Resources/Data/ 目錄已刪除（A6-1 2026-04-22，Setting.asset 搬至 Config/，空目錄移除） -->
 
 ## 測試程式碼（Tests）
@@ -414,3 +426,10 @@
 | `dev-logs/2026-04-22-14.md` | Sprint 7 A6 降級收尾（純文件修正）：A5/A6 checkbox 降級標記、tool-spec Sprint 7 狀態段落、ADR-002 v1.6 Partial Exit 追加、session-state 更新 |
 | `dev-logs/2026-04-22-15.md` | D7 緊急修復 1：VillageContext ctor ArgumentNullException（gameDataAccess null）；null check 放寬 + 回歸測試；1426/1426 全綠 |
 | `dev-logs/2026-04-22-16.md` | D7 緊急修復 2：守衛首次進入無取劍對白；StartDialoguePlayback 覆蓋 guard_first_meet 根因修復 + T1b 回歸測試；1427/1427 全綠 |
+| `dev-logs/2026-04-22-17.md` | Sprint 8 Wave 1 盤點：Sheets 22 分頁結構盤點 + 13 DTO 包裹物件範圍對照 + 主/子表 mapping；產出 `tech/sprint-8-data-model-spec.md` Wave 1 輸入依據 |
+| `dev-logs/2026-04-22-18.md` | Sprint 8 Wave 2.1 Sheets 骨架：22 個 PascalCase 分頁建立 + header 欄位定義；`sheetNames[]` 擴充至 22 |
+| `dev-logs/2026-04-22-19.md` | Sprint 8 Wave 2.2-2.4 資料遷移：舊 13 個 `*-config.txt` 資料搬運至新 22 個分頁（dev-agent 代寫 Sheets），含主/子表拆分、FK 對齊、流水號 id 填入 |
+| `dev-logs/2026-04-22-20.md` | Sprint 8 Wave 2.5 C# DTO 重構：13 個 DTO 一次性從包裹物件改為純陣列 IGameData；反序列化層收斂至 JsonFx 靜態 API（VillageEntryPointInstallers + ExplorationEntryPoint）；測試更新；1433/1433 全綠 |
+| `dev-logs/2026-04-22-21.md` | Sprint 8 Wave 2.6 B4：製作人 Unity Editor Start Convert 產出 22 個 PascalCase .txt；VillageEntryPoint 20 個 TextAsset SerializeField 重綁 + ExplorationEntryPoint 2 處 Resources.Load 路徑修正；CharacterIntroLines.txt 欄位錯位修復；舊 14 個 *-config.txt 清理；1433/1433 |
+| `dev-logs/2026-04-22-22.md` | Sprint 8 Wave 2.6a D4：VillageContext.gameDataAccess delegate 實際接線至 GameStaticDataManager.GetGameData<T>(id)；TD-2026-011 閉環 + TD-2026-012 GiftSwords / TD-2026-013 Personalities 登記；接線測試新增 |
+| `dev-logs/2026-04-22-23.md` | Sprint 8 Wave 2.6b E1+E2：ADR-002 退出 Gate 完整驗證 PASS + `/architecture-review ProjectDR` PASS；ADR-002 升 v1.7 Executed Full Exit；tr-registry TR-data-001/002/003 + TR-save-001 pending→covered；control-manifest v1.1 重建（50 條） |

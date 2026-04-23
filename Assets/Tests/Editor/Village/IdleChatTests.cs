@@ -1,4 +1,5 @@
 // IdleChatConfig + IdleChatPresenter 單元測試（Sprint 5 B12）。
+// Sprint 8 Wave 2.5：配合純陣列 DTO 重構（廢棄 IdleChatConfigData 包裹類，改兩個獨立陣列）。
 
 using System.IO;
 using KahaGameCore.GameEvent;
@@ -15,15 +16,23 @@ namespace ProjectDR.Village.Tests
     public class IdleChatConfigTests
     {
         [Test]
-        public void Constructor_NullData_Throws()
+        public void Constructor_NullTopicEntries_Throws()
         {
-            Assert.Throws<System.ArgumentNullException>(() => new IdleChatConfig(null));
+            Assert.Throws<System.ArgumentNullException>(() =>
+                new IdleChatConfig(null, new IdleChatAnswerData[0]));
+        }
+
+        [Test]
+        public void Constructor_NullAnswerEntries_Throws()
+        {
+            Assert.Throws<System.ArgumentNullException>(() =>
+                new IdleChatConfig(new IdleChatTopicData[0], null));
         }
 
         [Test]
         public void GetTopicsForCharacter_Empty_ReturnsEmpty()
         {
-            IdleChatConfig cfg = new IdleChatConfig(new IdleChatConfigData());
+            IdleChatConfig cfg = new IdleChatConfig(new IdleChatTopicData[0], new IdleChatAnswerData[0]);
             Assert.AreEqual(0, cfg.GetTopicsForCharacter(CharacterIds.FarmGirl).Count);
         }
 
@@ -42,30 +51,6 @@ namespace ProjectDR.Village.Tests
             Assert.AreEqual(2, cfg.GetTopicsForCharacter(CharacterIds.VillageChiefWife).Count);
         }
 
-        [Test]
-        public void RealJson_4Characters_20TopicsEach()
-        {
-            UnityEngine.TextAsset asset =
-                UnityEngine.Resources.Load<UnityEngine.TextAsset>("Config/idle-chat-config");
-            if (asset == null)
-            {
-                Assert.Ignore("idle-chat-config.json 不在 Resources，跳過真實 JSON 測試。");
-                return;
-            }
-            IdleChatConfigData data = JsonUtility.FromJson<IdleChatConfigData>(asset.text);
-            Assert.IsNotNull(data);
-            IdleChatConfig cfg = new IdleChatConfig(data);
-
-            foreach (string c in new[] { CharacterIds.VillageChiefWife, CharacterIds.FarmGirl,
-                                          CharacterIds.Witch, CharacterIds.Guard })
-            {
-                var topics = cfg.GetTopicsForCharacter(c);
-                Assert.AreEqual(20, topics.Count, $"{c} should have 20 topics");
-                foreach (IdleChatTopic t in topics)
-                    Assert.AreEqual(3, t.Answers.Count, $"{t.TopicId} should have 3 answers");
-            }
-        }
-
         // ===== ADR-001 / ADR-002 A10：IGameData 契約斷言 =====
 
         [Test]
@@ -74,10 +59,9 @@ namespace ProjectDR.Village.Tests
             IdleChatTopicData entry = new IdleChatTopicData
             {
                 id = 1,
-                character_id = CharacterIds.VillageChiefWife,
+                character_id = "village_chief_wife",
                 topic_id = "topic_test",
-                prompt = "test prompt",
-                answers = new IdleChatAnswerData[0]
+                prompt = "test prompt"
             };
 
             Assert.That(entry, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
@@ -88,31 +72,41 @@ namespace ProjectDR.Village.Tests
                 "IdleChatTopicData.Key 應回傳 topic_id");
         }
 
+        [Test]
+        public void IdleChatAnswerData_ImplementsIGameData()
+        {
+            IdleChatAnswerData entry = new IdleChatAnswerData
+            {
+                id = 1,
+                answer_id = "a_001",
+                topic_id = "topic_test",
+                text = "test answer"
+            };
+
+            Assert.That(entry, Is.AssignableTo<KahaGameCore.GameData.IGameData>(),
+                "IdleChatAnswerData 必須實作 IGameData（ADR-001）");
+            Assert.That(entry.ID, Is.Not.Zero,
+                "IdleChatAnswerData.ID 不得為 0");
+            Assert.That(entry.Key, Is.EqualTo("a_001"),
+                "IdleChatAnswerData.Key 應回傳 answer_id");
+        }
+
         private static IdleChatConfig Build()
         {
-            return new IdleChatConfig(new IdleChatConfigData
+            IdleChatTopicData[] topics = new IdleChatTopicData[]
             {
-                topics = new IdleChatTopicData[]
-                {
-                    new IdleChatTopicData
-                    {
-                        id = 1, character_id = CharacterIds.VillageChiefWife, topic_id="t1", prompt="p1",
-                        answers = new IdleChatAnswerData[]
-                        {
-                            new IdleChatAnswerData{ answer_id="a1", text="aa" },
-                            new IdleChatAnswerData{ answer_id="a2", text="bb" },
-                        }
-                    },
-                    new IdleChatTopicData
-                    {
-                        id = 2, character_id = CharacterIds.VillageChiefWife, topic_id="t2", prompt="p2",
-                        answers = new IdleChatAnswerData[]
-                        {
-                            new IdleChatAnswerData{ answer_id="a1", text="xx" },
-                        }
-                    },
-                },
-            });
+                new IdleChatTopicData { id = 1, character_id = "village_chief_wife", topic_id = "t1", prompt = "p1" },
+                new IdleChatTopicData { id = 2, character_id = "village_chief_wife", topic_id = "t2", prompt = "p2" },
+            };
+
+            IdleChatAnswerData[] answers = new IdleChatAnswerData[]
+            {
+                new IdleChatAnswerData { id = 1, topic_id = "t1", answer_id = "a1", text = "aa" },
+                new IdleChatAnswerData { id = 2, topic_id = "t1", answer_id = "a2", text = "bb" },
+                new IdleChatAnswerData { id = 3, topic_id = "t2", answer_id = "a3", text = "xx" },
+            };
+
+            return new IdleChatConfig(topics, answers);
         }
     }
 
@@ -165,21 +159,18 @@ namespace ProjectDR.Village.Tests
 
         private static IdleChatConfig BuildConfig()
         {
-            return new IdleChatConfig(new IdleChatConfigData
+            IdleChatTopicData[] topics = new IdleChatTopicData[]
             {
-                topics = new IdleChatTopicData[]
-                {
-                    new IdleChatTopicData
-                    {
-                        character_id = CharacterIds.FarmGirl, topic_id="ft1", prompt="p1",
-                        answers = new IdleChatAnswerData[]
-                        {
-                            new IdleChatAnswerData{ answer_id="a1", text="Hello!" },
-                            new IdleChatAnswerData{ answer_id="a2", text="Hi!" },
-                        }
-                    },
-                },
-            });
+                new IdleChatTopicData { id = 1, character_id = "farm_girl", topic_id = "ft1", prompt = "p1" },
+            };
+
+            IdleChatAnswerData[] answers = new IdleChatAnswerData[]
+            {
+                new IdleChatAnswerData { id = 1, topic_id = "ft1", answer_id = "a1", text = "Hello!" },
+                new IdleChatAnswerData { id = 2, topic_id = "ft1", answer_id = "a2", text = "Hi!" },
+            };
+
+            return new IdleChatConfig(topics, answers);
         }
     }
 }

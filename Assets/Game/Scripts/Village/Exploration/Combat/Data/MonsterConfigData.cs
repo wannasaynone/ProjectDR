@@ -1,6 +1,16 @@
-// ADR-001 / ADR-002 A13 改造（2026-04-22）：
-//   MonsterTypeJson 實作 KahaGameCore.GameData.IGameData，
-//   加 int id 欄位（流水號主鍵）+ 保留 typeId（語意字串外鍵）。
+// MonsterConfigData — 怪物類型外部配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：Monsters
+// 對應 .txt 檔：monsters.txt
+//
+// Sprint 8 Wave 2.5 重構：
+//   - MonsterTypeJson 改名為 MonsterData（去 Json 後綴）
+//   - 欄位 camelCase → snake_case（typeId→type_id, maxHp→max_hp 等）
+//   - color 巢狀物件（ColorJson）展開為扁平欄位（color_r/color_g/color_b/color_a）
+//   - 廢棄包裹類 MonsterConfigJson（純陣列格式）
+//   - 廢棄 ColorJson（color 欄位扁平化後不再需要）
+//   - MonsterConfig 建構子改為接受新 MonsterData[]
+//   - MonsterTypeData 建構子改為接受新 MonsterData
+// ADR-001 / ADR-002 A13
 
 using System;
 using System.Collections.Generic;
@@ -8,52 +18,59 @@ using UnityEngine;
 
 namespace ProjectDR.Village.Exploration.Combat
 {
-    [Serializable]
-    public class MonsterConfigJson
-    {
-        public MonsterTypeJson[] monsterTypes;
-    }
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
+    /// <summary>
+    /// 單一怪物類型（JSON DTO）。
+    /// 實作 IGameData，int id 為流水號主鍵，type_id 為語意字串外鍵。
+    /// 欄位扁平化：原 color 巢狀物件展開為 color_r/color_g/color_b/color_a。
+    /// 對應 Sheets 分頁 Monsters，.txt 檔 monsters.txt。
+    /// </summary>
     [Serializable]
-    public class MonsterTypeJson : KahaGameCore.GameData.IGameData
+    public class MonsterData : KahaGameCore.GameData.IGameData
     {
         /// <summary>IGameData 主鍵（流水號）。對應 JSON 欄位 "id"。</summary>
         public int id;
 
-        /// <summary>IGameData 契約實作。回傳 int id 流水號。</summary>
+        /// <summary>IGameData 契約實作。</summary>
         public int ID => id;
 
-        /// <summary>怪物種類語意字串外鍵（如 "Slime"、"Bat"）。</summary>
-        public string typeId;
-        public int maxHp;
+        /// <summary>怪物種類語意識別符（如 "Slime"、"Bat"）。</summary>
+        public string type_id;
+
+        /// <summary>語意字串 Key。</summary>
+        public string Key => type_id;
+
+        // --- 基本屬性 ---
+        public int max_hp;
         public int atk;
         public int def;
         public int spd;
-        public float moveCooldownSeconds;
-        public int visionRange;
-        public int attackRange;
-        public float attackAngleDegreesHalf;
-        public float attackPrepareSeconds;
-        public float attackCooldownSeconds;
-        public ColorJson color;
+
+        // --- 移動 ---
+        public float move_cooldown_seconds;
+
+        // --- 感知 ---
+        public int vision_range;
+
+        // --- 攻擊 ---
+        public int attack_range;
+        public float attack_angle_degrees_half;
+        public float attack_prepare_seconds;
+        public float attack_cooldown_seconds;
+
+        // --- 顯示顏色（扁平化，取代巢狀 ColorJson） ---
+        public float color_r;
+        public float color_g;
+        public float color_b;
+        public float color_a;
     }
 
-    [Serializable]
-    public class ColorJson
-    {
-        public float r;
-        public float g;
-        public float b;
-        public float a;
-
-        public Color ToColor()
-        {
-            return new Color(r, g, b, a);
-        }
-    }
+    // ===== 不可變資料物件 =====
 
     /// <summary>
-    /// Immutable data for a single monster type.
+    /// 單一怪物類型的不可變資料。
+    /// 從 MonsterData（扁平化 JSON DTO）建構。
     /// </summary>
     public class MonsterTypeData
     {
@@ -70,71 +87,70 @@ namespace ProjectDR.Village.Exploration.Combat
         public float AttackCooldownSeconds { get; }
         public Color DisplayColor { get; }
 
-        public MonsterTypeData(MonsterTypeJson json)
+        /// <summary>
+        /// 從新 MonsterData（扁平化 DTO）建構。
+        /// </summary>
+        public MonsterTypeData(MonsterData data)
         {
-            if (json == null) throw new ArgumentNullException(nameof(json));
+            if (data == null) throw new ArgumentNullException(nameof(data));
 
-            TypeId = json.typeId;
-            MaxHp = json.maxHp;
-            Atk = json.atk;
-            Def = json.def;
-            Spd = json.spd;
-            MoveCooldownSeconds = json.moveCooldownSeconds;
-            VisionRange = json.visionRange;
-            AttackRange = json.attackRange;
-            AttackAngleHalf = json.attackAngleDegreesHalf;
-            AttackPrepareSeconds = json.attackPrepareSeconds;
-            AttackCooldownSeconds = json.attackCooldownSeconds;
-            DisplayColor = json.color != null ? json.color.ToColor() : Color.red;
+            TypeId = data.type_id;
+            MaxHp = data.max_hp;
+            Atk = data.atk;
+            Def = data.def;
+            Spd = data.spd;
+            MoveCooldownSeconds = data.move_cooldown_seconds;
+            VisionRange = data.vision_range;
+            AttackRange = data.attack_range;
+            AttackAngleHalf = data.attack_angle_degrees_half;
+            AttackPrepareSeconds = data.attack_prepare_seconds;
+            AttackCooldownSeconds = data.attack_cooldown_seconds;
+            DisplayColor = new Color(data.color_r, data.color_g, data.color_b, data.color_a);
         }
     }
 
+    // ===== 不可變配置物件 =====
+
     /// <summary>
-    /// Container for all monster type configurations loaded from JSON.
+    /// 怪物類型配置（不可變）。
+    /// 從純陣列 DTO（MonsterData[]）建構。
     /// </summary>
     public class MonsterConfig
     {
         private readonly Dictionary<string, MonsterTypeData> _types;
 
+        /// <summary>所有怪物類型（依輸入順序）。</summary>
         public IReadOnlyList<MonsterTypeData> AllTypes { get; }
 
-        public MonsterConfig(MonsterConfigJson json)
+        /// <summary>
+        /// 從純陣列 DTO 建構不可變配置。
+        /// </summary>
+        /// <param name="entries">JsonFx 反序列化後的 MonsterData 陣列（不可為 null）。</param>
+        public MonsterConfig(MonsterData[] entries)
         {
-            if (json == null) throw new ArgumentNullException(nameof(json));
+            if (entries == null) throw new ArgumentNullException(nameof(entries));
 
             _types = new Dictionary<string, MonsterTypeData>();
             List<MonsterTypeData> list = new List<MonsterTypeData>();
 
-            if (json.monsterTypes != null)
+            foreach (MonsterData entry in entries)
             {
-                for (int i = 0; i < json.monsterTypes.Length; i++)
-                {
-                    MonsterTypeData data = new MonsterTypeData(json.monsterTypes[i]);
-                    _types[data.TypeId] = data;
-                    list.Add(data);
-                }
+                if (entry == null || string.IsNullOrEmpty(entry.type_id)) continue;
+
+                MonsterTypeData data = new MonsterTypeData(entry);
+                _types[data.TypeId] = data;
+                list.Add(data);
             }
 
             AllTypes = list.AsReadOnly();
         }
 
-        public MonsterTypeData GetType(string typeId)
+        /// <summary>依 type_id 取得怪物類型資料。找不到時回傳 null。</summary>
+        public MonsterTypeData GetMonsterType(string typeId)
         {
-            if (_types.TryGetValue(typeId, out MonsterTypeData data))
-                return data;
-            return null;
-        }
-
-        /// <summary>
-        /// Loads a MonsterConfig from a JSON string.
-        /// </summary>
-        public static MonsterConfig Load(string json)
-        {
-            if (string.IsNullOrEmpty(json))
-                throw new ArgumentException("json must not be null or empty.", nameof(json));
-
-            MonsterConfigJson dto = JsonUtility.FromJson<MonsterConfigJson>(json);
-            return new MonsterConfig(dto);
+            if (string.IsNullOrEmpty(typeId)) return null;
+            _types.TryGetValue(typeId, out MonsterTypeData data);
+            return data;
         }
     }
 }

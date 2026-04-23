@@ -297,32 +297,11 @@ namespace ProjectDR.Tests.Village.Integration
 
         private static GreetingConfig BuildMinimalGreetingConfig()
         {
-            return new GreetingConfig(new GreetingConfigData
+            return new GreetingConfig(new GreetingData[]
             {
-                greetings = new GreetingEntryData[]
-                {
-                    new GreetingEntryData
-                    {
-                        character_id = CharacterIds.Guard,
-                        level = 1,
-                        greeting_id = "g_guard_1_1",
-                        text = "……（點了點頭。）"
-                    },
-                    new GreetingEntryData
-                    {
-                        character_id = CharacterIds.FarmGirl,
-                        level = 1,
-                        greeting_id = "g_farm_1_1",
-                        text = "早安！"
-                    },
-                    new GreetingEntryData
-                    {
-                        character_id = CharacterIds.Witch,
-                        level = 1,
-                        greeting_id = "g_witch_1_1",
-                        text = "嗯。"
-                    },
-                }
+                new GreetingData { id = 1, greeting_id = "g_guard_1_1", character_id = CharacterIds.Guard,    level = 1, text = "……（點了點頭。）" },
+                new GreetingData { id = 2, greeting_id = "g_farm_1_1",  character_id = CharacterIds.FarmGirl, level = 1, text = "早安！" },
+                new GreetingData { id = 3, greeting_id = "g_witch_1_1", character_id = CharacterIds.Witch,    level = 1, text = "嗯。" },
             });
         }
 
@@ -330,44 +309,18 @@ namespace ProjectDR.Tests.Village.Integration
 
         private static MainQuestConfig BuildMinimalMainQuestConfig()
         {
-            MainQuestConfigData data = new MainQuestConfigData
-            {
-                schema_version = 1,
-                main_quests = new MainQuestConfigEntry[]
+            return new MainQuestConfig(
+                new MainQuestData[]
                 {
-                    new MainQuestConfigEntry
-                    {
-                        id = 1,
-                        quest_id = "T0",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.Auto,
-                        completion_condition_value = "",
-                        unlock_on_complete = "T1",
-                        sort_order = 0
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 2,
-                        quest_id = "T1",
-                        owner_character_id = CharacterIds.FarmGirl,
-                        completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
-                        completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
-                        unlock_on_complete = "T2",
-                        sort_order = 1
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 3,
-                        quest_id = "T2",
-                        owner_character_id = CharacterIds.Guard,
-                        completion_condition_type = MainQuestCompletionTypes.FirstExplore,
-                        completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete,
-                        unlock_on_complete = "",
-                        sort_order = 2
-                    }
-                }
-            };
-            return new MainQuestConfig(data);
+                    new MainQuestData { id = 1, quest_id = "T0", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.Auto,        completion_condition_value = "",                                          sort_order = 0 },
+                    new MainQuestData { id = 2, quest_id = "T1", owner_character_id = CharacterIds.FarmGirl,         completion_condition_type = MainQuestCompletionTypes.DialogueEnd,  completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,   sort_order = 1 },
+                    new MainQuestData { id = 3, quest_id = "T2", owner_character_id = CharacterIds.Guard,            completion_condition_type = MainQuestCompletionTypes.FirstExplore, completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete, sort_order = 2 },
+                },
+                new MainQuestUnlockData[]
+                {
+                    new MainQuestUnlockData { id = 1, main_quest_id = "T0", unlock_type = "quest", unlock_value = "T1" },
+                    new MainQuestUnlockData { id = 2, main_quest_id = "T1", unlock_type = "quest", unlock_value = "T2" },
+                });
         }
     }
 }

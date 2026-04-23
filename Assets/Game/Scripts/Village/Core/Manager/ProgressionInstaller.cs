@@ -45,8 +45,9 @@ namespace ProjectDR.Village.Core
     {
         // ===== 建構子注入（由 VillageEntryPoint 傳入） =====
 
-        private readonly MainQuestConfigData _mainQuestConfigData;
-        private readonly InitialResourcesConfigData _initialResourcesConfigData;
+        private readonly MainQuestData[] _mainQuestEntries;
+        private readonly MainQuestUnlockData[] _mainQuestUnlockEntries;
+        private readonly InitialResourceGrantData[] _initialResourceGrantEntries;
         private readonly BackpackManager _backpackManager;
         private readonly StorageManager _storageManager;
 
@@ -65,22 +66,26 @@ namespace ProjectDR.Village.Core
         private Action<MainQuestCompletedEvent> _onMainQuestCompletedForAreaUnlock;
 
         /// <summary>
-        /// 建構 ProgressionInstaller，注入所需配置與依賴。
+        /// 建構 ProgressionInstaller，注入所需配置純陣列與依賴。
         /// </summary>
-        /// <param name="mainQuestConfigData">主線任務 JSON DTO（不可為 null）。</param>
-        /// <param name="initialResourcesConfigData">初始資源 JSON DTO（不可為 null）。</param>
+        /// <param name="mainQuestEntries">主線任務主表 DTO 陣列（不可為 null）。</param>
+        /// <param name="mainQuestUnlockEntries">主線任務解鎖子表 DTO 陣列（不可為 null）。</param>
+        /// <param name="initialResourceGrantEntries">初始資源發放 DTO 陣列（不可為 null）。</param>
         /// <param name="backpackManager">背包管理器（不可為 null；供 InitialResourceDispatcher 發放物品）。</param>
         /// <param name="storageManager">倉庫管理器（不可為 null；供 InitialResourceDispatcher 溢出入庫）。</param>
         public ProgressionInstaller(
-            MainQuestConfigData mainQuestConfigData,
-            InitialResourcesConfigData initialResourcesConfigData,
+            MainQuestData[] mainQuestEntries,
+            MainQuestUnlockData[] mainQuestUnlockEntries,
+            InitialResourceGrantData[] initialResourceGrantEntries,
             BackpackManager backpackManager,
             StorageManager storageManager)
         {
-            _mainQuestConfigData = mainQuestConfigData
-                ?? throw new ArgumentNullException(nameof(mainQuestConfigData));
-            _initialResourcesConfigData = initialResourcesConfigData
-                ?? throw new ArgumentNullException(nameof(initialResourcesConfigData));
+            _mainQuestEntries = mainQuestEntries
+                ?? throw new ArgumentNullException(nameof(mainQuestEntries));
+            _mainQuestUnlockEntries = mainQuestUnlockEntries
+                ?? throw new ArgumentNullException(nameof(mainQuestUnlockEntries));
+            _initialResourceGrantEntries = initialResourceGrantEntries
+                ?? throw new ArgumentNullException(nameof(initialResourceGrantEntries));
             _backpackManager = backpackManager
                 ?? throw new ArgumentNullException(nameof(backpackManager));
             _storageManager = storageManager
@@ -104,11 +109,11 @@ namespace ProjectDR.Village.Core
                 throw new InvalidOperationException("ProgressionInstaller.Install: ctx 不可為 null");
 
             // 1. 建構 MainQuestConfig + MainQuestManager
-            _mainQuestConfig = new MainQuestConfig(_mainQuestConfigData);
+            _mainQuestConfig = new MainQuestConfig(_mainQuestEntries, _mainQuestUnlockEntries);
             _mainQuestManager = new MainQuestManager(_mainQuestConfig);
 
             // 2. 建構 InitialResourcesConfig + InitialResourceDispatcher
-            _initialResourcesConfig = new InitialResourcesConfig(_initialResourcesConfigData);
+            _initialResourcesConfig = new InitialResourcesConfig(_initialResourceGrantEntries);
             _initialResourceDispatcher = new InitialResourceDispatcher(_backpackManager, _storageManager);
 
             // 3. 建構 CharacterUnlockManager（自管事件訂閱）

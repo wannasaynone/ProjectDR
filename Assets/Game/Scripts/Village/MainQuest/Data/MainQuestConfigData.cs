@@ -1,12 +1,14 @@
-// MainQuestConfigData — 前期主線任務序列配置的 JSON DTO 與不可變配置物件。
-// 配置檔路徑：Assets/Game/Resources/Config/main-quest-config.json
-// 此配置不經由 Google Sheets 管理，因為前期主線任務序列為固定劇情骨架，
-// 正式版本再視需求決定是否遷移至 Google Sheets。
+// MainQuestConfigData — 主線任務配置的 IGameData DTO 與不可變配置物件。
+// 對應 Sheets 分頁：MainQuests（主表）/ MainQuestUnlocks（子表）
+// 對應 .txt 檔：mainquests.txt / mainquestunlocks.txt
 //
-// ADR-001 / ADR-002 A12 改造（2026-04-22）：
-//   MainQuestConfigEntry 實作 KahaGameCore.GameData.IGameData，
-//   加 int id 欄位（流水號主鍵）+ 保留 quest_id（語意字串外鍵）。
-//   MainQuestInfo 新增 int ID + string Key 屬性。
+// Sprint 8 Wave 2.5 重構：
+//   - MainQuestConfigEntry 改名為 MainQuestData（去 ConfigEntry）
+//   - 移除 unlock_on_complete 欄位（Q3 拍板：拆子表 MainQuestUnlockData）
+//   - 廢棄包裹類 MainQuestConfigData（純陣列格式）
+//   - MainQuestConfig 建構子改為接受 MainQuestData[] + MainQuestUnlockData[]
+//   - MainQuestInfo.UnlockOnComplete 改為 IReadOnlyList<MainQuestUnlockData>（型別化）
+// ADR-001 / ADR-002 A12
 
 using System;
 using System.Collections.Generic;
@@ -38,89 +40,73 @@ namespace ProjectDR.Village.MainQuest
         public const string FirstCharIntroComplete = "first_char_intro_complete";
     }
 
-    // ===== 完成條件附加值常數（由 VillageEntryPoint 等上層傳給 NotifyCompletionSignal） =====
+    // ===== 完成條件附加值常數 =====
 
     /// <summary>
     /// 主線任務 completion_condition_value 常用字串常數集。
-    /// 對應 main-quest-config.json 中各任務的 completion_condition_value 欄位。
+    /// 對應 MainQuests 分頁各任務的 completion_condition_value 欄位。
     /// </summary>
     public static class MainQuestSignalValues
     {
-        /// <summary>（舊 T1 完成條件，Sprint 6 後已廢棄）首次角色 intro 完成（= 節點 1 結束）。保留供相容性。</summary>
-        [System.Obsolete("Sprint 6 後已廢棄，改用 Node2DialogueComplete。VillageEntryPoint 不再送此訊號，無任何引用，可安全刪除。")]
+        /// <summary>（舊 T1 完成條件，Sprint 6 後已廢棄）首次角色 intro 完成。</summary>
+        [System.Obsolete("Sprint 6 後已廢棄，改用 Node2DialogueComplete。")]
         public const string FirstCharIntroComplete = "first_char_intro_complete";
 
         /// <summary>T0 完成條件：節點 0 對話完成。</summary>
         public const string Node0DialogueComplete = "node0_dialogue_complete";
 
-        /// <summary>新 T1 完成條件（Sprint 6）：節點 2 對話完成（= 魔女登場 CG + 對話結束）。</summary>
+        /// <summary>新 T1 完成條件（Sprint 6）：節點 2 對話完成。</summary>
         public const string Node2DialogueComplete = "node_2_dialogue_complete";
 
         /// <summary>新 T2 完成條件（Sprint 6，舊 T4）：守衛歸來事件完成。</summary>
         public const string GuardReturnEventComplete = "guard_return_event_complete";
     }
 
-    // ===== JSON DTO（供 JsonUtility.FromJson 使用） =====
+    // ===== JSON DTO（供 JsonFx 反序列化純陣列使用） =====
 
     /// <summary>
-    /// 單一主線任務的配置項（JSON DTO）。
+    /// 單一主線任務（JSON DTO，主表）。
     /// 實作 IGameData，int id 為流水號主鍵，quest_id 為語意字串外鍵。
+    /// 對應 Sheets 分頁 MainQuests，.txt 檔 mainquests.txt。
+    /// 注意：unlock_on_complete 欄位已移除（Q3 拍板拆子表 MainQuestUnlockData）。
     /// </summary>
     [Serializable]
-    public class MainQuestConfigEntry : KahaGameCore.GameData.IGameData
+    public class MainQuestData : KahaGameCore.GameData.IGameData
     {
         /// <summary>IGameData 主鍵（流水號）。對應 JSON 欄位 "id"。</summary>
         public int id;
 
-        /// <summary>IGameData 契約實作。回傳 int id 流水號。</summary>
+        /// <summary>IGameData 契約實作。</summary>
         public int ID => id;
 
-        /// <summary>任務 ID（例：T0、T1）。</summary>
+        /// <summary>任務語意識別符（T0 / T1 / T2）。</summary>
         public string quest_id;
 
-        /// <summary>任務顯示名稱。</summary>
+        /// <summary>語意字串 Key。</summary>
+        public string Key => quest_id;
+
+        /// <summary>顯示名稱。</summary>
         public string display_name;
 
         /// <summary>任務描述。</summary>
         public string description;
 
-        /// <summary>任務擁有者角色 ID。</summary>
+        /// <summary>任務持有角色 ID（空 = 非角色派發）。</summary>
         public string owner_character_id;
 
         /// <summary>完成條件類型（見 MainQuestCompletionTypes）。</summary>
         public string completion_condition_type;
 
-        /// <summary>完成條件附加值（依 type 不同格式不同）。</summary>
+        /// <summary>完成條件附加值（自然語言，非 FK）。</summary>
         public string completion_condition_value;
 
         /// <summary>
-        /// 獎勵的 grant_id 清單（對應 initial-resources-config.json 的 grant_id）。
-        /// 多值以 | 分隔，空字串表示無獎勵。
+        /// 完成獎勵 grant_id 清單（多個以 | 分隔；未來可考慮拆子表）。
         /// </summary>
         public string reward_grant_ids;
 
-        /// <summary>
-        /// 任務完成時解鎖的項目 ID 清單（任務 ID、節點 ID、系統 ID）。
-        /// 多值以 | 分隔，空字串表示無後續解鎖。
-        /// </summary>
-        public string unlock_on_complete;
-
-        /// <summary>排序（升序，用於承接順序）。</summary>
+        /// <summary>排序（升序）。</summary>
         public int sort_order;
-    }
-
-    /// <summary>主線任務配置的完整外部資料（JSON DTO）。</summary>
-    [Serializable]
-    public class MainQuestConfigData
-    {
-        /// <summary>資料結構版本。</summary>
-        public int schema_version;
-
-        /// <summary>配置說明（撰寫者備註）。</summary>
-        public string note;
-
-        /// <summary>所有主線任務配置。</summary>
-        public MainQuestConfigEntry[] main_quests;
     }
 
     // ===== 不可變資料物件 =====
@@ -128,37 +114,27 @@ namespace ProjectDR.Village.MainQuest
     /// <summary>單一主線任務的不可變資訊。</summary>
     public class MainQuestInfo
     {
-        /// <summary>IGameData 流水號主鍵（對應 MainQuestConfigEntry.id）。</summary>
+        /// <summary>IGameData 流水號主鍵。</summary>
         public int ID { get; }
 
-        /// <summary>語意字串外鍵（對應 quest_id，為 IGameData Key 慣例）。</summary>
+        /// <summary>語意字串外鍵（= quest_id）。</summary>
         public string Key { get; }
 
         /// <summary>任務 ID（同 Key，保留向後相容）。</summary>
         public string QuestId => Key;
 
-        /// <summary>顯示名稱。</summary>
         public string DisplayName { get; }
-
-        /// <summary>描述。</summary>
         public string Description { get; }
-
-        /// <summary>擁有者角色 ID。</summary>
         public string OwnerCharacterId { get; }
-
-        /// <summary>完成條件類型。</summary>
         public string CompletionConditionType { get; }
-
-        /// <summary>完成條件附加值。</summary>
         public string CompletionConditionValue { get; }
 
-        /// <summary>獎勵 grant_id 清單（已解析）。</summary>
+        /// <summary>完成獎勵 grant_id 清單（已解析）。</summary>
         public IReadOnlyList<string> RewardGrantIds { get; }
 
-        /// <summary>完成後解鎖項目清單（已解析）。</summary>
-        public IReadOnlyList<string> UnlockOnComplete { get; }
+        /// <summary>完成後解鎖條目（Q3 拍板：型別化子表，取代舊 unlock_on_complete 字串）。</summary>
+        public IReadOnlyList<MainQuestUnlockData> UnlockEntries { get; }
 
-        /// <summary>排序。</summary>
         public int SortOrder { get; }
 
         public MainQuestInfo(
@@ -170,7 +146,7 @@ namespace ProjectDR.Village.MainQuest
             string completionConditionType,
             string completionConditionValue,
             IReadOnlyList<string> rewardGrantIds,
-            IReadOnlyList<string> unlockOnComplete,
+            IReadOnlyList<MainQuestUnlockData> unlockEntries,
             int sortOrder)
         {
             ID = id;
@@ -181,8 +157,23 @@ namespace ProjectDR.Village.MainQuest
             CompletionConditionType = completionConditionType;
             CompletionConditionValue = completionConditionValue;
             RewardGrantIds = rewardGrantIds;
-            UnlockOnComplete = unlockOnComplete;
+            UnlockEntries = unlockEntries;
             SortOrder = sortOrder;
+        }
+
+        // 向後相容：舊 UnlockOnComplete 字串列表（由 UnlockEntries 轉換）
+        public IReadOnlyList<string> UnlockOnComplete
+        {
+            get
+            {
+                List<string> values = new List<string>();
+                foreach (MainQuestUnlockData entry in UnlockEntries)
+                {
+                    if (!string.IsNullOrEmpty(entry.unlock_value))
+                        values.Add(entry.unlock_value);
+                }
+                return values.AsReadOnly();
+            }
         }
     }
 
@@ -190,7 +181,7 @@ namespace ProjectDR.Village.MainQuest
 
     /// <summary>
     /// 主線任務配置（不可變）。
-    /// 從 MainQuestConfigData（JSON DTO）建構，提供依 quest_id 查詢與依 sort_order 迭代 API。
+    /// 從兩個純陣列 DTO（主表 MainQuestData[] + 子表 MainQuestUnlockData[]）建構。
     /// </summary>
     public class MainQuestConfig
     {
@@ -201,30 +192,48 @@ namespace ProjectDR.Village.MainQuest
         public IReadOnlyList<MainQuestInfo> OrderedQuests => _questsBySortOrder;
 
         /// <summary>
-        /// 從 JSON DTO 建構不可變配置。
+        /// 從純陣列 DTO 建構不可變配置。
         /// </summary>
-        /// <param name="data">JSON 反序列化後的 DTO。</param>
-        /// <exception cref="ArgumentNullException">data 為 null 時拋出。</exception>
-        public MainQuestConfig(MainQuestConfigData data)
+        /// <param name="questEntries">主表 JsonFx 反序列化後的陣列（不可為 null）。</param>
+        /// <param name="unlockEntries">子表 JsonFx 反序列化後的陣列（不可為 null）。</param>
+        public MainQuestConfig(MainQuestData[] questEntries, MainQuestUnlockData[] unlockEntries)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
+            if (questEntries == null) throw new ArgumentNullException(nameof(questEntries));
+            if (unlockEntries == null) throw new ArgumentNullException(nameof(unlockEntries));
 
             _questsById = new Dictionary<string, MainQuestInfo>();
             _questsBySortOrder = new List<MainQuestInfo>();
 
-            MainQuestConfigEntry[] quests = data.main_quests ?? Array.Empty<MainQuestConfigEntry>();
-            foreach (MainQuestConfigEntry entry in quests)
+            // 分組解鎖條目
+            Dictionary<string, List<MainQuestUnlockData>> unlocksByQuestId =
+                new Dictionary<string, List<MainQuestUnlockData>>();
+            foreach (MainQuestUnlockData unlock in unlockEntries)
             {
-                if (entry == null || string.IsNullOrEmpty(entry.quest_id))
+                if (unlock == null || string.IsNullOrEmpty(unlock.main_quest_id)) continue;
+                if (!unlocksByQuestId.TryGetValue(unlock.main_quest_id, out List<MainQuestUnlockData> bucket))
                 {
-                    continue;
+                    bucket = new List<MainQuestUnlockData>();
+                    unlocksByQuestId[unlock.main_quest_id] = bucket;
                 }
+                bucket.Add(unlock);
+            }
+
+            foreach (MainQuestData entry in questEntries)
+            {
+                if (entry == null || string.IsNullOrEmpty(entry.quest_id)) continue;
 
                 IReadOnlyList<string> rewardGrantIds = SplitPipeList(entry.reward_grant_ids);
-                IReadOnlyList<string> unlockOnComplete = SplitPipeList(entry.unlock_on_complete);
+
+                IReadOnlyList<MainQuestUnlockData> unlockList;
+                if (unlocksByQuestId.TryGetValue(entry.quest_id, out List<MainQuestUnlockData> ul))
+                {
+                    ul.Sort((a, b) => a.sort_order.CompareTo(b.sort_order));
+                    unlockList = ul.AsReadOnly();
+                }
+                else
+                {
+                    unlockList = Array.AsReadOnly(Array.Empty<MainQuestUnlockData>());
+                }
 
                 MainQuestInfo info = new MainQuestInfo(
                     entry.id,
@@ -235,7 +244,7 @@ namespace ProjectDR.Village.MainQuest
                     entry.completion_condition_type ?? string.Empty,
                     entry.completion_condition_value ?? string.Empty,
                     rewardGrantIds,
-                    unlockOnComplete,
+                    unlockList,
                     entry.sort_order);
 
                 _questsById[entry.quest_id] = info;
@@ -253,9 +262,6 @@ namespace ProjectDR.Village.MainQuest
             return info;
         }
 
-        /// <summary>
-        /// 將以 | 分隔的字串切割為唯讀清單。空字串回傳空清單。
-        /// </summary>
         private static IReadOnlyList<string> SplitPipeList(string raw)
         {
             if (string.IsNullOrEmpty(raw))

@@ -202,14 +202,11 @@ namespace ProjectDR.Tests.Village
         [Test]
         public void PlayNode_EmptyNode_FiresCompletedImmediately()
         {
-            NodeDialogueConfig config = new NodeDialogueConfig(new NodeDialogueConfigData
+            NodeDialogueConfig config = new NodeDialogueConfig(new NodeDialogueLineData[]
             {
-                node_dialogue_lines = new NodeDialogueLineData[]
-                {
-                    // 刻意製造空節點：只有不會被分到 intro/choice/response 的類型不存在，留空
-                    // 實際上 node_empty 沒有任何行
-                    new NodeDialogueLineData { node_id = "other_node", sequence = 1, line_type = "dialogue", text = "x" },
-                },
+                // 刻意製造空節點：只有不會被分到 intro/choice/response 的類型不存在，留空
+                // 實際上 node_empty 沒有任何行
+                new NodeDialogueLineData { id=1, node_id = "other_node", sequence = 1, line_type = "dialogue", text = "x" },
             });
 
             using (NodeDialogueController sut = new NodeDialogueController(_dialogueManager, config))
@@ -259,24 +256,20 @@ namespace ProjectDR.Tests.Village
         /// </summary>
         private static NodeDialogueConfig BuildConfig()
         {
-            return new NodeDialogueConfig(new NodeDialogueConfigData
+            return new NodeDialogueConfig(new NodeDialogueLineData[]
             {
-                schema_version = 1,
-                node_dialogue_lines = new NodeDialogueLineData[]
-                {
-                    // node_0 intro
-                    new NodeDialogueLineData { line_id = "n0_1", node_id = "node_0", sequence = 1, speaker = "VCW", text = "intro1", line_type = "dialogue", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n0_2", node_id = "node_0", sequence = 2, speaker = "VCW", text = "intro2", line_type = "choice_prompt", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n0_c1", node_id = "node_0", sequence = 3, speaker = "player", text = "choose A", line_type = "choice_option", choice_branch = "farm_girl" },
-                    new NodeDialogueLineData { line_id = "n0_c2", node_id = "node_0", sequence = 4, speaker = "player", text = "choose B", line_type = "choice_option", choice_branch = "witch" },
-                    new NodeDialogueLineData { line_id = "n0_r1", node_id = "node_0", sequence = 5, speaker = "VCW", text = "resp farm", line_type = "choice_response", choice_branch = "farm_girl" },
-                    new NodeDialogueLineData { line_id = "n0_r2", node_id = "node_0", sequence = 6, speaker = "VCW", text = "resp witch", line_type = "choice_response", choice_branch = "witch" },
+                // node_0 intro
+                new NodeDialogueLineData { id=1, line_id = "n0_1",  node_id = "node_0", sequence = 1, speaker = "VCW",    text = "intro1",     line_type = "dialogue",         choice_branch = "" },
+                new NodeDialogueLineData { id=2, line_id = "n0_2",  node_id = "node_0", sequence = 2, speaker = "VCW",    text = "intro2",     line_type = "choice_prompt",    choice_branch = "" },
+                new NodeDialogueLineData { id=3, line_id = "n0_c1", node_id = "node_0", sequence = 3, speaker = "player", text = "choose A",   line_type = "choice_option",   choice_branch = "farm_girl" },
+                new NodeDialogueLineData { id=4, line_id = "n0_c2", node_id = "node_0", sequence = 4, speaker = "player", text = "choose B",   line_type = "choice_option",   choice_branch = "witch" },
+                new NodeDialogueLineData { id=5, line_id = "n0_r1", node_id = "node_0", sequence = 5, speaker = "VCW",    text = "resp farm",  line_type = "choice_response", choice_branch = "farm_girl" },
+                new NodeDialogueLineData { id=6, line_id = "n0_r2", node_id = "node_0", sequence = 6, speaker = "VCW",    text = "resp witch", line_type = "choice_response", choice_branch = "witch" },
 
-                    // node_1
-                    new NodeDialogueLineData { line_id = "n1_1", node_id = "node_1", sequence = 1, speaker = "VCW", text = "n1 intro", line_type = "dialogue", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n1_2", node_id = "node_1", sequence = 2, speaker = "VCW", text = "n1 prompt", line_type = "choice_prompt", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n1_c1", node_id = "node_1", sequence = 3, speaker = "player", text = "meet", line_type = "choice_option", choice_branch = "" },
-                },
+                // node_1
+                new NodeDialogueLineData { id=7, line_id = "n1_1",  node_id = "node_1", sequence = 1, speaker = "VCW",    text = "n1 intro",   line_type = "dialogue",         choice_branch = "" },
+                new NodeDialogueLineData { id=8, line_id = "n1_2",  node_id = "node_1", sequence = 2, speaker = "VCW",    text = "n1 prompt",  line_type = "choice_prompt",    choice_branch = "" },
+                new NodeDialogueLineData { id=9, line_id = "n1_c1", node_id = "node_1", sequence = 3, speaker = "player", text = "meet",       line_type = "choice_option",   choice_branch = "" },
             });
         }
     }

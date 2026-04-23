@@ -205,81 +205,49 @@ namespace ProjectDR.Tests.Village.Integration
         private static InitialResourcesConfig BuildInitialResourcesConfig()
         {
             // Sprint 6 B2：只剩 initial_backpack_node0 和 unlock_guard_sword
-            return new InitialResourcesConfig(new InitialResourcesConfigData
+            return new InitialResourcesConfig(new InitialResourceGrantData[]
             {
-                schema_version = 1,
-                grants = new InitialResourceGrantData[]
-                {
-                    new InitialResourceGrantData { grant_id = "initial_backpack_node0", trigger_id = InitialResourcesTriggerIds.Node0Start, item_id = "", quantity = 0 },
-                },
+                new InitialResourceGrantData { id = 1, grant_id = "initial_backpack_node0", trigger_id = InitialResourcesTriggerIds.Node0Start, item_id = "", quantity = 0 },
             });
         }
 
         private static NodeDialogueConfig BuildNodeDialogueConfig()
         {
-            return new NodeDialogueConfig(new NodeDialogueConfigData
+            return new NodeDialogueConfig(new NodeDialogueLineData[]
             {
-                schema_version = 1,
-                node_dialogue_lines = new NodeDialogueLineData[]
-                {
-                    new NodeDialogueLineData { line_id = "n0_1", node_id = "node_0", sequence = 1, text = "intro 0", line_type = "dialogue", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n0_c1", node_id = "node_0", sequence = 2, text = "選農女", line_type = "choice_option", choice_branch = "farm_girl" },
-                    new NodeDialogueLineData { line_id = "n0_c2", node_id = "node_0", sequence = 3, text = "選魔女", line_type = "choice_option", choice_branch = "witch" },
+                new NodeDialogueLineData { id=1, line_id = "n0_1",  node_id = "node_0", sequence = 1, text = "intro 0",      line_type = "dialogue",      choice_branch = "" },
+                new NodeDialogueLineData { id=2, line_id = "n0_c1", node_id = "node_0", sequence = 2, text = "選農女",       line_type = "choice_option", choice_branch = "farm_girl" },
+                new NodeDialogueLineData { id=3, line_id = "n0_c2", node_id = "node_0", sequence = 3, text = "選魔女",       line_type = "choice_option", choice_branch = "witch" },
 
-                    new NodeDialogueLineData { line_id = "n1_1", node_id = "node_1", sequence = 1, text = "intro 1", line_type = "dialogue", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n1_c1", node_id = "node_1", sequence = 2, text = "剩下農女", line_type = "choice_option", choice_branch = "farm_girl" },
-                    new NodeDialogueLineData { line_id = "n1_c2", node_id = "node_1", sequence = 3, text = "剩下魔女", line_type = "choice_option", choice_branch = "witch" },
+                new NodeDialogueLineData { id=4, line_id = "n1_1",  node_id = "node_1", sequence = 1, text = "intro 1",      line_type = "dialogue",      choice_branch = "" },
+                new NodeDialogueLineData { id=5, line_id = "n1_c1", node_id = "node_1", sequence = 2, text = "剩下農女",     line_type = "choice_option", choice_branch = "farm_girl" },
+                new NodeDialogueLineData { id=6, line_id = "n1_c2", node_id = "node_1", sequence = 3, text = "剩下魔女",     line_type = "choice_option", choice_branch = "witch" },
 
-                    new NodeDialogueLineData { line_id = "n2_1", node_id = "node_2", sequence = 1, text = "探索即將開啟", line_type = "dialogue", choice_branch = "" },
-                    new NodeDialogueLineData { line_id = "n2_2", node_id = "node_2", sequence = 2, text = "小心森林", line_type = "dialogue", choice_branch = "" },
-                },
+                new NodeDialogueLineData { id=7, line_id = "n2_1",  node_id = "node_2", sequence = 1, text = "探索即將開啟", line_type = "dialogue",      choice_branch = "" },
+                new NodeDialogueLineData { id=8, line_id = "n2_2",  node_id = "node_2", sequence = 2, text = "小心森林",     line_type = "dialogue",      choice_branch = "" },
             });
         }
 
         private static MainQuestConfig BuildMainQuestConfig()
         {
-            // Sprint 6 B1：新 T0/T1/T2 三條結構（移除舊 T2/T3/T4）
-            return new MainQuestConfig(new MainQuestConfigData
-            {
-                schema_version = 1,
-                main_quests = new MainQuestConfigEntry[]
+            // Sprint 6 B1：新 T0/T1/T2 三條結構（移除舊 T2/T3/T4）純陣列格式
+            return new MainQuestConfig(
+                new MainQuestData[]
                 {
-                    new MainQuestConfigEntry
-                    {
-                        id = 1,
-                        quest_id = "T0",
-                        display_name = "醒來的地方",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.Auto,
-                        completion_condition_value = MainQuestSignalValues.Node0DialogueComplete,
-                        unlock_on_complete = "T1|node_0_complete",
-                        sort_order = 0,
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 2,
-                        quest_id = "T1",
-                        display_name = "認識所有人",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.DialogueEnd,
-                        completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,
-                        unlock_on_complete = "T2|node_2_complete|exploration_open",
-                        sort_order = 1,
-                    },
-                    new MainQuestConfigEntry
-                    {
-                        id = 3,
-                        quest_id = "T2",
-                        display_name = "出去看看外面",
-                        owner_character_id = CharacterIds.VillageChiefWife,
-                        completion_condition_type = MainQuestCompletionTypes.FirstExplore,
-                        completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete,
-                        reward_grant_ids = "unlock_guard_sword",
-                        unlock_on_complete = "guard_unlock|exploration_full_open",
-                        sort_order = 2,
-                    },
+                    new MainQuestData { id = 1, quest_id = "T0", display_name = "醒來的地方",   owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.Auto,        completion_condition_value = MainQuestSignalValues.Node0DialogueComplete,   sort_order = 0 },
+                    new MainQuestData { id = 2, quest_id = "T1", display_name = "認識所有人",   owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.DialogueEnd,  completion_condition_value = MainQuestSignalValues.Node2DialogueComplete,   sort_order = 1 },
+                    new MainQuestData { id = 3, quest_id = "T2", display_name = "出去看看外面", owner_character_id = CharacterIds.VillageChiefWife, completion_condition_type = MainQuestCompletionTypes.FirstExplore, completion_condition_value = MainQuestSignalValues.GuardReturnEventComplete, sort_order = 2 },
                 },
-            });
+                new MainQuestUnlockData[]
+                {
+                    new MainQuestUnlockData { id = 1, main_quest_id = "T0", unlock_type = "quest",   unlock_value = "T1" },
+                    new MainQuestUnlockData { id = 2, main_quest_id = "T0", unlock_type = "event",   unlock_value = "node_0_complete" },
+                    new MainQuestUnlockData { id = 3, main_quest_id = "T1", unlock_type = "quest",   unlock_value = "T2" },
+                    new MainQuestUnlockData { id = 4, main_quest_id = "T1", unlock_type = "event",   unlock_value = "node_2_complete" },
+                    new MainQuestUnlockData { id = 5, main_quest_id = "T1", unlock_type = "feature", unlock_value = "exploration_open" },
+                    new MainQuestUnlockData { id = 6, main_quest_id = "T2", unlock_type = "event",   unlock_value = "guard_unlock" },
+                    new MainQuestUnlockData { id = 7, main_quest_id = "T2", unlock_type = "feature", unlock_value = "exploration_full_open" },
+                });
         }
 
         // ===== Sprint 6 C7 bugfix 回歸測試 =====

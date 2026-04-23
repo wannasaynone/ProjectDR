@@ -54,15 +54,11 @@ namespace ProjectDR.Village.Tests.Integration
         {
             EventBus.ForceClearAll();
 
-            _affinity = new AffinityManager(new AffinityConfig(new AffinityConfigData
+            _affinity = new AffinityManager(new AffinityConfig(new AffinityCharacterData[]
             {
-                characters = new AffinityCharacterConfigData[0],
-                defaultThresholds = new int[] { 5, 10, 20 }
+                new AffinityCharacterData { id = 1, character_id = "__default__", thresholds = "5,10,20" },
             }));
-            _mqConfig = new MainQuestConfig(new MainQuestConfigData
-            {
-                main_quests = new MainQuestConfigEntry[0]
-            });
+            _mqConfig = new MainQuestConfig(new MainQuestData[0], new MainQuestUnlockData[0]);
             _mqManager = new MainQuestManager(_mqConfig);
             _redDot = new RedDotManager(_mqConfig, _mqManager);
 
@@ -325,100 +321,73 @@ namespace ProjectDR.Village.Tests.Integration
 
         private static CharacterQuestionsConfig BuildCharacterQuestionsConfig()
         {
-            CharacterQuestionsConfigData data = new CharacterQuestionsConfigData
+            CharacterQuestionData[] questions = new CharacterQuestionData[]
             {
-                personality_types = new PersonalityTypeData[]
-                {
-                    new PersonalityTypeData{ id="personality_gentle" },
-                    new PersonalityTypeData{ id="personality_lively" },
-                    new PersonalityTypeData{ id="personality_calm" },
-                    new PersonalityTypeData{ id="personality_assertive" },
-                },
-                character_personality_preference = new CharacterPersonalityPreferenceData
-                {
-                    village_chief_wife = "personality_gentle",
-                    farm_girl = "personality_lively",
-                    witch = "personality_calm",
-                    guard = "personality_assertive",
-                },
-                personality_affinity_map = new PersonalityAffinityMapData
-                {
-                    village_chief_wife = new PersonalityAffinityEntryData
-                    {
-                        personality_gentle = 10, personality_calm = 5, personality_lively = 2, personality_assertive = 0
-                    },
-                    farm_girl = new PersonalityAffinityEntryData
-                    {
-                        personality_lively = 10, personality_assertive = 5, personality_gentle = 2, personality_calm = 0
-                    },
-                    witch = new PersonalityAffinityEntryData
-                    {
-                        personality_calm = 10, personality_gentle = 5, personality_assertive = 2, personality_lively = 0
-                    },
-                    guard = new PersonalityAffinityEntryData
-                    {
-                        personality_assertive = 10, personality_calm = 5, personality_lively = 2, personality_gentle = 0
-                    },
-                },
-                questions = new CharacterQuestionEntryData[]
-                {
-                    new CharacterQuestionEntryData
-                    {
-                        character_id = VCW, level = 1, question_id = "q_vcw_1",
-                        prompt = "Hi?",
-                        options = new CharacterQuestionOptionData[]
-                        {
-                            new CharacterQuestionOptionData{ personality="personality_gentle", text="A", response="r" },
-                            new CharacterQuestionOptionData{ personality="personality_lively", text="B", response="r" },
-                            new CharacterQuestionOptionData{ personality="personality_calm", text="C", response="r" },
-                            new CharacterQuestionOptionData{ personality="personality_assertive", text="D", response="r" },
-                        }
-                    },
-                    new CharacterQuestionEntryData
-                    {
-                        character_id = VCW, level = 1, question_id = "q_vcw_2",
-                        prompt = "Hello?",
-                        options = new CharacterQuestionOptionData[]
-                        {
-                            new CharacterQuestionOptionData{ personality="personality_gentle", text="a", response="r" },
-                            new CharacterQuestionOptionData{ personality="personality_lively", text="b", response="r" },
-                            new CharacterQuestionOptionData{ personality="personality_calm", text="c", response="r" },
-                            new CharacterQuestionOptionData{ personality="personality_assertive", text="d", response="r" },
-                        }
-                    },
-                },
+                new CharacterQuestionData { id = 1, question_id = "q_vcw_1", character_id = VCW, level = 1, prompt = "Hi?" },
+                new CharacterQuestionData { id = 2, question_id = "q_vcw_2", character_id = VCW, level = 1, prompt = "Hello?" },
             };
-            return new CharacterQuestionsConfig(data);
+            string[] personalities = new[] { "personality_gentle", "personality_lively", "personality_calm", "personality_assertive" };
+            string[][] texts = new[]
+            {
+                new[] { "A", "B", "C", "D" },
+                new[] { "a", "b", "c", "d" },
+            };
+            List<CharacterQuestionOptionData> optList = new List<CharacterQuestionOptionData>();
+            int oid = 1;
+            string[] qids = new[] { "q_vcw_1", "q_vcw_2" };
+            for (int qi = 0; qi < qids.Length; qi++)
+                for (int pi = 0; pi < personalities.Length; pi++)
+                    optList.Add(new CharacterQuestionOptionData { id = oid++, question_id = qids[qi], personality_id = personalities[pi], text = texts[qi][pi], response = "r" });
+
+            CharacterProfileData[] profiles = new CharacterProfileData[]
+            {
+                new CharacterProfileData { id = 1, character_id = "village_chief_wife", preferred_personality_id = "personality_gentle" },
+                new CharacterProfileData { id = 2, character_id = "farm_girl",          preferred_personality_id = "personality_lively" },
+                new CharacterProfileData { id = 3, character_id = "witch",              preferred_personality_id = "personality_calm" },
+                new CharacterProfileData { id = 4, character_id = "guard",              preferred_personality_id = "personality_assertive" },
+            };
+            PersonalityAffinityRuleData[] rules = new PersonalityAffinityRuleData[]
+            {
+                new PersonalityAffinityRuleData { id=1,  character_id="village_chief_wife", personality_id="personality_gentle",    affinity_delta=10 },
+                new PersonalityAffinityRuleData { id=2,  character_id="village_chief_wife", personality_id="personality_calm",      affinity_delta=5  },
+                new PersonalityAffinityRuleData { id=3,  character_id="village_chief_wife", personality_id="personality_lively",    affinity_delta=2  },
+                new PersonalityAffinityRuleData { id=4,  character_id="village_chief_wife", personality_id="personality_assertive", affinity_delta=0  },
+                new PersonalityAffinityRuleData { id=5,  character_id="farm_girl",          personality_id="personality_lively",    affinity_delta=10 },
+                new PersonalityAffinityRuleData { id=6,  character_id="farm_girl",          personality_id="personality_assertive", affinity_delta=5  },
+                new PersonalityAffinityRuleData { id=7,  character_id="farm_girl",          personality_id="personality_gentle",    affinity_delta=2  },
+                new PersonalityAffinityRuleData { id=8,  character_id="farm_girl",          personality_id="personality_calm",      affinity_delta=0  },
+                new PersonalityAffinityRuleData { id=9,  character_id="witch",              personality_id="personality_calm",      affinity_delta=10 },
+                new PersonalityAffinityRuleData { id=10, character_id="witch",              personality_id="personality_gentle",    affinity_delta=5  },
+                new PersonalityAffinityRuleData { id=11, character_id="witch",              personality_id="personality_assertive", affinity_delta=2  },
+                new PersonalityAffinityRuleData { id=12, character_id="witch",              personality_id="personality_lively",    affinity_delta=0  },
+                new PersonalityAffinityRuleData { id=13, character_id="guard",              personality_id="personality_assertive", affinity_delta=10 },
+                new PersonalityAffinityRuleData { id=14, character_id="guard",              personality_id="personality_calm",      affinity_delta=5  },
+                new PersonalityAffinityRuleData { id=15, character_id="guard",              personality_id="personality_lively",    affinity_delta=2  },
+                new PersonalityAffinityRuleData { id=16, character_id="guard",              personality_id="personality_gentle",    affinity_delta=0  },
+            };
+            return new CharacterQuestionsConfig(questions, optList.ToArray(), profiles, rules);
         }
 
         private static GreetingConfig BuildGreetingConfig()
         {
-            return new GreetingConfig(new GreetingConfigData
+            return new GreetingConfig(new GreetingData[]
             {
-                greetings = new GreetingEntryData[]
-                {
-                    new GreetingEntryData{ character_id = VCW, level = 1, greeting_id = "g1", text = "Welcome." },
-                    new GreetingEntryData{ character_id = VCW, level = 1, greeting_id = "g2", text = "Hi." },
-                }
+                new GreetingData { id = 1, greeting_id = "g1", character_id = VCW, level = 1, text = "Welcome." },
+                new GreetingData { id = 2, greeting_id = "g2", character_id = VCW, level = 1, text = "Hi." },
             });
         }
 
         private static IdleChatConfig BuildIdleChatConfig()
         {
-            return new IdleChatConfig(new IdleChatConfigData
-            {
-                topics = new IdleChatTopicData[]
+            return new IdleChatConfig(
+                new IdleChatTopicData[]
                 {
-                    new IdleChatTopicData
-                    {
-                        character_id = VCW, topic_id = "i1", prompt = "How's your day?",
-                        answers = new IdleChatAnswerData[]
-                        {
-                            new IdleChatAnswerData{ answer_id = "a1", text = "Fine." },
-                        }
-                    },
-                }
-            });
+                    new IdleChatTopicData { id = 1, topic_id = "i1", character_id = VCW, prompt = "How's your day?" },
+                },
+                new IdleChatAnswerData[]
+                {
+                    new IdleChatAnswerData { id = 1, answer_id = "a1", topic_id = "i1", text = "Fine." },
+                });
         }
 
         private static PlayerQuestionsConfig BuildPlayerQuestionsConfig(int n)
